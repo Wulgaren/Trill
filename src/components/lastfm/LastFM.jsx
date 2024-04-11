@@ -2,14 +2,6 @@ import react from "react";
 
 const API_KEY = "83ac8a002c2d325d41833fd18489a310";
 
-export const authenticate = async () => {
-  // Perform authentication here and set the token
-  // This is a simplified example, you should use a secure authentication method
-  const response = await fetch("YOUR_AUTHENTICATION_ENDPOINT");
-  const data = await response.json();
-  setToken(data.token);
-};
-
 export function findArtistImage(mbid) {
   return fetch(`/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`).then(
     (data) => {
