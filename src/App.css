@@ -1,4 +1,0 @@
-#root {
-    width: clamp(500px, 100vw, 100%);
-    height: clamp(500px, 100vh, 100%);
-}

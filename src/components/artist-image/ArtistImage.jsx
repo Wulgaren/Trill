@@ -1,46 +1,47 @@
-import React from 'react';
-import * as LastFM from '../lastfm/LastFM';
+import React from "react";
+import defaultArtistImage from "../../assets/img/default_artist.webp";
 
-const handleImageLoad = (mbid, setImageLoading) => {
-    if (!mbid) return false;
-    console.log(mbid);
+const HandleImageLoad = (mbid, setImageLoading) => {
+  if (!mbid) return false;
+  console.log(mbid);
 
-    setImageLoading((prevState) => ({
-        ...prevState,
-        [mbid]: false,
-    }));
+  setImageLoading((prevState) => ({
+    ...prevState,
+    [mbid]: false,
+  }));
 };
 
-const handleImageError = (mbid, setImageLoading) => {
-    if (!mbid) return false;
+const HandleImageError = (mbid, setImageLoading) => {
+  if (!mbid) return false;
 
-    setImageLoading((prevState) => ({
-        ...prevState,
-        [mbid]: false,
-    }));
+  setImageLoading((prevState) => ({
+    ...prevState,
+    [mbid]: false,
+  }));
 };
 
-function ArtistImage( { artist, setImageLoading } ) {
-    if (!artist) {
-        handleImageError(artist.mbid, setImageLoading)
-        
-        return;
-    }
+function ArtistImage({ artist, setImageLoading }) {
+  if (!artist) {
+    HandleImageError(artist.mbid, setImageLoading);
 
-    let imageUrl;
-    LastFM.findArtistImage(artist.mbid).then((data) => {
-        imageUrl = data;
-    });
+    return;
+  }
 
-    console.log(imageUrl);
-    return (<>
-        <img
-            src={imageUrl}
-            alt={artist.name + " Image"}
-            onLoad={() => handleImageLoad(artist.mbid, setImageLoading)}
-            onError={() => handleImageError(artist.mbid, setImageLoading)}
-        />
-    </>)
+  let imageUrl = defaultArtistImage;
+  // LastFM.FindArtistImage(artist.mbid).then((data) => {
+  //     imageUrl = data;
+  // });
+
+  return (
+    <>
+      <img
+        src={imageUrl}
+        alt={artist.name + " Image"}
+        onLoad={() => HandleImageLoad(artist.mbid, setImageLoading)}
+        onError={() => HandleImageError(artist.mbid, setImageLoading)}
+      />
+    </>
+  );
 }
 
-export default ArtistImage
+export default ArtistImage;
