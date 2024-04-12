@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import defaultArtistImage from "../../assets/img/default_artist.webp";
-import * as LastFM from "../lastfm/LastFm";
 
 const HandleImageLoad = (mbid, setImageLoading) => {
   if (!mbid) return false;
@@ -21,16 +20,17 @@ const HandleImageError = (mbid, setImageLoading) => {
 };
 
 function ArtistImage({ artist, setImageLoading }) {
-  if (!artist) {
-    HandleImageError(artist.mbid, setImageLoading);
+  const [imageUrl, setImageUrl] = useState(defaultArtistImage);
 
-    return;
-  }
-
-  let imageUrl = defaultArtistImage;
-  LastFM.FindArtistImage(artist.mbid).then((data) => {
-    imageUrl = data;
-  });
+  // LastFM.FindArtistImage(artist.mbid)
+  //   .then((data) => {
+  //     setImageUrl(data);
+  //     HandleImageLoad(artist.mbid, setImageLoading);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error fetching artist image:", error);
+  //     HandleImageError(artist.mbid, setImageLoading);
+  //   });
 
   return (
     <>

@@ -1,20 +1,10 @@
-export function FindArtistImage(mbid) {
-  let lastCalled = 0;
-  return new Promise((resolve, reject) => {
-    const now = Date.now();
-    if (now - lastCalled < 1000) {
-      reject("Throttled");
-      return;
-    }
-    lastCalled = now;
-    fetch(`/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data?.relations?.find((x) => x.type == "image"));
-        resolve(data?.relations?.find((x) => x.type == "image")?.url?.resource);
-      })
-      .catch(reject);
-  });
+export async function FindArtistImage(mbid) {
+  return await fetch(`/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data?.relations?.find((x) => x.type == "image"));
+      return data?.relations?.find((x) => x.type == "image")?.url?.resource;
+    });
 }
 
 export async function SearchForArtist(

@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @layer components {
+  body {
+    @apply w-screen h-screen transition-colors bg-white text-black dark:bg-background dark:text-white font-sans;
+  }
+
   main {
-    @apply w-screen h-screen transition-colors bg-white text-black dark:bg-background dark:text-white font-sans p-5;
+    @apply p-5;
   }
 
   nav {

@@ -35,6 +35,8 @@ function SearchResult() {
 
   const [imageLoading, setImageLoading] = useState({});
 
+  console.log(artists);
+
   if (artists[0] == "loading") {
     return <p>Loading...</p>;
   }
