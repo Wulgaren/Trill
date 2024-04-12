@@ -3,7 +3,6 @@ import defaultArtistImage from "../../assets/img/default_artist.webp";
 
 const HandleImageLoad = (mbid, setImageLoading) => {
   if (!mbid) return false;
-  console.log(mbid);
 
   setImageLoading((prevState) => ({
     ...prevState,

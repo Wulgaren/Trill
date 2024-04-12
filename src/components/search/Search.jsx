@@ -1,25 +1,25 @@
-import { React, useState, useEffect } from "react";
-import * as LastFM from "../lastfm/LastFM"
+import React from "react";
+import { UseSearchContext } from "./SearchProvider";
 
-function Search({ setSearchedArtists }) {
-    const [artist, setArtist] = useState("");
+function Search() {
+  const { artist, setArtist, handleSearch } = UseSearchContext();
 
-    useEffect(() => {
-        LastFM.searchForArtist(artist, setSearchedArtists);
-    }, [artist]);
+  function HandleFormSubmit(e) {
+    e.preventDefault();
+    handleSearch();
+  }
 
-    return (
-        <form onSubmit={e => e.preventDefault()}>
-            <input
-                type="search"
-                placeholder="Search for an artist..."
-                value={artist}
-                onChange={(e) => setArtist(e.target.value)}
-                className="w-full"
-            />
-            <button type="submit">Search</button>
-        </form>
-    )
+  return (
+    <form onSubmit={HandleFormSubmit}>
+      <input
+        type="search"
+        placeholder="Search for an artist..."
+        value={artist}
+        onChange={(e) => setArtist(e.target.value)}
+      />
+      <button type="submit">Search</button>
+    </form>
+  );
 }
 
-export default Search
+export default Search;
