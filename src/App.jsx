@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import Navbar from "./components/navbar/Navbar";
 import SearchResult from "./components/search-result/SearchResult";
 import Search from "./components/search/Search";
@@ -9,12 +8,12 @@ function App() {
   return (
     <>
       <Navbar />
-      <div>
+      <main>
         <SearchProvider>
           <Search />
           <SearchResult />
         </SearchProvider>
-      </div>
+      </main>
     </>
   );
 }

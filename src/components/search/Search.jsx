@@ -10,14 +10,18 @@ function Search() {
   }
 
   return (
-    <form onSubmit={HandleFormSubmit}>
+    <form className="flex w-full" onSubmit={HandleFormSubmit}>
       <input
+        className="w-full"
         type="search"
         placeholder="Search for an artist..."
+        tabIndex={3}
         value={artist}
         onChange={(e) => setArtist(e.target.value)}
       />
-      <button type="submit">Search</button>
+      <button tabIndex={4} type="submit">
+        Search
+      </button>
     </form>
   );
 }

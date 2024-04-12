@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  main {
+    @apply w-screen h-screen transition-colors bg-white text-black dark:bg-background dark:text-white font-sans p-5;
+  }
+
+  nav {
+    @apply sticky top-0 z-10 text-white bg-primary px-5 py-3 w-full;
+  }
+
+  button {
+    @apply transition-all w-auto border-2 bg-primary border-primary rounded-lg p-2 mx-2 shadow-sm;
+  }
+
+  input {
+    @apply p-2 shadow-sm rounded-lg bg-white text-black dark:bg-background dark:text-white;
+  }
+
+  [tabindex] {
+    @apply border-2 border-transparent;
+  }
+
+  :focus,
+  :focus-visible {
+    @apply outline-none !border-focus border-2 border-solid rounded-lg shadow-sm shadow-focus;
+  }
+}

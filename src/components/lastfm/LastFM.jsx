@@ -1,15 +1,20 @@
-const API_KEY = "83ac8a002c2d325d41833fd18489a310";
-
 export function FindArtistImage(mbid) {
-  return "";
-  // return fetch(`/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`).then(
-  //   (data) => {
-  //     if (!data?.ok || data?.type != "image") return "";
-
-  //     console.log(data);
-  //     return data?.url;
-  //   },
-  // );
+  let lastCalled = 0;
+  return new Promise((resolve, reject) => {
+    const now = Date.now();
+    if (now - lastCalled < 1000) {
+      reject("Throttled");
+      return;
+    }
+    lastCalled = now;
+    fetch(`/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data?.relations?.find((x) => x.type == "image"));
+        resolve(data?.relations?.find((x) => x.type == "image")?.url?.resource);
+      })
+      .catch(reject);
+  });
 }
 
 export async function SearchForArtist(
@@ -22,7 +27,7 @@ export async function SearchForArtist(
   if (!artists?.length) setSearchedArtists(["loading"]);
 
   return await fetch(
-    `https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artist}&api_key=${API_KEY}&format=json&page=${page}&limit=50`
+    `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${page}&limit=50`
   )
     .then((res) => res.json())
     .then((data) => {

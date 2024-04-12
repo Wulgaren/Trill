@@ -1,5 +1,6 @@
 import React from "react";
 import defaultArtistImage from "../../assets/img/default_artist.webp";
+import * as LastFM from "../lastfm/LastFm";
 
 const HandleImageLoad = (mbid, setImageLoading) => {
   if (!mbid) return false;
@@ -27,9 +28,9 @@ function ArtistImage({ artist, setImageLoading }) {
   }
 
   let imageUrl = defaultArtistImage;
-  // LastFM.FindArtistImage(artist.mbid).then((data) => {
-  //     imageUrl = data;
-  // });
+  LastFM.FindArtistImage(artist.mbid).then((data) => {
+    imageUrl = data;
+  });
 
   return (
     <>

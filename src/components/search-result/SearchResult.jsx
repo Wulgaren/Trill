@@ -40,12 +40,16 @@ function SearchResult() {
   }
 
   return (
-    <ul>
+    <ul className="grid grid-cols-4 p-5">
       {artists?.map((artist, index) => {
         const isLoading = imageLoading[artist.mbid] || false;
 
         return (
-          <li key={artist.mbid + index}>
+          <li
+            className="flex flex-col justify-center items-center p-2"
+            key={artist.mbid + index}
+            tabIndex={5 + index}
+          >
             {isLoading ? (
               <p>Loading...</p>
             ) : (
@@ -54,7 +58,9 @@ function SearchResult() {
                   artist={artist}
                   setImageLoading={setImageLoading}
                 />
-                <a href={artist.url}>{artist.name}</a>
+                <a className="text-center" href={artist.url}>
+                  {artist.name}
+                </a>
               </>
             )}
           </li>
