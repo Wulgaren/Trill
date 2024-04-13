@@ -11,8 +11,8 @@ function Navbar() {
           <p>MUSIC FINDER</p>
         </li>
         <li className="ml-auto">
-          <button tabIndex={1} className="text-white">
-            <FaSearch />
+          <button tabIndex={1} className="text-white shadow-none">
+            <FaSearch size={25} />
           </button>
         </li>
         <li>
