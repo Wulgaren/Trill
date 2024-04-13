@@ -16,7 +16,7 @@
   }
 
   button {
-    @apply transition-all w-auto border-2 bg-primary border-primary rounded-lg p-2 mx-2 shadow-sm;
+    @apply transition-all w-auto border-2 text-white bg-primary border-primary rounded-lg p-2 mx-2 shadow-sm;
   }
 
   input {

@@ -38,12 +38,15 @@ function SearchResult() {
       {artists?.map((artist, index) => {
         return (
           <li
-            className="flex flex-col justify-center items-center p-2"
+            className="flex flex-col justify-center items-center m-2 rounded-md border-2 border-gray-100 relative"
             key={artist.mbid + index}
             tabIndex={5 + index}
           >
             <ArtistImage artist={artist} index={index} />
-            <a className="text-center" href={artist.url}>
+            <a
+              className="text-center absolute bg-white w-full bottom-0 py-2"
+              href={artist.url}
+            >
               {artist.name}
             </a>
           </li>

@@ -37,7 +37,7 @@ function ArtistImage({ artist, index }) {
   return (
     <>
       <img
-        className="w-28 h-28 object-cover"
+        className="w-full h-full object-cover rounded-md"
         src={imageReq.url}
         alt={artist.name + " Image"}
       />
