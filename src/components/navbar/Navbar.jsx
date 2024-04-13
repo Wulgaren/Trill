@@ -1,4 +1,5 @@
 import React from "react";
+import { FaSearch } from "react-icons/fa";
 import "./Navbar.css";
 
 function Navbar() {
@@ -10,8 +11,13 @@ function Navbar() {
           <p>MUSIC FINDER</p>
         </li>
         <li className="ml-auto">
+          <button tabIndex={1} className="text-white">
+            <FaSearch />
+          </button>
+        </li>
+        <li>
           <button
-            tabIndex={1}
+            tabIndex={2}
             className="bg-red-500 hover:bg-red-700 text-white"
           >
             Connect to Last.FM
@@ -19,7 +25,7 @@ function Navbar() {
         </li>
         <li>
           <button
-            tabIndex={2}
+            tabIndex={3}
             className="bg-gray-700 hover:bg-gray-900 text-white"
           >
             Connect to Discogs

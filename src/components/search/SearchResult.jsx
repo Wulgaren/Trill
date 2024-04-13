@@ -38,9 +38,9 @@ function SearchResult() {
       {artists?.map((artist, index) => {
         return (
           <li
-            className="flex flex-col justify-center items-center m-2 rounded-md border-2 border-gray-100 relative"
+            className="flex flex-col justify-center items-center m-2 rounded-md border-2 bg-white dark:bg-black border-gray-100 relative"
             key={artist.mbid + index}
-            tabIndex={5 + index}
+            tabIndex={6 + index}
           >
             <ArtistImage artist={artist} index={index} />
             <a

@@ -15,11 +15,11 @@ function Search() {
         className="w-full"
         type="search"
         placeholder="Search for an artist..."
-        tabIndex={3}
+        tabIndex={4}
         value={artist}
         onChange={(e) => setArtist(e.target.value)}
       />
-      <button tabIndex={4} type="submit">
+      <button tabIndex={5} type="submit">
         Search
       </button>
     </form>

@@ -9,6 +9,7 @@ function App() {
     <>
       <Navbar />
       <main>
+        <div className="blob"></div>
         <SearchProvider>
           <Search />
           <SearchResult />
