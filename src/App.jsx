@@ -1,8 +1,8 @@
 import React from "react";
 import Navbar from "./components/navbar/Navbar";
-import SearchResult from "./components/search-result/SearchResult";
 import Search from "./components/search/Search";
 import { SearchProvider } from "./components/search/SearchProvider";
+import SearchResult from "./components/search/SearchResult";
 
 function App() {
   return (

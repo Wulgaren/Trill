@@ -1,44 +1,45 @@
 import React, { useState } from "react";
 import defaultArtistImage from "../../assets/img/default_artist.webp";
+import * as LastFM from "../lastfm/LastFm";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
-const HandleImageLoad = (mbid, setImageLoading) => {
-  if (!mbid) return false;
+function ArtistImage({ artist, index }) {
+  const [imageReq, setImageReq] = useState({
+    loading: true,
+    sentRequest: false,
+    url: defaultArtistImage,
+  });
 
-  setImageLoading((prevState) => ({
-    ...prevState,
-    [mbid]: false,
-  }));
-};
+  if (imageReq.loading && !imageReq.sentRequest && artist?.mbid) {
+    setTimeout(() => {
+      let imageObj = {
+        loading: true,
+        sentRequest: true,
+        url: defaultArtistImage,
+      };
 
-const HandleImageError = (mbid, setImageLoading) => {
-  if (!mbid) return false;
+      LastFM.FindArtistImage(artist.mbid)
+        .then((data) => {
+          if (data) imageObj.url = data;
+        })
+        .catch((error) => {
+          console.error("Error fetching artist image:", error);
+        })
+        .finally(() => {
+          imageObj.loading = false;
+          setImageReq(imageObj);
+        });
+    }, 3000 * index);
 
-  setImageLoading((prevState) => ({
-    ...prevState,
-    [mbid]: false,
-  }));
-};
-
-function ArtistImage({ artist, setImageLoading }) {
-  const [imageUrl, setImageUrl] = useState(defaultArtistImage);
-
-  // LastFM.FindArtistImage(artist.mbid)
-  //   .then((data) => {
-  //     setImageUrl(data);
-  //     HandleImageLoad(artist.mbid, setImageLoading);
-  //   })
-  //   .catch((error) => {
-  //     console.error("Error fetching artist image:", error);
-  //     HandleImageError(artist.mbid, setImageLoading);
-  //   });
+    return <LoadingAnimation />;
+  }
 
   return (
     <>
       <img
-        src={imageUrl}
+        className="w-28 h-28 object-cover"
+        src={imageReq.url}
         alt={artist.name + " Image"}
-        onLoad={() => HandleImageLoad(artist.mbid, setImageLoading)}
-        onError={() => HandleImageError(artist.mbid, setImageLoading)}
       />
     </>
   );

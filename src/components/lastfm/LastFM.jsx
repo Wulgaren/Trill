@@ -2,8 +2,10 @@ export async function FindArtistImage(mbid) {
   return await fetch(`/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data?.relations?.find((x) => x.type == "image"));
-      return data?.relations?.find((x) => x.type == "image")?.url?.resource;
+      let url = data?.relations?.find((x) => x.type == "image")?.url?.resource;
+      if (!url) return;
+      url = url.replace("/File:", "/Special:FilePath/");
+      return url;
     });
 }
 
@@ -14,6 +16,7 @@ export async function SearchForArtist(
   page = 1
 ) {
   if (!artist) return;
+
   if (!artists?.length) setSearchedArtists(["loading"]);
 
   return await fetch(
@@ -22,10 +25,8 @@ export async function SearchForArtist(
     .then((res) => res.json())
     .then((data) => {
       let receivedArtists = data?.results?.artistmatches?.artist ?? [];
-
-      if (artists?.length && receivedArtists?.length && artists[0] != "loading")
-        receivedArtists = [...artists, ...receivedArtists];
-
+      // Add previous artists
+      receivedArtists = [...artists, ...receivedArtists];
       console.log(receivedArtists);
 
       setSearchedArtists(receivedArtists);
