@@ -12,7 +12,7 @@
   }
 
   nav {
-    @apply sticky top-0 z-10 text-white bg-primary px-5 py-3 w-full;
+    @apply sticky top-0 z-10 text-white bg-primary px-5 py-5 w-full;
   }
 
   button {

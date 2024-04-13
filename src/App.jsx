@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "./components/navbar/Navbar";
 import Search from "./components/search/Search";
 import { SearchProvider } from "./components/search/SearchProvider";
 import SearchResult from "./components/search/SearchResult";
 
 function App() {
+  const [isSearchActive, setIsSearchActive] = useState(false);
+
+  const handleSearchIconClick = () => {
+    setIsSearchActive(!isSearchActive);
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar onSearchIconClick={handleSearchIconClick} />
       <main>
         <div className="blob"></div>
-        <SearchProvider>
-          <Search />
-          <SearchResult />
-        </SearchProvider>
+        {isSearchActive && (
+          <SearchProvider>
+            <Search />
+            <SearchResult />
+          </SearchProvider>
+        )}
       </main>
     </>
   );

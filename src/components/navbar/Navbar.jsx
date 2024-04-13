@@ -2,7 +2,7 @@ import React from "react";
 import { FaSearch } from "react-icons/fa";
 import "./Navbar.css";
 
-function Navbar() {
+function Navbar({ onSearchIconClick }) {
   return (
     <nav>
       <ul className="flex flex-row items-center">
@@ -10,7 +10,7 @@ function Navbar() {
           <p>TRILL</p>
           <p>MUSIC FINDER</p>
         </li>
-        <li className="ml-auto">
+        <li className="ml-auto" onClick={onSearchIconClick}>
           <button tabIndex={1} className="text-white shadow-none">
             <FaSearch size={25} />
           </button>
