@@ -25,7 +25,7 @@ function SearchResult() {
   return (
     <InfiniteScroll
       element="ul"
-      className="grid grid-cols-4 p-5 "
+      className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] grid-rows-4 p-5 relative"
       pageStart={2}
       loadMore={handleScrollToBottom}
       hasMore={true}
