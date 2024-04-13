@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import defaultArtistImage from "../../assets/img/default_artist.webp";
-import * as LastFM from "../lastfm/LastFm";
+import LastFm from "../lastfm/LastFm";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
 function ArtistImage({ artist, index }) {
@@ -18,7 +18,7 @@ function ArtistImage({ artist, index }) {
         url: defaultArtistImage,
       };
 
-      LastFM.FindArtistImage(artist.mbid)
+      LastFm.FindArtistImage(artist.mbid)
         .then((data) => {
           if (data) imageObj.url = data;
         })
@@ -37,7 +37,7 @@ function ArtistImage({ artist, index }) {
   return (
     <>
       <img
-        className="w-full h-full object-cover rounded-md"
+        className="w-full h-full object-cover"
         src={imageReq.url}
         alt={artist.name + " Image"}
       />

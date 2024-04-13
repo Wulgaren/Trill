@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { SearchForArtist } from "../lastfm/LastFm";
+import LastFm from "../lastfm/LastFm";
 
 const SearchContext = createContext(null);
 export const UseSearchContext = () => useContext(SearchContext);
@@ -9,7 +9,12 @@ export const SearchProvider = ({ children }) => {
   const [artists, setSearchedArtists] = useState([]);
 
   const handleSearch = async (page) => {
-    return await SearchForArtist(artist, artists, setSearchedArtists, page);
+    return await LastFm.SearchForArtist(
+      artist,
+      artists,
+      setSearchedArtists,
+      page
+    );
   };
 
   return (

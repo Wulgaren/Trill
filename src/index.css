@@ -19,23 +19,14 @@
     @apply scale-100 transition-all w-auto border-2 text-white bg-primary hover:bg-secondary border-transparent rounded-lg p-2 mx-2 shadow-sm;
 
     &:hover:has(svg) {
+      box-shadow: none;
       background: transparent;
       animation: scale 0.7s ease-in-out infinite alternate;
     }
   }
 
-  @keyframes scale {
-    0% {
-      scale: 1;
-    }
-
-    100% {
-      scale: 1.2;
-    }
-  }
-
   input {
-    @apply p-2 shadow-sm rounded-lg bg-white text-black dark:bg-background dark:text-white;
+    @apply p-2 shadow-sm rounded-lg bg-white text-black dark:bg-gray-700 dark:text-white;
   }
 
   [tabindex] {
@@ -49,12 +40,12 @@
 
   .blob {
     position: absolute;
-    opacity: 0.5;
+    opacity: 0.6;
     width: 400px;
     aspect-ratio: 1/1;
     animation: blob 10s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate
       forwards;
-    filter: blur(40px);
+    filter: blur(30px);
     z-index: -1;
     background: linear-gradient(
       47deg,
@@ -80,6 +71,16 @@
       border-radius: 100% 75% 92% 74% / 60% 80% 30% 70%;
       rotate: -60deg;
       scale: 1.05;
+    }
+  }
+
+  @keyframes scale {
+    0% {
+      scale: 1;
+    }
+
+    100% {
+      scale: 1.2;
     }
   }
 }
