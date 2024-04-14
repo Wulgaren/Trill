@@ -2,10 +2,8 @@ import React, { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import ArtistImage from "../artist-image/ArtistImage";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
-import { UseSearchContext } from "./SearchProvider";
 
-function SearchResult() {
-  const { artist, artists, handleSearch } = UseSearchContext();
+function SearchResult({ artists, handleSearch }) {
   let page = 1;
 
   useEffect(() => {
@@ -38,7 +36,7 @@ function SearchResult() {
       {artists?.map((artist, index) => {
         return (
           <li
-            className="flex flex-col justify-center items-center m-2 rounded-md border-2 bg-white dark:bg-black  border-gray-100 relative overflow-hidden"
+            className="flex flex-col justify-center items-center m-2 rounded-md border-2 bg-white dark:bg-black border-transparent relative overflow-hidden"
             key={artist.mbid + index}
             tabIndex={100 + index}
           >
