@@ -7,7 +7,8 @@ function SearchResult({ artists, handleSearch }) {
   let page = 1;
 
   useEffect(() => {
-    page = Math.ceil(artists.length / 50);
+    let artistsFetchLimit = 50;
+    page = Math.ceil(artists.length / artistsFetchLimit);
   }, [artists]);
 
   const handleScrollToBottom = async () => {
