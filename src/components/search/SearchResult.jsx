@@ -7,7 +7,7 @@ function SearchResult({ artists, handleSearch }) {
   let page = 1;
 
   useEffect(() => {
-    let artistsFetchLimit = 50;
+    const artistsFetchLimit = 50;
     page = Math.ceil(artists.length / artistsFetchLimit);
   }, [artists]);
 
