@@ -21,8 +21,6 @@ const LastFm = {
   ) {
     if (!artist) return;
 
-    if (!artists?.length) setSearchedArtists(["loading"]);
-
     return await fetch(
       `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${page}&limit=50`
     )

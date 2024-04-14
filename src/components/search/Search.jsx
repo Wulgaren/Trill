@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import LastFm from "../lastfm/LastFm";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchResult from "./SearchResult";
 
 function Search() {
   const [artist, setArtist] = useState("");
   const [artists, setSearchedArtists] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
   const handleSearch = async (page) => {
     return await LastFm.SearchForArtist(
@@ -15,9 +17,11 @@ function Search() {
     );
   };
 
-  function HandleFormSubmit(e) {
+  async function HandleFormSubmit(e) {
     e.preventDefault();
-    handleSearch();
+    setLoading(true);
+    await handleSearch();
+    setLoading(false);
   }
 
   return (
@@ -35,7 +39,8 @@ function Search() {
           Search
         </button>
       </form>
-      {artists?.length > 0 && (
+      {isLoading && <LoadingAnimation />}
+      {artists?.length > 0 && !isLoading && (
         <SearchResult artists={artists} handleSearch={handleSearch} />
       )}
     </>

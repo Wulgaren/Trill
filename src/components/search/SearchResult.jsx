@@ -17,9 +17,6 @@ function SearchResult({ artists, handleSearch }) {
     await handleSearch(page);
   };
 
-  if (!artists?.length) return;
-  if (artists[0] == "loading") return <LoadingAnimation />;
-
   return (
     <InfiniteScroll
       element="ul"
