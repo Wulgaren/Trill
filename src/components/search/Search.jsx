@@ -9,17 +9,13 @@ function Search() {
   const [isLoading, setLoading] = useState(false);
 
   const handleSearch = async (page) => {
-    return await LastFm.SearchForArtist(
-      artist,
-      artists,
-      setSearchedArtists,
-      page
-    );
+    return await LastFm.SearchForArtist(artist, setSearchedArtists, page);
   };
 
   async function HandleFormSubmit(e) {
     e.preventDefault();
     setLoading(true);
+    setSearchedArtists([]);
     await handleSearch();
     setLoading(false);
   }

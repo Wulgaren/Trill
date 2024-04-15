@@ -13,12 +13,7 @@ const LastFm = {
       });
   },
 
-  SearchForArtist: async function (
-    artist,
-    artists,
-    setSearchedArtists,
-    page = 1
-  ) {
+  SearchForArtist: async function (artist, setSearchedArtists, page = 1) {
     if (!artist) return;
 
     return await fetch(
@@ -28,12 +23,16 @@ const LastFm = {
       .then((data) => {
         let receivedArtists = data?.results?.artistmatches?.artist ?? [];
         // Add previous artists
-        receivedArtists = [...artists, ...receivedArtists];
-        console.log("SearchForArtist", receivedArtists);
 
-        setSearchedArtists(receivedArtists);
+        let artistsList = [];
 
-        return receivedArtists;
+        setSearchedArtists((prevArtists) => {
+          artistsList = [...prevArtists, ...receivedArtists];
+          console.log(artistsList);
+          return artistsList;
+        });
+
+        return artistsList;
       });
   },
 
