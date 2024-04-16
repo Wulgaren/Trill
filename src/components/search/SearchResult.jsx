@@ -35,7 +35,7 @@ function SearchResult({
             key={artist.mbid + index}
             tabIndex={100 + index}
           >
-            <ArtistImage artist={artist} index={index} />
+            <ArtistImage artist={artist} />
             <a
               className="text-center absolute bg-white text-black dark:bg-black dark:text-white w-full bottom-0 py-2"
               href={artist.url}
