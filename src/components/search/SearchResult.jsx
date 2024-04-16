@@ -1,21 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import ArtistImage from "../artist-image/ArtistImage";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
-function SearchResult({ artists, handleSearch }) {
-  let page = 1;
-
-  useEffect(() => {
-    const artistsFetchLimit = 50;
-    page = Math.ceil(artists.length / artistsFetchLimit);
-  }, [artists]);
-
-  const handleScrollToBottom = async () => {
-    if (!artists?.length) return;
-
-    page++;
-    await handleSearch(page);
+function SearchResult({
+  artists,
+  fetchNextPage,
+  isFetchingNextPage,
+  hasNextPage,
+}) {
+  const handleScrollToBottom = () => {
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
+    }
   };
 
   return (
@@ -24,7 +21,7 @@ function SearchResult({ artists, handleSearch }) {
       className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] auto-rows-[250px] p-5 relative"
       pageStart={2}
       loadMore={handleScrollToBottom}
-      hasMore={true}
+      hasMore={hasNextPage}
       loader={
         <li className="flex flex-col justify-center items-center p-2" key={0}>
           <LoadingAnimation />

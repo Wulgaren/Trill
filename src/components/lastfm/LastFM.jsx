@@ -1,39 +1,35 @@
+import defaultArtistImage from "../../assets/img/default_artist.webp";
+
 const LastFm = {
   FindArtistImage: async function (mbid) {
     if (!mbid) return;
 
-    return await fetch(`/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`)
-      .then((res) => res.json())
-      .then((data) => {
-        let url = data?.relations?.find((x) => x.type == "image")?.url
-          ?.resource;
-        if (!url) return;
-        url = url.replace("/File:", "/Special:FilePath/");
-        return url;
-      });
+    const response = await fetch(
+      `/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const data = await response.json();
+    let url =
+      data?.relations?.find((x) => x.type == "image")?.url?.resource ??
+      defaultArtistImage;
+
+    url = url.replace("/File:", "/Special:FilePath/");
+    return url;
   },
 
-  SearchForArtist: async function (artist, setSearchedArtists, page = 1) {
-    if (!artist) return;
+  SearchForArtist: async function ({ pageParam = 1, queryKey }) {
+    const [_, artist] = queryKey;
+    if (!artist) return [];
 
-    return await fetch(
-      `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${page}&limit=50`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        let receivedArtists = data?.results?.artistmatches?.artist ?? [];
-        // Add previous artists
-
-        let artistsList = [];
-
-        setSearchedArtists((prevArtists) => {
-          artistsList = [...prevArtists, ...receivedArtists];
-          console.log(artistsList);
-          return artistsList;
-        });
-
-        return artistsList;
-      });
+    const response = await fetch(
+      `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${pageParam}&limit=50`
+    );
+    const data = await response.json();
+    return data?.results?.artistmatches?.artist ?? [];
   },
 
   GetUserArtist: async function () {

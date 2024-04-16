@@ -1,47 +1,30 @@
-import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import defaultArtistImage from "../../assets/img/default_artist.webp";
 import LastFm from "../lastfm/LastFm";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
-function ArtistImage({ artist, index }) {
-  const [imageReq, setImageReq] = useState({
-    loading: true,
-    sentRequest: false,
-    url: defaultArtistImage,
+function ArtistImage({ artist }) {
+  const {
+    data: imageUrl,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["artistImage", artist.name + " " + artist.mbid],
+    queryFn: () => LastFm.FindArtistImage(artist.mbid),
+    enabled: !!artist.mbid,
   });
 
-  if (imageReq.loading && !imageReq.sentRequest && artist?.mbid) {
-    setTimeout(() => {
-      let imageObj = {
-        loading: true,
-        sentRequest: true,
-        url: defaultArtistImage,
-      };
+  if (isLoading) return <LoadingAnimation />;
 
-      LastFm.FindArtistImage(artist.mbid)
-        .then((data) => {
-          if (data) imageObj.url = data;
-        })
-        .catch((error) => {
-          console.error("Error fetching artist image:", error);
-        })
-        .finally(() => {
-          imageObj.loading = false;
-          setImageReq(imageObj);
-        });
-    }, 3000 * index);
-
-    return <LoadingAnimation />;
-  }
+  let imgUrl = isError && !imageUrl ? defaultArtistImage : imageUrl;
 
   return (
-    <>
-      <img
-        className="w-full h-full object-cover"
-        src={imageReq.url}
-        alt={artist.name + " Image"}
-      />
-    </>
+    <img
+      className="w-full h-full object-cover"
+      src={imgUrl}
+      alt={artist.name + " Image"}
+    />
   );
 }
 
