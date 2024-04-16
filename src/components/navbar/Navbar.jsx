@@ -1,5 +1,6 @@
 import React from "react";
 import { FaSearch } from "react-icons/fa";
+import ConnectDiscogs from "../discogs/ConnectDiscogs";
 import ConnectLastFm from "../lastfm/ConnectLastFm";
 import "./Navbar.css";
 
@@ -25,13 +26,7 @@ function Navbar({ onSearchIconClick }) {
           <ConnectLastFm />
         </li>
         <li>
-          <button
-            type="button"
-            tabIndex={3}
-            className="bg-gray-700 hover:bg-gray-900 text-white"
-          >
-            Connect to Discogs
-          </button>
+          <ConnectDiscogs />
         </li>
       </ul>
     </nav>
