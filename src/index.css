@@ -55,6 +55,11 @@
     );
   }
 
+  .blob:nth-of-type(2) {
+    right: 0px;
+    bottom: 0px;
+  }
+
   @keyframes blob {
     0% {
       translate: 40% -25%;

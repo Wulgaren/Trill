@@ -15,6 +15,7 @@ function App() {
       <main>
         <div className="blob"></div>
         {isSearchActive && <Search />}
+        <div className="blob"></div>
       </main>
     </>
   );

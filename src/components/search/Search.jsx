@@ -47,7 +47,7 @@ function Search() {
           Search
         </button>
       </form>
-      {isFetching && <LoadingAnimation />}
+      {isFetching && !data && <LoadingAnimation />}
       {error && <div>Error fetching data.</div>}
       {data && (
         <SearchResult
