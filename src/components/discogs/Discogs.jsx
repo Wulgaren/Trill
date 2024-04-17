@@ -1,14 +1,46 @@
 const Discogs = {
-  GetAuthHeader: function () {
+  GetLoggedUserName: async () => {
+    const user = await Discogs.GetUserIdentity();
+
+    return JSON.parse(user)?.username;
+  },
+
+  GetAuthHeader: () => {
     const accessToken = localStorage.OAuthAccessToken;
     const accessTokenSecret = localStorage.OAuthAccessTokenSecret;
 
-    if (!accessToken || !accessTokenSecret)
-      return new Error("Not connected to Discogs");
-
     return {
-      Authorization: `OAuth oauth_token="${accessToken}", oauth_token_secret="&${accessTokenSecret}"`,
+      Authorization:
+        !accessToken || !accessTokenSecret
+          ? ""
+          : `OAuth oauth_token="${accessToken}", oauth_signature="&${accessTokenSecret}"`,
     };
+  },
+
+  GetUserIdentity: async () => {
+    try {
+      const username = localStorage.discogsUser;
+      if (username) return username;
+
+      const response = await fetch("/api/discogs/oauth/identity", {
+        method: "GET",
+        headers: Discogs.GetAuthHeader(),
+      });
+      if (!response.ok) {
+        throw new Error("Error requesting user's identity.");
+      }
+
+      const parsed = await response.text();
+      console.log(parsed);
+
+      localStorage.setItem("discogsUser", parsed);
+
+      return parsed;
+    } catch (error) {
+      // Handle any errors that occur during the process
+      console.error("Error during getting user's identity:", error.message);
+      throw error; // Rethrow the error to be handled by the caller
+    }
   },
 
   Login: async () => {
@@ -66,7 +98,34 @@ const Discogs = {
       return data;
     } catch (error) {
       // Handle any errors that occur during the process
-      console.error("Error during login:", error.message);
+      console.error("Error during getting token:", error.message);
+      throw error; // Rethrow the error to be handled by the caller
+    }
+  },
+
+  GetUserCollection: async (username) => {
+    try {
+      if (!username) username = await Discogs.GetLoggedUserName();
+
+      const response = await fetch(
+        `/api/discogs/users/${username}/collection/folders/0/releases`,
+        {
+          method: "GET",
+          headers: Discogs.GetAuthHeader(),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error requesting the token.");
+      }
+
+      const parsed = await response.json();
+      console.log("collection", parsed);
+
+      return parsed;
+    } catch (error) {
+      // Handle any errors that occur during the process
+      console.error("Error during getting user's collection:", error.message);
       throw error; // Rethrow the error to be handled by the caller
     }
   },

@@ -1,17 +1,33 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
 import LastFm from "./LastFm";
 
-function ConnectLastFm({}) {
+function ConnectLastFm() {
   const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState(false);
   const [username, setUsername] = useState(localStorage.lastFmUsername);
+
+  const {
+    data: getTopArtistsReq,
+    isFetching: isTopArtistsFetching,
+    isError: isTopArtistsError,
+  } = useQuery({
+    queryKey: ["last_fm_top_artists"],
+    queryFn: LastFm.GetUserArtist,
+    enabled: !!(
+      username &&
+      !isOpenLastFmDialog &&
+      (localStorage.lastFmUsername != username ||
+        !localStorage.lastFmTopArtists)
+    ),
+  });
 
   useEffect(() => {
     if (isOpenLastFmDialog) return;
 
-    if (username) LastFm.GetUserArtist();
-    else localStorage.removeItem("lastFmTopArtists");
+    if (!username) localStorage.removeItem("lastFmTopArtists");
   }, [isOpenLastFmDialog]);
 
   const SetLastFmUser = (e) => {
@@ -28,12 +44,19 @@ function ConnectLastFm({}) {
         className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-700 text-white"
         onClick={() => setIsOpenLastFmDialog(true)}
       >
-        {username && !isOpenLastFmDialog ? (
-          <>
-            <FaCog /> Last.fm
-          </>
+        {isTopArtistsFetching ? (
+          <LoadingAnimation />
         ) : (
-          "Connect to Last.fm"
+          <>
+            {username ? (
+              <>
+                <FaCog />
+                <span>Last.fm</span>
+              </>
+            ) : (
+              "Connect to Last.fm"
+            )}
+          </>
         )}
       </button>
       <Modal

@@ -10,6 +10,29 @@ const generateOAuthTimestamp = () => {
   return Math.floor(Date.now() / 1000).toString();
 };
 
+const getCurl = (proxyReq) => {
+  const method = proxyReq.method;
+  const target = proxyReq.protocol + "//" + proxyReq.host;
+  let url = proxyReq.path;
+
+  if (!url.includes("http")) url = target + url;
+
+  url = `"${url}"`;
+
+  // Format the headers into a string for the curl command
+  let headersString = "";
+  for (const [key, value] of Object.entries(proxyReq._headers)) {
+    headersString += `-H "${key}: ${value.replace(/"/g, '\\"')}" `;
+  }
+
+  // Format the information into a curl command
+  const curlCommand = `curl -X ${method} ${headersString} ${url}`;
+
+  console.log(curlCommand);
+
+  console.log("\r\n");
+};
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -20,20 +43,20 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/lastfm/, ""),
         configure: (proxy, _options) => {
           proxy.on("error", (err, _req, _res) => {
-            console.log("proxy error", err);
+            // console.log("proxy error", err);
           });
           proxy.on("proxyReq", (proxyReq, req, _res) => {
             const apiKey = process.env.LAST_FM_API_KEY; // Replace with your actual API key
             proxyReq.path += `&api_key=${apiKey}`;
 
-            console.log("Sending Request to the Target:", req.method, req.url);
+            // console.log("Sending Request to the Target:", req.method, req.url);
           });
           proxy.on("proxyRes", (proxyRes, req, _res) => {
-            console.log(
-              "Received Response from the Target:",
-              proxyRes.statusCode,
-              req.url
-            );
+            // console.log(
+            //   "Received Response from the Target:",
+            //   proxyRes.statusCode,
+            //   req.url
+            // );
           });
         },
       },
@@ -154,7 +177,22 @@ export default defineConfig({
             );
             proxyReq.setHeader("User-Agent", "Trill/1.0.0");
 
+            // Added rest of auth headers from .env
+            let auth = proxyReq.getHeader("Authorization")?.toString();
+            auth += `, oauth_consumer_key="${
+              process.env.DISCOGS_CONSUMER_KEY
+            }", oauth_nonce="${generateRandomString()}", oauth_signature_method="PLAINTEXT", oauth_timestamp="${generateOAuthTimestamp()}"`;
+
+            auth = auth.replace(
+              'oauth_signature="&',
+              `oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&`
+            );
+
+            proxyReq.setHeader("Authorization", auth);
+
             // console.log("Sending Request to the Target:", req.method, req.url);
+
+            getCurl(proxyReq);
           });
           proxy.on("proxyRes", (proxyRes, req, _res) => {
             // console.log(

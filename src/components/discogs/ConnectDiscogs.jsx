@@ -24,7 +24,11 @@ const handleAccessToken = (accessTokenRes, setAccessToken) => {
   const accessTokenSecret = accessTokenRes?.get("oauth_token_secret") || "";
   localStorage.setItem("OAuthAccessToken", accessToken);
   localStorage.setItem("OAuthAccessTokenSecret", accessTokenSecret);
+  history.pushState({}, "", window.location.origin);
   setAccessToken(accessToken);
+
+  // Save user's identity after successful authentication
+  Discogs.GetUserIdentity();
 };
 
 const handleTokenRemoval = (forceDelete, setRequestToken, setAccessToken) => {
@@ -34,6 +38,7 @@ const handleTokenRemoval = (forceDelete, setRequestToken, setAccessToken) => {
   localStorage.removeItem("OAuthAccessTokenSecret");
   localStorage.removeItem("OAuthRequestToken");
   localStorage.removeItem("OAuthRequestTokenSecret");
+  localStorage.removeItem("discogsUser");
   setRequestToken("");
   setAccessToken("");
 };
@@ -105,7 +110,8 @@ function ConnectDiscogs() {
         <>
           {accessToken ? (
             <>
-              <RiLogoutBoxRFill /> Discogs
+              <RiLogoutBoxRFill />
+              <span>Discogs</span>
             </>
           ) : (
             "Connect to Discogs"

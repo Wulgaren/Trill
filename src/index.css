@@ -22,7 +22,7 @@
   button {
     @apply scale-100 transition-all w-auto border-2 text-white bg-primary hover:bg-secondary border-transparent rounded-lg p-2 mx-2 shadow-sm;
 
-    &:hover:has(svg) {
+    &:hover:has(svg):not(:has(span)) {
       box-shadow: none;
       background: transparent;
       animation: scale 0.7s ease-in-out infinite alternate;
@@ -43,7 +43,7 @@
   }
 
   .blob-container {
-    @apply overflow-hidden h-full w-full absolute top-0;
+    @apply overflow-hidden h-full w-full absolute top-0 z-[-1];
   }
 
   .blob {
