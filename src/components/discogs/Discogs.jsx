@@ -10,38 +10,37 @@ const Discogs = {
       Authorization: `OAuth oauth_token="${accessToken}", oauth_token_secret="&${accessTokenSecret}"`,
     };
   },
-  Login: async function () {
+
+  Login: async () => {
     try {
       const response = await fetch("/api/discogs/oauth/request_token");
+      if (!response.ok) {
+        throw new Error("Error requesting the token.");
+      }
 
       const parsed = await response.text();
-      console.log(parsed);
+      console.log("login", parsed);
 
       const data = new URLSearchParams(parsed);
 
-      if (!data.get("oauth_token")) return new Error("No token received.");
+      if (!data.get("oauth_token")) {
+        throw new Error("No token received.");
+      }
 
-      localStorage.setItem("OAuthRequestToken", data.get("oauth_token"));
-      localStorage.setItem(
-        "OAuthRequestTokenSecret",
-        data.get("oauth_token_secret")
-      );
-
-      window.location.href = `https://discogs.com/oauth/authorize?oauth_token=${data.get(
-        "oauth_token"
-      )}`;
+      return data;
     } catch (error) {
-      console.error("Error getting request token:", error);
+      // Handle any errors that occur during the process
+      console.error("Error during login:", error.message);
+      throw error; // Rethrow the error to be handled by the caller
     }
   },
 
-  GetToken: async function () {
-    if (localStorage.getItem("OAuthAccessToken")) return;
-
+  GetToken: async () => {
     try {
       const requestToken = localStorage.OAuthRequestToken;
       const requestTokenSecret = localStorage.OAuthRequestTokenSecret;
-      const verifier = localStorage.oauth_verifier;
+      const params = new URLSearchParams(window.location.search);
+      const verifier = params?.get("oauth_verifier");
 
       console.log("handleGetAccessToken", verifier, requestToken);
       const response = await fetch("/api/discogs/oauth/access_token", {
@@ -51,19 +50,24 @@ const Discogs = {
         },
       });
 
-      const parsed = await response.text();
-      console.log(parsed);
-      const data = new URLSearchParams(parsed);
-      if (!data.get("oauth_token")) return new Error("No token received.");
+      if (!response.ok) {
+        throw new Error("Error requesting the token.");
+      }
 
-      console.log(data.get("oauth_token"));
-      localStorage.setItem("OAuthAccessToken", data.get("oauth_token"));
-      localStorage.setItem(
-        "OAuthAccessTokenSecret",
-        data.get("oauth_token_secret")
-      );
+      const parsed = await response.text();
+      console.log("token", parsed);
+
+      const data = new URLSearchParams(parsed);
+
+      if (!data.get("oauth_token")) {
+        throw new Error("No token received.");
+      }
+
+      return data;
     } catch (error) {
-      console.error("Error getting access token:", error);
+      // Handle any errors that occur during the process
+      console.error("Error during login:", error.message);
+      throw error; // Rethrow the error to be handled by the caller
     }
   },
 };

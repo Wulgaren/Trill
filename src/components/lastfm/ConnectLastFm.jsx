@@ -1,31 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
 import Modal from "../modal/Modal";
 import LastFm from "./LastFm";
 
 function ConnectLastFm({}) {
   const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState(false);
+  const [username, setUsername] = useState(localStorage.lastFmUsername);
 
-  const username = localStorage.lastFmUsername ?? "";
+  useEffect(() => {
+    if (isOpenLastFmDialog) return;
 
-  const inputText = username ? (
-    <>
-      <FaCog /> Last.fm
-    </>
-  ) : (
-    "Connect to Last.fm"
-  );
-
-  if (username) LastFm.GetUserArtist();
+    if (username) LastFm.GetUserArtist();
+    else localStorage.removeItem("lastFmTopArtists");
+  }, [isOpenLastFmDialog]);
 
   const SetLastFmUser = (e) => {
     e.preventDefault();
-    let username = e?.target?.querySelector("input")?.value ?? "";
-    if (!username) return;
-
-    localStorage.setItem("lastFmUsername", username);
     setIsOpenLastFmDialog(false);
-    LastFm.GetUserArtist();
   };
 
   return (
@@ -37,7 +28,13 @@ function ConnectLastFm({}) {
         className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-700 text-white"
         onClick={() => setIsOpenLastFmDialog(true)}
       >
-        {inputText}
+        {username && !isOpenLastFmDialog ? (
+          <>
+            <FaCog /> Last.fm
+          </>
+        ) : (
+          "Connect to Last.fm"
+        )}
       </button>
       <Modal
         onClose={() => setIsOpenLastFmDialog(false)}
@@ -54,8 +51,9 @@ function ConnectLastFm({}) {
             type="text"
             name="LastFmUsername"
             placeholder="Last.FM Username"
-            defaultValue={username}
+            value={username}
             tabIndex={10}
+            onChange={(e) => setUsername(e.target.value)}
             onBlur={SetLastFmUser}
           />
         </form>

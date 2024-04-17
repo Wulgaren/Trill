@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  #root {
+    @apply h-full;
+  }
+
   body {
     @apply w-screen h-screen transition-colors bg-white text-black dark:bg-background dark:text-white font-sans;
   }
@@ -36,6 +40,10 @@
   :focus,
   :focus-visible {
     @apply outline-none !border-focus border-2 border-solid rounded-lg shadow-sm shadow-focus;
+  }
+
+  .blob-container {
+    @apply overflow-hidden h-full w-full absolute top-0;
   }
 
   .blob {

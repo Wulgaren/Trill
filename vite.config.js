@@ -66,6 +66,8 @@ export default defineConfig({
             // console.log("proxy error", err);
           });
           proxy.on("proxyReq", (proxyReq, req, _res) => {
+            // Rewrite needs to return empty string so the full url can be used
+
             proxyReq.setHeader(
               "Content-Type",
               "application/x-www-form-urlencoded"
@@ -82,11 +84,11 @@ export default defineConfig({
               }`
             );
 
-            console.log(
-              "Sending Request to the Target auth:",
-              req.method,
-              req.url
-            );
+            // console.log(
+            //   "Sending Request to the Target auth:",
+            //   req.method,
+            //   req.url
+            // );
           });
           proxy.on("proxyRes", (proxyRes, req, _res) => {
             // console.log(
@@ -114,6 +116,7 @@ export default defineConfig({
             );
             proxyReq.setHeader("User-Agent", "Trill/1.0.0");
 
+            // Added rest of auth headers from .env
             let auth = proxyReq.getHeader("Authorization")?.toString();
             auth += `, oauth_consumer_key="${
               process.env.DISCOGS_CONSUMER_KEY
