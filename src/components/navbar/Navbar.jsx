@@ -6,7 +6,7 @@ import "./Navbar.css";
 
 function Navbar({ onSearchIconClick }) {
   return (
-    <nav>
+    <nav className="sticky top-0 z-10 w-full bg-primary px-5 py-5 text-white">
       <ul className="flex flex-row items-center">
         <li className="title">
           <p>TRILL</p>

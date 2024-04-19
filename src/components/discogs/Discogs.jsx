@@ -37,9 +37,8 @@ const Discogs = {
 
       return parsed;
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error("Error during getting user's identity:", error.message);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   },
 
@@ -61,9 +60,8 @@ const Discogs = {
 
       return data;
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error("Error during login:", error.message);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   },
 
@@ -97,9 +95,8 @@ const Discogs = {
 
       return data;
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error("Error during getting token:", error.message);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   },
 
@@ -112,7 +109,7 @@ const Discogs = {
         {
           method: "GET",
           headers: Discogs.GetAuthHeader(),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -124,9 +121,37 @@ const Discogs = {
 
       return parsed;
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error("Error during getting user's collection:", error.message);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
+    }
+  },
+
+  Search: async ({ pageParam = 1, queryKey }) => {
+    try {
+      const [_, query] = queryKey;
+      if (!query) throw new Error("No search query");
+
+      console.log(pageParam);
+
+      const response = await fetch(
+        `/api/discogs/database/search?q=${query}&per_page=50&page=${pageParam}`,
+        {
+          method: "GET",
+          headers: Discogs.GetAuthHeader(),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error getting search results.");
+      }
+
+      const parsed = await response.json();
+      console.log("search", parsed);
+
+      return parsed;
+    } catch (error) {
+      console.error("Error during getting search results:", error.message);
+      throw error;
     }
   },
 };

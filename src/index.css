@@ -3,24 +3,8 @@
 @tailwind utilities;
 
 @layer components {
-  #root {
-    @apply h-full;
-  }
-
-  body {
-    @apply w-screen h-screen transition-colors bg-white text-black dark:bg-background dark:text-white font-sans;
-  }
-
-  main {
-    @apply p-5;
-  }
-
-  nav {
-    @apply sticky top-0 z-10 text-white bg-primary px-5 py-5 w-full;
-  }
-
   button {
-    @apply scale-100 transition-all w-auto border-2 text-white bg-primary hover:bg-secondary border-transparent rounded-lg p-2 mx-2 shadow-sm;
+    @apply mx-2 w-auto scale-100 rounded-lg border-2 border-transparent bg-primary p-2 text-white shadow-sm transition-all hover:bg-secondary;
 
     &:hover:has(svg):not(:has(span)) {
       box-shadow: none;
@@ -30,7 +14,7 @@
   }
 
   input {
-    @apply p-2 shadow-sm rounded-lg bg-white text-black dark:bg-gray-700 dark:text-white;
+    @apply rounded-lg bg-white p-2 text-black shadow-sm dark:bg-gray-700 dark:text-white;
   }
 
   [tabindex] {
@@ -39,11 +23,7 @@
 
   :focus,
   :focus-visible {
-    @apply outline-none !border-focus border-2 border-solid rounded-lg shadow-sm shadow-focus;
-  }
-
-  .blob-container {
-    @apply overflow-hidden h-full w-full absolute top-0 z-[-1];
+    @apply rounded-lg border-2 border-solid !border-focus shadow-sm shadow-focus outline-none;
   }
 
   .blob {

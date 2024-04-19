@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Discogs from "./components/discogs/Discogs";
 import Navbar from "./components/navbar/Navbar";
 import Search from "./components/search/Search";
 
@@ -12,9 +13,10 @@ function App() {
   return (
     <>
       <Navbar onSearchIconClick={handleSearchIconClick} />
-      <main>{isSearchActive && <Search />}</main>
+      <main className="p-5">{isSearchActive && <Search />}</main>
 
-      <div className="blob-container">
+      <button onClick={() => Discogs.GetUserCollection()}>Test</button>
+      <div className="absolute top-0 z-[-1] h-full w-full overflow-hidden">
         <div className="blob"></div>
         <div className="blob"></div>
       </div>

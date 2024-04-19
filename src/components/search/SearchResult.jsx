@@ -1,10 +1,10 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import ArtistImage from "../artist-image/ArtistImage";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
+import SearchImage from "../search-image/SearchImage";
 
 function SearchResult({
-  artists,
+  searchResults,
   fetchNextPage,
   isFetchingNextPage,
   hasNextPage,
@@ -18,7 +18,7 @@ function SearchResult({
   return (
     <InfiniteScroll
       element="ul"
-      className="relative grid auto-rows-[250px] grid-cols-[repeat(auto-fill,minmax(200px,1fr))] p-5"
+      className="relative grid auto-rows-[250px] grid-cols-[repeat(auto-fill,minmax(200px,1fr))] overflow-x-hidden p-5"
       pageStart={2}
       loadMore={handleScrollToBottom}
       hasMore={hasNextPage}
@@ -28,17 +28,21 @@ function SearchResult({
         </li>
       }
     >
-      {artists?.map((artist, index) => {
+      {searchResults?.map((result, index) => {
         return (
           <li
             className="relative m-2 flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-transparent bg-white dark:bg-black"
-            key={artist.mbid + index}
+            key={result.id}
             tabIndex={100 + index}
           >
-            <a className="h-full w-full" href={artist.url} target="_blank">
-              <ArtistImage artist={artist} />
+            <a
+              className="h-full w-full"
+              href={result.resource_url}
+              target="_blank"
+            >
+              <SearchImage result={result} />
               <p className="absolute bottom-0 w-full bg-white py-2 text-center text-black dark:bg-black dark:text-white">
-                {artist.name}
+                {result.title}
               </p>
             </a>
           </li>

@@ -1,13 +1,13 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import LastFm from "../lastfm/LastFm";
+import Discogs from "../discogs/Discogs";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchResult from "./SearchResult";
 
 function Search() {
-  const [artist, setArtist] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [input, setInput] = useState("");
-  const searchQueryKey = "lastFmSearchedArtists";
+  const searchQueryKey = "searchQuery";
 
   const {
     data,
@@ -19,17 +19,20 @@ function Search() {
   } = useInfiniteQuery({
     queryKey: [searchQueryKey],
     queryFn: ({ pageParam = 1 }) =>
-      LastFm.SearchForArtist({ pageParam, queryKey: [searchQueryKey, artist] }),
+      Discogs.Search({
+        pageParam,
+        queryKey: [searchQueryKey, searchQuery],
+      }),
     getNextPageParam: (lastPage, allPages) => {
-      const page = allPages?.length ?? 0;
+      const page = lastPage?.pagination?.page ?? 0;
       return page + 1;
     },
-    enabled: !!artist,
+    enabled: !!searchQuery,
   });
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setArtist(input);
+    setSearchQuery(input);
   };
 
   return (
@@ -38,7 +41,7 @@ function Search() {
         <input
           className="w-full"
           type="search"
-          placeholder="Search for an artist..."
+          placeholder="Search for an artist or release..."
           tabIndex={4}
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -51,7 +54,7 @@ function Search() {
       {error && <div>Error fetching data.</div>}
       {data && (
         <SearchResult
-          artists={data.pages.flatMap((page) => page)}
+          searchResults={data.pages.flatMap((page) => page.results)}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}

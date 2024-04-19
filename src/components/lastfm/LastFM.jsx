@@ -21,9 +21,8 @@ const LastFm = {
       url = url.replace("/File:", "/Special:FilePath/");
       return url;
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error("Error during finding artists image:", error.message);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   },
 
@@ -43,12 +42,11 @@ const LastFm = {
       const data = await response.json();
       return data?.results?.artistmatches?.artist ?? [];
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error(
         "Error during searching for artist on lastfm:",
         error.message,
       );
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   },
 
@@ -71,9 +69,8 @@ const LastFm = {
 
       return artists;
     } catch (error) {
-      // Handle any errors that occur during the process
       console.error("Error during getting user's top artists:", error.message);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   },
 };
