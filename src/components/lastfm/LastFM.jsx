@@ -6,7 +6,7 @@ const LastFm = {
       if (!mbid) return;
 
       const response = await fetch(
-        `/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`
+        `/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`,
       );
 
       if (!response.ok) {
@@ -33,7 +33,7 @@ const LastFm = {
       if (!artist) return [];
 
       const response = await fetch(
-        `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${pageParam}&limit=50`
+        `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${pageParam}&limit=50`,
       );
 
       if (!response.ok) {
@@ -46,7 +46,7 @@ const LastFm = {
       // Handle any errors that occur during the process
       console.error(
         "Error during searching for artist on lastfm:",
-        error.message
+        error.message,
       );
       throw error; // Rethrow the error to be handled by the caller
     }
@@ -61,7 +61,7 @@ const LastFm = {
       if (!username) return;
 
       const response = await fetch(
-        `/api/lastfm/?method=user.getTopArtists&user=${username}&period=overall&format=json&limit=100`
+        `/api/lastfm/?method=user.getTopArtists&user=${username}&period=overall&format=json&limit=100`,
       );
       const data = await response.json();
       const artists =

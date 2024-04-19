@@ -18,12 +18,12 @@ function SearchResult({
   return (
     <InfiniteScroll
       element="ul"
-      className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] auto-rows-[250px] p-5 relative"
+      className="relative grid auto-rows-[250px] grid-cols-[repeat(auto-fill,minmax(200px,1fr))] p-5"
       pageStart={2}
       loadMore={handleScrollToBottom}
       hasMore={hasNextPage}
       loader={
-        <li className="flex flex-col justify-center items-center p-2" key={0}>
+        <li className="flex flex-col items-center justify-center p-2" key={0}>
           <LoadingAnimation />
         </li>
       }
@@ -31,13 +31,13 @@ function SearchResult({
       {artists?.map((artist, index) => {
         return (
           <li
-            className="flex flex-col justify-center items-center m-2 rounded-md border-2 bg-white dark:bg-black border-transparent relative overflow-hidden"
+            className="relative m-2 flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-transparent bg-white dark:bg-black"
             key={artist.mbid + index}
             tabIndex={100 + index}
           >
-            <a className="w-full h-full" href={artist.url} target="_blank">
+            <a className="h-full w-full" href={artist.url} target="_blank">
               <ArtistImage artist={artist} />
-              <p className="text-center absolute bg-white text-black dark:bg-black dark:text-white w-full bottom-0 py-2">
+              <p className="absolute bottom-0 w-full bg-white py-2 text-center text-black dark:bg-black dark:text-white">
                 {artist.name}
               </p>
             </a>

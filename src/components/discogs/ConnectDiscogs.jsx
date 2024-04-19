@@ -46,7 +46,7 @@ const handleTokenRemoval = (forceDelete, setRequestToken, setAccessToken) => {
 function ConnectDiscogs() {
   const [accessToken, setAccessToken] = useState(localStorage.OAuthAccessToken);
   const [requestToken, setRequestToken] = useState(
-    localStorage.OAuthRequestToken
+    localStorage.OAuthRequestToken,
   );
   const [buttonClicked, setButtonClicked] = useState(false);
 
@@ -78,7 +78,7 @@ function ConnectDiscogs() {
     handleTokenRemoval(
       isRequestTokenError || isAccessTokenError,
       setRequestToken,
-      setAccessToken
+      setAccessToken,
     );
     handleRequestToken(requestTokenRes, setRequestToken);
     handleAccessToken(accessTokenRes, setAccessToken);
@@ -101,7 +101,7 @@ function ConnectDiscogs() {
     <button
       type="button"
       tabIndex={3}
-      className="flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-900 text-white"
+      className="flex items-center justify-center gap-2 bg-gray-700 text-white hover:bg-gray-900"
       onClick={handleClick}
     >
       {(isRequestTokenFetching || isAccessTokenFetching) && !accessToken ? (

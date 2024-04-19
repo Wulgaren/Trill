@@ -41,7 +41,7 @@ function ConnectLastFm() {
         type="button"
         title="Last.fm Options"
         tabIndex={2}
-        className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-700 text-white"
+        className="flex items-center justify-center gap-2 bg-red-500 text-white hover:bg-red-700"
         onClick={() => setIsOpenLastFmDialog(true)}
       >
         {isTopArtistsFetching ? (
@@ -64,7 +64,7 @@ function ConnectLastFm() {
         open={isOpenLastFmDialog}
       >
         <form
-          className="flex items-center justify-center flex-col gap-5"
+          className="flex flex-col items-center justify-center gap-5"
           onSubmit={SetLastFmUser}
         >
           <label htmlFor="LastFmUsername">

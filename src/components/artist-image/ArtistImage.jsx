@@ -21,7 +21,7 @@ function ArtistImage({ artist }) {
 
   return (
     <img
-      className="w-full h-full object-cover"
+      className="h-full w-full object-cover"
       src={imgUrl}
       alt={artist.name + " Image"}
     />
