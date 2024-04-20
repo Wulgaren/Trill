@@ -37,15 +37,17 @@
     z-index: -1;
     background: linear-gradient(
       47deg,
-      var(--color-focus) 21%,
-      var(--color-secondary) 67%,
+      var(--color-focus) 11%,
+      var(--color-secondary) 47%,
       var(--color-primary) 81%
     );
-  }
 
-  .blob:nth-of-type(2) {
-    right: 0px;
-    bottom: 0px;
+    &:nth-of-type(2) {
+      right: 0px;
+      bottom: 0px;
+      animation-duration: 7s;
+      animation-name: blob, scale;
+    }
   }
 
   @keyframes blob {
