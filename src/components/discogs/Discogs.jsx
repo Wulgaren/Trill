@@ -140,8 +140,6 @@ const Discogs = {
       const [_, query] = queryKey;
       if (!query) throw new Error("No search query");
 
-      console.log(pageParam);
-
       const response = await fetch(
         `/api/discogs/database/search?q=${query}&per_page=50&page=${pageParam}`,
         {
