@@ -1,5 +1,3 @@
-import defaultArtistImage from "../../assets/img/default_artist.webp";
-
 const LastFm = {
   FindArtistImage: async function (mbid) {
     try {
@@ -15,8 +13,7 @@ const LastFm = {
 
       const data = await response.json();
       let url =
-        data?.relations?.find((x) => x.type == "image")?.url?.resource ??
-        defaultArtistImage;
+        data?.relations?.find((x) => x.type == "image")?.url?.resource ?? "";
 
       url = url.replace("/File:", "/Special:FilePath/");
       return url;

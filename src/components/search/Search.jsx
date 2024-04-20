@@ -1,7 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import Discogs from "../discogs/Discogs";
+import ErrorResult from "../error-result/ErrorResult";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
+import NoSearchResult from "./NoSearchResult";
 import SearchResult from "./SearchResult";
 
 function Search() {
@@ -15,16 +17,19 @@ function Search() {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
+    isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: [searchQueryKey],
+    queryKey: [searchQueryKey, searchQuery],
     queryFn: ({ pageParam = 1 }) =>
       Discogs.Search({
         pageParam,
         queryKey: [searchQueryKey, searchQuery],
       }),
-    getNextPageParam: (lastPage, allPages) => {
+    getNextPageParam: (lastPage) => {
       const page = lastPage?.pagination?.page ?? 0;
+      const allPages = lastPage?.pagination?.pages ?? 0;
+      if (page == allPages) return null;
       return page + 1;
     },
     enabled: !!searchQuery,
@@ -51,8 +56,11 @@ function Search() {
         </button>
       </form>
       {isFetching && !data && <LoadingAnimation />}
-      {error && <div>Error fetching data.</div>}
-      {data && (
+      {error && <ErrorResult />}
+      {!isLoading && searchQuery && !data?.pages[0]?.results?.length && (
+        <NoSearchResult />
+      )}
+      {!isLoading && data?.pages[0]?.results?.length > 0 && (
         <SearchResult
           searchResults={data.pages.flatMap((page) => page.results)}
           hasNextPage={hasNextPage}

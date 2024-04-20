@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import defaultArtistImage from "../../assets/img/default_artist.webp";
+import { FaCompactDisc } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
 function SearchImage({ result }) {
   const [loading, setLoading] = useState(true);
 
-  let imgUrl =
-    result?.thumb?.length > 0 ? result.cover_image : defaultArtistImage;
+  if (!result?.thumb?.length)
+    return (
+      <FaCompactDisc
+        size={50}
+        className="h-full w-full object-cover p-5 pb-12 opacity-70"
+      />
+    );
 
   return (
     <>
@@ -14,7 +19,7 @@ function SearchImage({ result }) {
       <img
         onLoad={() => setLoading(false)}
         className="h-full w-full object-cover"
-        src={imgUrl}
+        src={result.cover_image}
         alt={result.name + " Image"}
       />
     </>

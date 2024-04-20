@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
@@ -9,6 +9,21 @@ function SearchResult({
   isFetchingNextPage,
   hasNextPage,
 }) {
+  const [processedResults, setProcessedResults] = useState([]);
+
+  useEffect(() => {
+    // Custom order of types
+    const customOrder = { artist: 0, label: 1, master: 2 };
+
+    // Filter and sort search results
+    const filtered = searchResults
+      .filter((x) => x.type !== "release")
+      .sort((a, b) => customOrder[a.type] - customOrder[b.type]);
+
+    // Update state with processed results
+    setProcessedResults(filtered);
+  }, [searchResults]);
+
   const handleScrollToBottom = () => {
     if (!isFetchingNextPage && hasNextPage) {
       fetchNextPage();
@@ -28,7 +43,7 @@ function SearchResult({
         </li>
       }
     >
-      {searchResults?.map((result, index) => {
+      {processedResults?.map((result, index) => {
         return (
           <li
             className="relative m-2 flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-transparent bg-white dark:bg-black"
