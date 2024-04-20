@@ -1,8 +1,5 @@
-# React + Vite
+Trill - an app for finding music
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Trill uses Discogs and Last.fm APIs. Discogs API is used for its database, and also gathering user collections to find recommendations for user. Last.fm API is used to get user's top 100 artists to use for recommendations.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Trill uses React, React-Query, Vite and Tailwind CSS.
