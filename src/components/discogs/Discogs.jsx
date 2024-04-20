@@ -100,12 +100,21 @@ const Discogs = {
     }
   },
 
-  GetUserCollection: async (username) => {
+  GetUserCollection: async ({ pageParam = 1, queryKey }) => {
     try {
-      if (!username) username = await Discogs.GetLoggedUserName();
+      let [_, username] = queryKey;
+
+      if (!username) {
+        const savedCollection = sessionStorage.userCollection;
+        if (savedCollection) return JSON.parse(savedCollection);
+
+        username = await Discogs.GetLoggedUserName();
+      }
+
+      console.log(username);
 
       const response = await fetch(
-        `/api/discogs/users/${username}/collection/folders/0/releases`,
+        `/api/discogs/users/${username}/collection/folders/0/releases?per_page=50&page=${pageParam}`,
         {
           method: "GET",
           headers: Discogs.GetAuthHeader(),
@@ -113,7 +122,7 @@ const Discogs = {
       );
 
       if (!response.ok) {
-        throw new Error("Error requesting the token.");
+        throw new Error("Error requesting the user's collection.");
       }
 
       const parsed = await response.json();

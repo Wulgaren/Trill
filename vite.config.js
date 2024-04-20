@@ -93,7 +93,7 @@ export default defineConfig({
 
             proxyReq.setHeader(
               "Content-Type",
-              "application/x-www-form-urlencoded"
+              "application/x-www-form-urlencoded",
             );
             proxyReq.setHeader("User-Agent", "Trill/1.0.0");
             proxyReq.setHeader(
@@ -104,7 +104,7 @@ export default defineConfig({
                 process.env.DISCOGS_CONSUMER_SECRET
               }&", oauth_signature_method="PLAINTEXT", oauth_timestamp="${generateOAuthTimestamp()}", oauth_callback=${
                 process.env.SITE_URL + "/discogs/callback"
-              }`
+              }`,
             );
 
             // console.log(
@@ -135,7 +135,7 @@ export default defineConfig({
           proxy.on("proxyReq", (proxyReq, req, _res) => {
             proxyReq.setHeader(
               "Content-Type",
-              "application/x-www-form-urlencoded"
+              "application/x-www-form-urlencoded",
             );
             proxyReq.setHeader("User-Agent", "Trill/1.0.0");
 
@@ -147,7 +147,7 @@ export default defineConfig({
 
             auth = auth.replace(
               'oauth_signature="&',
-              `oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&`
+              `oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&`,
             );
 
             proxyReq.setHeader("Authorization", auth);
@@ -173,7 +173,7 @@ export default defineConfig({
           proxy.on("proxyReq", (proxyReq, req, _res) => {
             proxyReq.setHeader(
               "Content-Type",
-              "application/x-www-form-urlencoded"
+              "application/x-www-form-urlencoded",
             );
             proxyReq.setHeader("User-Agent", "Trill/1.0.0");
 
@@ -185,14 +185,14 @@ export default defineConfig({
 
             auth = auth.replace(
               'oauth_signature="&',
-              `oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&`
+              `oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&`,
             );
 
             proxyReq.setHeader("Authorization", auth);
 
             // console.log("Sending Request to the Target:", req.method, req.url);
 
-            getCurl(proxyReq);
+            // getCurl(proxyReq);
           });
           proxy.on("proxyRes", (proxyRes, req, _res) => {
             // console.log(

@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Discogs from "./Discogs";
+import UserCollection from "./UserCollection";
 
 const handleRequestToken = (requestTokenRes, setRequestToken) => {
   if (!requestTokenRes) return;
 
-  const requestToken = requestTokenRes?.get("oauth_token") || "";
-  const requestTokenSecret = requestTokenRes?.get("oauth_token_secret") || "";
+  const requestToken = requestTokenRes?.get("oauth_token") ?? "";
+  const requestTokenSecret = requestTokenRes?.get("oauth_token_secret") ?? "";
   localStorage.setItem("OAuthRequestToken", requestToken);
   localStorage.setItem("OAuthRequestTokenSecret", requestTokenSecret);
   setRequestToken(requestToken);
@@ -20,15 +21,12 @@ const handleRequestToken = (requestTokenRes, setRequestToken) => {
 const handleAccessToken = (accessTokenRes, setAccessToken) => {
   if (!accessTokenRes) return;
 
-  const accessToken = accessTokenRes?.get("oauth_token") || "";
-  const accessTokenSecret = accessTokenRes?.get("oauth_token_secret") || "";
+  const accessToken = accessTokenRes?.get("oauth_token") ?? "";
+  const accessTokenSecret = accessTokenRes?.get("oauth_token_secret") ?? "";
   localStorage.setItem("OAuthAccessToken", accessToken);
   localStorage.setItem("OAuthAccessTokenSecret", accessTokenSecret);
   history.pushState({}, "", window.location.origin);
   setAccessToken(accessToken);
-
-  // Save user's identity after successful authentication
-  Discogs.GetUserIdentity();
 };
 
 const handleTokenRemoval = (forceDelete, setRequestToken, setAccessToken) => {
@@ -112,6 +110,7 @@ function ConnectDiscogs() {
             <>
               <RiLogoutBoxRFill />
               <span>Discogs</span>
+              <UserCollection accessToken={accessToken} />
             </>
           ) : (
             "Connect to Discogs"
