@@ -155,9 +155,25 @@ const Discogs = {
       }
 
       const parsed = await response.json();
-      console.log("search", parsed);
 
-      return parsed;
+      const customOrder = { artist: 0, label: 1, master: 2 };
+
+      // Filter and sort search results
+      const filtered = {
+        pagination: parsed.pagination,
+        results: parsed.results
+          .filter((x) => x.type !== "release")
+          .sort((a, b) => customOrder[a.type] - customOrder[b.type])
+          .map((result) => ({
+            ...result,
+            cover_image:
+              "/api/discogs/image" +
+              result?.cover_image?.split("discogs.com")[1],
+          })),
+      };
+      console.log("search", filtered);
+
+      return filtered;
     } catch (error) {
       console.error("Error during getting search results:", error.message);
       throw error;
