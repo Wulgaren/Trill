@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
-import LastFm from "../lastfm/LastFm.jsx";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
+import LastFm from "./LastFM";
 
 function ConnectLastFm() {
   const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState(false);
