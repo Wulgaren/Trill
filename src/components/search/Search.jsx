@@ -62,7 +62,12 @@ function Search() {
       )}
       {!isLoading && data?.pages[0]?.results?.length > 0 && (
         <SearchResult
-          searchResults={data.pages.flatMap((page) => page.results)}
+          searchResults={data.pages
+            .flatMap((page) => page.results)
+            .filter(
+              (result, index, self) =>
+                self.findIndex((r) => r.id === result.id) === index,
+            )}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
           fetchNextPage={fetchNextPage}

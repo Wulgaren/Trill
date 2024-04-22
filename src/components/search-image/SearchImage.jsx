@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { memo } from "react";
 import { FaCompactDisc } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
@@ -40,4 +40,4 @@ function SearchImage({ result }) {
   );
 }
 
-export default SearchImage;
+export default memo(SearchImage);
