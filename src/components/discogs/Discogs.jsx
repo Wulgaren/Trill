@@ -22,7 +22,7 @@ const Discogs = {
       const username = localStorage.discogsUser;
       if (username) return username;
 
-      const response = await fetch("/api/discogs/oauth/identity", {
+      const response = await fetch("/api/discogs-api/oauth/identity", {
         method: "GET",
         headers: Discogs.GetAuthHeader(),
       });
@@ -30,10 +30,10 @@ const Discogs = {
         throw new Error("Error requesting user's identity.");
       }
 
-      const parsed = await response.text();
+      const parsed = await response.json();
       console.log(parsed);
 
-      localStorage.setItem("discogsUser", parsed);
+      localStorage.setItem("discogsUser", JSON.stringify(parsed));
 
       return parsed;
     } catch (error) {
@@ -44,12 +44,12 @@ const Discogs = {
 
   Login: async () => {
     try {
-      const response = await fetch("/api/discogs/oauth/request_token");
+      const response = await fetch("/api/discogs-oauth-request-token");
       if (!response.ok) {
         throw new Error("Error requesting the token.");
       }
 
-      const parsed = await response.text();
+      const parsed = await response.json();
       console.log("login", parsed);
 
       const data = new URLSearchParams(parsed);
@@ -73,7 +73,7 @@ const Discogs = {
       const verifier = params?.get("oauth_verifier");
 
       console.log("handleGetAccessToken", verifier, requestToken);
-      const response = await fetch("/api/discogs/oauth/access_token", {
+      const response = await fetch("/api/discogs-oauth-access-token", {
         method: "POST",
         headers: {
           Authorization: `OAuth oauth_token="${requestToken}", oauth_signature="&${requestTokenSecret}", oauth_verifier="${verifier}"`,
@@ -84,7 +84,7 @@ const Discogs = {
         throw new Error("Error requesting the token.");
       }
 
-      const parsed = await response.text();
+      const parsed = await response.json();
       console.log("token", parsed);
 
       const data = new URLSearchParams(parsed);
@@ -114,7 +114,7 @@ const Discogs = {
       console.log(username);
 
       const response = await fetch(
-        `/api/discogs/users/${username}/collection/folders/0/releases?per_page=50&page=${pageParam}`,
+        `/api/discogs-api/users/${username}/collection/folders/0/releases?per_page=50&page=${pageParam}`,
         {
           method: "GET",
           headers: Discogs.GetAuthHeader(),
@@ -141,7 +141,7 @@ const Discogs = {
       if (!query) throw new Error("No search query");
 
       const response = await fetch(
-        `/api/discogs/database/search?q=${query}&per_page=50&page=${pageParam}`,
+        `/api/discogs-api/database/search?q=${query}&per_page=50&page=${pageParam}`,
         {
           method: "GET",
           headers: Discogs.GetAuthHeader(),
@@ -165,7 +165,7 @@ const Discogs = {
           .map((result) => ({
             ...result,
             cover_image:
-              "/api/discogs/image" +
+              "/api/discogs-image" +
               result?.cover_image?.split("discogs.com")[1],
           })),
       };

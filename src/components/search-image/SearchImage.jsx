@@ -16,6 +16,7 @@ function SearchImage({ result }) {
       const url = URL.createObjectURL(blob);
       return url;
     },
+    retryDelay: 3000,
     enabled: !!result?.thumb?.length,
   });
 

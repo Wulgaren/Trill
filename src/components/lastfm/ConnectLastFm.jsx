@@ -7,7 +7,7 @@ import LastFm from "./LastFM";
 
 function ConnectLastFm() {
   const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState(false);
-  const [username, setUsername] = useState(localStorage.lastFmUsername);
+  const [username, setUsername] = useState(localStorage.lastFmUsername ?? "");
 
   const {
     data: getTopArtistsReq,
