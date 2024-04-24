@@ -4,7 +4,7 @@ const LastFm = {
       if (!mbid) return;
 
       const response = await fetch(
-        `/api/musicbrainz/artist/${mbid}?inc=url-rels&fmt=json`,
+        `/api/musicbrainz-api/?mbid=${mbid}&inc=url-rels&fmt=json`,
       );
 
       if (!response.ok) {
@@ -29,7 +29,7 @@ const LastFm = {
       if (!artist) return [];
 
       const response = await fetch(
-        `/api/lastfm/?method=artist.search&artist=${artist}&format=json&page=${pageParam}&limit=50`,
+        `/api/lastfm-api/?method=artist.search&artist=${artist}&format=json&page=${pageParam}&limit=50`,
       );
 
       if (!response.ok) {
@@ -37,6 +37,7 @@ const LastFm = {
       }
 
       const data = await response.json();
+
       return data?.results?.artistmatches?.artist ?? [];
     } catch (error) {
       console.error(
@@ -56,9 +57,16 @@ const LastFm = {
       if (!username) return;
 
       const response = await fetch(
-        `/api/lastfm/?method=user.getTopArtists&user=${username}&period=overall&format=json&limit=100`,
+        `/api/lastfm-api/?method=user.getTopArtists&user=${username}&period=overall&format=json&limit=100`,
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
       const data = await response.json();
+
+      console.log(data);
       const artists =
         data?.topartists?.artist?.map(({ name, mbid }) => ({ name, mbid })) ??
         [];

@@ -32,6 +32,7 @@ function ConnectLastFm() {
 
   const SetLastFmUser = (e) => {
     e.preventDefault();
+    localStorage.setItem("lastFmUsername", username);
     setIsOpenLastFmDialog(false);
   };
 

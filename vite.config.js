@@ -31,7 +31,6 @@ const getCurl = (proxyReq) => {
 var plugins = [react()];
 plugins.unshift(MillionLint.vite());
 export default defineConfig({
-  base: "/Trill/",
   server: {
     proxy: {
       "/api/lastfm": {
@@ -67,6 +66,7 @@ export default defineConfig({
           });
           proxy.on("proxyReq", (proxyReq, req, _res) => {
             // console.log("Sending Request to the Target:", req.method, req.url);
+            getCurl(proxyReq);
           });
           proxy.on("proxyRes", (proxyRes, req, _res) => {
             // console.log(
