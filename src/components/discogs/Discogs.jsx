@@ -2,7 +2,7 @@ const Discogs = {
   GetLoggedUserName: async () => {
     const user = await Discogs.GetUserIdentity();
 
-    return JSON.parse(user)?.username;
+    return user?.username;
   },
 
   GetAuthHeader: () => {
@@ -20,7 +20,7 @@ const Discogs = {
   GetUserIdentity: async () => {
     try {
       const username = localStorage.discogsUser;
-      if (username) return username;
+      if (username) return JSON.parse(username);
 
       const response = await fetch("/api/discogs-api/oauth/identity", {
         method: "GET",

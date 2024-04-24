@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "User-Agent": "Trill/1.0.0",
-        Authorization: `OAuth oauth_consumer_key="${process.env.DISCOGS_CONSUMER_KEY}", oauth_nonce="${generateRandomString()}", oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&", oauth_signature_method="PLAINTEXT", oauth_timestamp="${generateOAuthTimestamp()}", oauth_callback=${SITE_URL + "/discogs/callback"}`,
+        Authorization: `OAuth oauth_consumer_key="${process.env.DISCOGS_CONSUMER_KEY}", oauth_nonce="${generateRandomString()}", oauth_signature="${process.env.DISCOGS_CONSUMER_SECRET}&", oauth_signature_method="PLAINTEXT", oauth_timestamp="${generateOAuthTimestamp()}", oauth_callback=${SITE_URL}`,
       },
     };
 
