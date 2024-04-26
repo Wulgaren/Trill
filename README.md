@@ -4,4 +4,4 @@
 
 **Trill** uses React, React-Query, Vite, Tailwind CSS and Netlify functions.
 
-[Link to Trill](https://trill-music.netlify.app)
+[Trill is available here.](https://trill-music.netlify.app)
