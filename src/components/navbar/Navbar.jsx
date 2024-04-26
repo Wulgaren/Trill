@@ -19,8 +19,8 @@ function Navbar({ onSearchIconClick }) {
     >
       <ul className="flex flex-row items-center">
         <li className="title relative bottom-[5px] text-[1.5em] font-black uppercase tracking-[-2px] antialiased md:bottom-[17px] md:text-[1.9em]">
-          <p className="h-[36px] p-0 pl-[13px]">TRILL</p>
-          <p className="h-[36px] p-0 text-[0.8em]">MUSIC FINDER</p>
+          <p className="h-[36px] p-0 pl-[13px] uppercase">Trill</p>
+          <p className="h-[36px] p-0 text-[0.8em] uppercase">Music Finder</p>
         </li>
         <li className="ml-auto" onClick={handleSearchIconClick}>
           <button
