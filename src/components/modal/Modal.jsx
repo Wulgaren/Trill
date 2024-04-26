@@ -25,7 +25,7 @@ export default function Modal({
       e.preventDefault();
       if (!locked) onClose();
     },
-    [locked, onClose]
+    [locked, onClose],
   );
 
   // Eventlistener: trigger onclose when click outside
@@ -34,7 +34,7 @@ export default function Modal({
       const { current: el } = modalRef;
       if (target === el && !locked) onClose();
     },
-    [locked, onClose]
+    [locked, onClose],
   );
 
   // Eventlistener: trigger close click on anim end
@@ -61,8 +61,8 @@ export default function Modal({
       <button
         title="Close modal"
         type="button"
-        className="bg-transparent border-transparent text-white shadow-none absolute top-1 right-0"
-        tabIndex={9}
+        className="absolute right-0 top-1 border-transparent bg-transparent text-white shadow-none"
+        tabIndex={0}
         onClick={onClose}
       >
         <FaTimes size={20} />
