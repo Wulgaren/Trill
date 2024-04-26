@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { memo } from "react";
+import { memo } from "react";
 import { FaCompactDisc } from "react-icons/fa";
+import type { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
-function SearchImage({ result }) {
+function SearchImage({ result }: { result: DiscogsSearchResult }) {
   const { data, error, isFetching } = useQuery({
     queryKey: ["ResultImage", result.id],
     queryFn: async () => {
@@ -17,10 +18,10 @@ function SearchImage({ result }) {
       return url;
     },
     retryDelay: 3000,
-    enabled: !!result?.thumb?.length,
+    enabled: !!result?.thumb,
   });
 
-  if (!result?.thumb?.length || error)
+  if (!result?.thumb || error)
     return (
       <FaCompactDisc
         size={50}
@@ -35,7 +36,7 @@ function SearchImage({ result }) {
       <img
         className="h-full w-full object-cover"
         src={data}
-        alt={result.name + " Image"}
+        alt={result.title + " Image"}
       />
     </>
   );

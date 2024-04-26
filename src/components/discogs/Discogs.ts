@@ -1,11 +1,18 @@
-const Discogs = {
-  GetLoggedUserName: async () => {
-    const user = await Discogs.GetUserIdentity();
+import {
+  DiscogsAuthorization,
+  DiscogsSearchResponse,
+  DiscogsSearchResult,
+  DiscogsUser,
+} from "../../types/Discogs/DiscogsTypes";
 
-    return user?.username;
+const Discogs = {
+  GetLoggedUserName: async (): Promise<string> => {
+    const user: DiscogsUser = await Discogs.GetUserIdentity();
+
+    return user?.username ?? "";
   },
 
-  GetAuthHeader: () => {
+  GetAuthHeader: (): DiscogsAuthorization => {
     const accessToken = localStorage.OAuthAccessToken;
     const accessTokenSecret = localStorage.OAuthAccessTokenSecret;
 
@@ -17,32 +24,35 @@ const Discogs = {
     };
   },
 
-  GetUserIdentity: async () => {
+  GetUserIdentity: async (): Promise<DiscogsUser> => {
     try {
-      const username = localStorage.discogsUser;
-      if (username) return JSON.parse(username);
+      let discogsUser: DiscogsUser = JSON.parse(
+        localStorage.discogsUser ?? null,
+      );
+      if (discogsUser) return discogsUser;
 
       const response = await fetch("/api/discogs-api/oauth/identity", {
         method: "GET",
         headers: Discogs.GetAuthHeader(),
       });
+
       if (!response.ok) {
         throw new Error("Error requesting user's identity.");
       }
 
-      const parsed = await response.json();
-      console.log(parsed);
+      discogsUser = await response.json();
+      console.log(discogsUser);
 
-      localStorage.setItem("discogsUser", JSON.stringify(parsed));
+      localStorage.setItem("discogsUser", JSON.stringify(discogsUser));
 
-      return parsed;
-    } catch (error) {
+      return discogsUser;
+    } catch (error: any) {
       console.error("Error during getting user's identity:", error.message);
       throw error;
     }
   },
 
-  Login: async () => {
+  Login: async (): Promise<URLSearchParams> => {
     try {
       const response = await fetch("/api/discogs-oauth-request-token");
       if (!response.ok) {
@@ -59,13 +69,13 @@ const Discogs = {
       }
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during login:", error.message);
       throw error;
     }
   },
 
-  GetToken: async () => {
+  GetToken: async (): Promise<URLSearchParams> => {
     try {
       const requestToken = localStorage.OAuthRequestToken;
       const requestTokenSecret = localStorage.OAuthRequestTokenSecret;
@@ -94,19 +104,46 @@ const Discogs = {
       }
 
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during getting token:", error.message);
       throw error;
     }
   },
 
-  GetUserCollection: async ({ pageParam = 1, queryKey }) => {
+  GetUserCollection: async ({
+    pageParam = 1,
+    queryKey,
+  }: {
+    pageParam: number;
+    queryKey: string;
+  }): Promise<DiscogsSearchResponse> => {
     try {
       let [_, username] = queryKey;
+      let userCollection: DiscogsSearchResponse;
 
       if (!username) {
-        const savedCollection = sessionStorage.userCollection;
-        if (savedCollection) return JSON.parse(savedCollection);
+        const savedCollection: DiscogsSearchResult[] = JSON.parse(
+          sessionStorage.userCollection ?? null,
+        );
+        if (savedCollection) {
+          userCollection = {
+            pagination: {
+              per_page: 0,
+              pages: 0,
+              page: 0,
+              urls: {
+                last: undefined,
+                next: undefined,
+                prev: undefined,
+                first: undefined,
+              },
+              items: 0,
+            },
+            results: savedCollection,
+          };
+
+          return userCollection;
+        }
 
         username = await Discogs.GetLoggedUserName();
       }
@@ -125,17 +162,23 @@ const Discogs = {
         throw new Error("Error requesting the user's collection.");
       }
 
-      const parsed = await response.json();
-      console.log("collection", parsed);
+      userCollection = await response.json();
+      console.log("collection", userCollection);
 
-      return parsed;
-    } catch (error) {
+      return userCollection;
+    } catch (error: any) {
       console.error("Error during getting user's collection:", error.message);
       throw error;
     }
   },
 
-  Search: async ({ pageParam = 1, queryKey }) => {
+  Search: async ({
+    pageParam = 1,
+    queryKey,
+  }: {
+    pageParam: number;
+    queryKey: string;
+  }): Promise<DiscogsSearchResponse> => {
     try {
       const [_, query] = queryKey;
       if (!query) throw new Error("No search query");
@@ -152,12 +195,12 @@ const Discogs = {
         throw new Error("Error getting search results.");
       }
 
-      const parsed = await response.json();
+      const parsed: DiscogsSearchResponse = await response.json();
 
-      const customOrder = { artist: 0, label: 1, master: 2 };
+      const customOrder = { artist: 0, label: 1, master: 2, release: 3 };
 
       // Filter and sort search results
-      const filtered = {
+      const filtered: DiscogsSearchResponse = {
         pagination: parsed.pagination,
         results: parsed.results
           .filter((x) => x.type !== "release")
@@ -172,7 +215,7 @@ const Discogs = {
       console.log("search", filtered);
 
       return filtered;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during getting search results:", error.message);
       throw error;
     }

@@ -1,4 +1,5 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from "tailwindcss";
+
 export default {
   mode: "jit",
   content: [
@@ -37,4 +38,4 @@ export default {
       });
     },
   ],
-};
+} satisfies Config;

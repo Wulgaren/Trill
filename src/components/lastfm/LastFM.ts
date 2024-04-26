@@ -1,5 +1,11 @@
+import {
+  LastFMArtistSearchResponse,
+  LastFMUserGetTopArtistsResponse,
+  LastFmArtist,
+} from "../../types/LastFm/LastFmTypes";
+
 const LastFm = {
-  FindArtistImage: async function (mbid) {
+  FindArtistImage: async function (mbid: string) {
     try {
       if (!mbid) return;
 
@@ -13,17 +19,24 @@ const LastFm = {
 
       const data = await response.json();
       let url =
-        data?.relations?.find((x) => x.type == "image")?.url?.resource ?? "";
+        data?.relations?.find((x: { type: string }) => x.type == "image")?.url
+          ?.resource ?? "";
 
       url = url.replace("/File:", "/Special:FilePath/");
       return url;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during finding artists image:", error.message);
       throw error;
     }
   },
 
-  SearchForArtist: async function ({ pageParam = 1, queryKey }) {
+  SearchForArtist: async function ({
+    pageParam = 1,
+    queryKey,
+  }: {
+    pageParam: number;
+    queryKey: string;
+  }) {
     try {
       const [_, artist] = queryKey;
       if (!artist) return [];
@@ -36,10 +49,10 @@ const LastFm = {
         throw new Error("Failed to fetch data");
       }
 
-      const data = await response.json();
+      const data: LastFMArtistSearchResponse = await response.json();
 
       return data?.results?.artistmatches?.artist ?? [];
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         "Error during searching for artist on lastfm:",
         error.message,
@@ -48,12 +61,14 @@ const LastFm = {
     }
   },
 
-  GetUserArtist: async function () {
+  GetUserArtist: async function (): Promise<LastFmArtist[] | undefined> {
     try {
-      if (localStorage?.lastFmTopArtists)
-        return JSON.parse(localStorage.lastFmTopArtists);
+      let topArtists: LastFmArtist[] = JSON.parse(
+        localStorage.lastFmTopArtists ?? null,
+      );
+      if (topArtists) return topArtists;
 
-      const username = localStorage.lastFmUsername;
+      const username: string = localStorage.lastFmUsername ?? "";
       if (!username) return;
 
       const response = await fetch(
@@ -64,16 +79,17 @@ const LastFm = {
         throw new Error("Failed to fetch data");
       }
 
-      const data = await response.json();
+      const data: LastFMUserGetTopArtistsResponse = await response.json();
 
-      console.log(data);
-      const artists =
-        data?.topartists?.artist?.map(({ name, mbid }) => ({ name, mbid })) ??
-        [];
+      const artists: LastFmArtist[] =
+        data?.topartists?.artist?.map(({ name, mbid }) => ({
+          name,
+          mbid,
+        })) ?? [];
       localStorage.setItem("lastFmTopArtists", JSON.stringify(artists));
 
       return artists;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during getting user's top artists:", error.message);
       throw error;
     }

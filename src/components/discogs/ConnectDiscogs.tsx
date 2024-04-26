@@ -5,7 +5,10 @@ import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Discogs from "./Discogs";
 import UserCollection from "./UserCollection";
 
-const handleRequestToken = (requestTokenRes, setRequestToken) => {
+const handleRequestToken = (
+  requestTokenRes: URLSearchParams | undefined,
+  setRequestToken: React.Dispatch<string>,
+) => {
   if (!requestTokenRes) return;
 
   const requestToken = requestTokenRes?.get("oauth_token") ?? "";
@@ -18,7 +21,10 @@ const handleRequestToken = (requestTokenRes, setRequestToken) => {
     window.location.href = `https://discogs.com/oauth/authorize?oauth_token=${requestToken}`;
 };
 
-const handleAccessToken = (accessTokenRes, setAccessToken) => {
+const handleAccessToken = (
+  accessTokenRes: URLSearchParams | undefined,
+  setAccessToken: React.Dispatch<string>,
+) => {
   if (!accessTokenRes) return;
 
   const accessToken = accessTokenRes?.get("oauth_token") ?? "";
@@ -29,7 +35,11 @@ const handleAccessToken = (accessTokenRes, setAccessToken) => {
   setAccessToken(accessToken);
 };
 
-const handleTokenRemoval = (forceDelete, setRequestToken, setAccessToken) => {
+const handleTokenRemoval = (
+  forceDelete: boolean,
+  setRequestToken: React.Dispatch<string>,
+  setAccessToken: React.Dispatch<string>,
+) => {
   if (!forceDelete) return;
 
   localStorage.removeItem("OAuthAccessToken");
@@ -42,11 +52,13 @@ const handleTokenRemoval = (forceDelete, setRequestToken, setAccessToken) => {
 };
 
 function ConnectDiscogs() {
-  const [accessToken, setAccessToken] = useState(localStorage.OAuthAccessToken);
-  const [requestToken, setRequestToken] = useState(
+  const [accessToken, setAccessToken] = useState<string>(
+    localStorage.OAuthAccessToken,
+  );
+  const [requestToken, setRequestToken] = useState<string>(
     localStorage.OAuthRequestToken,
   );
-  const [buttonClicked, setButtonClicked] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState<boolean>(false);
 
   const {
     data: requestTokenRes,
@@ -110,7 +122,7 @@ function ConnectDiscogs() {
             <>
               <RiLogoutBoxRFill />
               <span>Discogs</span>
-              <UserCollection accessToken={accessToken} />
+              <UserCollection accessToken={accessToken} username="" />
             </>
           ) : (
             "Connect to Discogs"

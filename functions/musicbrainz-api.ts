@@ -1,10 +1,16 @@
 // functions/musicbrainz-api.js
 
-exports.handler = async (event, context) => {
+import { Handler } from "@netlify/functions";
+
+const handler: Handler = async (event, context) => {
   try {
     // Extract necessary data from the request, if needed
     const { queryStringParameters } = event;
     const params = queryStringParameters;
+
+    if (!params) {
+      throw new Error("No params found.");
+    }
 
     // Construct the URL for the external Musicbrainz API request
     const apiUrl = `http://musicbrainz.org/ws/2/artist/${params.mbid}?inc=${params.inc}&fmt=${params.fmt}`;
@@ -28,3 +34,5 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+export { handler };

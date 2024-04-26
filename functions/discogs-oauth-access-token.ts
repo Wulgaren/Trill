@@ -1,6 +1,8 @@
 // netlify/functions/discogs-oauth-access-token.js
 
-exports.handler = async (event, context) => {
+import { Handler } from "@netlify/functions";
+
+const handler: Handler = async (event, context) => {
   try {
     const generateRandomString = () => {
       return Math.random().toString(36).substring(2);
@@ -10,7 +12,7 @@ exports.handler = async (event, context) => {
     };
 
     // Added rest of auth headers from .env
-    let auth = event?.headers?.authorization?.toString();
+    let auth = event?.headers?.authorization?.toString() ?? "";
     auth += `, oauth_consumer_key="${process.env.DISCOGS_CONSUMER_KEY}", oauth_nonce="${generateRandomString()}", oauth_signature_method="PLAINTEXT", oauth_timestamp="${generateOAuthTimestamp()}"`;
     auth = auth.replace(
       'oauth_signature="&',
@@ -41,3 +43,5 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+export { handler };

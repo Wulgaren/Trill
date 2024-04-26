@@ -1,8 +1,14 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Discogs from "./Discogs";
 
-function UserCollection({ accessToken, username = "" }) {
+function UserCollection({
+  accessToken,
+  username,
+}: {
+  accessToken: string;
+  username: string;
+}) {
   const userCollectionQueryKey = "discogs_user_collection";
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery({

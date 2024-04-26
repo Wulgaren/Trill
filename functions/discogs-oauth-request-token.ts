@@ -1,6 +1,8 @@
 // netlify/functions/discogs-oauth-request-token.js
 
-exports.handler = async (event, context) => {
+import { Handler } from "@netlify/functions";
+
+const handler: Handler = async (event, context) => {
   try {
     const generateRandomString = () => {
       return Math.random().toString(36).substring(2);
@@ -35,3 +37,5 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+export { handler };

@@ -1,13 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
 import LastFm from "./LastFM";
 
 function ConnectLastFm() {
-  const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState(false);
-  const [username, setUsername] = useState(localStorage.lastFmUsername ?? "");
+  const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>(
+    localStorage.lastFmUsername ?? "",
+  );
 
   const {
     data: getTopArtistsReq,
@@ -30,7 +32,7 @@ function ConnectLastFm() {
     if (!username) localStorage.removeItem("lastFmTopArtists");
   }, [isOpenLastFmDialog]);
 
-  const SetLastFmUser = (e) => {
+  const SetLastFmUser = (e: FormEvent) => {
     e.preventDefault();
     localStorage.setItem("lastFmUsername", username);
     setIsOpenLastFmDialog(false);

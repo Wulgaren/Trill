@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
@@ -8,7 +8,7 @@ import SearchResult from "./SearchResult";
 
 function Search() {
   const [searchQuery, setSearchQuery] = useState("");
-  const searchInput = useRef(null);
+  const searchInput = useRef<HTMLInputElement>(null);
   const searchQueryKey = "searchQuery";
 
   const {
@@ -35,9 +35,9 @@ function Search() {
     enabled: !!searchQuery,
   });
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSearchQuery(searchInput.current.value);
+    if (searchInput.current) setSearchQuery(searchInput.current.value);
   };
 
   return (
@@ -61,7 +61,7 @@ function Search() {
       )}
       {!isLoading && data?.pages[0]?.results?.length > 0 && (
         <SearchResult
-          searchResults={data.pages
+          searchResults={data?.pages
             .flatMap((page) => page.results)
             .filter(
               (result, index, self) =>

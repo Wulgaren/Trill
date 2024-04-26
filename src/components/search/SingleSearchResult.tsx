@@ -1,7 +1,8 @@
-import React, { memo } from "react";
+import { memo } from "react";
+import { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import SearchImage from "../search-image/SearchImage";
 
-function SingleSearchResult({ result, index }) {
+function SingleSearchResult({ result }: { result: DiscogsSearchResult }) {
   return (
     <li
       className="relative m-2 flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-transparent bg-white dark:bg-black"

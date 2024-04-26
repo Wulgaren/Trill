@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Navbar from "./components/navbar/Navbar";
 import Search from "./components/search/Search";
 
 function App() {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
-  const handleSearchIconClick = () => {
+  const handleSearchIconClick: Function = () => {
     setIsSearchActive(!isSearchActive);
   };
 

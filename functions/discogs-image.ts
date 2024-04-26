@@ -1,6 +1,8 @@
 // netlify/functions/discogs-image.js
 
-exports.handler = async (event, context) => {
+import { Handler } from "@netlify/functions";
+
+const handler: Handler = async (event, context) => {
   try {
     const method = event?.rawUrl?.split("/api/discogs-image/")[1];
     const proxyUrl = `https://i.discogs.com/${method}`;
@@ -21,3 +23,5 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+export { handler };

@@ -1,5 +1,6 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroller";
+import type { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SingleSearchResult from "./SingleSearchResult";
 
@@ -8,6 +9,11 @@ function SearchResult({
   fetchNextPage,
   isFetchingNextPage,
   hasNextPage,
+}: {
+  searchResults: DiscogsSearchResult[] | undefined;
+  fetchNextPage: Function;
+  isFetchingNextPage: boolean;
+  hasNextPage: boolean | undefined;
 }) {
   const handleScrollToBottom = useCallback(() => {
     if (!isFetchingNextPage && hasNextPage) {
@@ -28,10 +34,8 @@ function SearchResult({
         </li>
       }
     >
-      {searchResults?.map((result, index) => {
-        return (
-          <SingleSearchResult key={result.id} result={result} index={index} />
-        );
+      {searchResults?.map((result) => {
+        return <SingleSearchResult key={result.id} result={result} />;
       })}
     </InfiniteScroll>
   );

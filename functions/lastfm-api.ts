@@ -1,6 +1,8 @@
 // functions/lastfm-api.js
 
-exports.handler = async (event, context) => {
+import { Handler } from "@netlify/functions";
+
+const handler: Handler = async (event, context) => {
   try {
     // Retrieve your API key from environment variables
     const apiKey = process.env.LAST_FM_API_KEY;
@@ -27,3 +29,5 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+export { handler };

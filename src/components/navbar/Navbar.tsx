@@ -1,14 +1,14 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import ConnectDiscogs from "../discogs/ConnectDiscogs";
 import ConnectLastFm from "../lastfm/ConnectLastFm";
 import "./Navbar.css";
 
-function Navbar({ onSearchIconClick }) {
-  const checkboxRef = useRef(null);
+function Navbar({ onSearchIconClick }: { onSearchIconClick: Function }) {
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const handleSearchIconClick = () => {
-    checkboxRef.current.checked = false;
+    if (checkboxRef.current) checkboxRef.current.checked = false;
     onSearchIconClick();
   };
 
@@ -55,7 +55,7 @@ function Navbar({ onSearchIconClick }) {
 
           <ul
             id="hamburger-menu"
-            className="menu group absolute left-0 top-[110px] flex h-0 w-full list-none flex-col gap-8 overflow-hidden bg-primary px-5 py-0 text-xl text-white antialiased transition-all duration-500 peer-checked/checkbox:h-[230px] peer-checked/checkbox:py-3"
+            className="menu group absolute left-0 top-[110px] flex h-0 w-full list-none flex-col gap-6 overflow-hidden bg-primary px-5 py-0 text-xl text-white antialiased transition-all duration-500 peer-checked/checkbox:h-[210px] peer-checked/checkbox:py-3"
             aria-labelledby="hamburger-toggle"
           >
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
