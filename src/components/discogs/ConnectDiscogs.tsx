@@ -122,7 +122,7 @@ function ConnectDiscogs() {
             <>
               <RiLogoutBoxRFill />
               <span>Discogs</span>
-              <UserCollection accessToken={accessToken} username="" />
+              <UserCollection accessToken={accessToken} />
             </>
           ) : (
             "Connect to Discogs"

@@ -4,10 +4,10 @@ import Discogs from "./Discogs";
 
 function UserCollection({
   accessToken,
-  username,
+  username = "",
 }: {
   accessToken: string;
-  username: string;
+  username?: string;
 }) {
   const userCollectionQueryKey = "discogs_user_collection";
 

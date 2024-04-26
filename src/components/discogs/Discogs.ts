@@ -115,7 +115,7 @@ const Discogs = {
     queryKey,
   }: {
     pageParam: number;
-    queryKey: string;
+    queryKey: string[];
   }): Promise<DiscogsSearchResponse> => {
     try {
       let [_, username] = queryKey;
@@ -177,7 +177,7 @@ const Discogs = {
     queryKey,
   }: {
     pageParam: number;
-    queryKey: string;
+    queryKey: string[];
   }): Promise<DiscogsSearchResponse> => {
     try {
       const [_, query] = queryKey;

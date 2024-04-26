@@ -59,7 +59,7 @@ function Search() {
       {!isLoading && searchQuery && !data?.pages[0]?.results?.length && (
         <NoSearchResult />
       )}
-      {!isLoading && data?.pages[0]?.results?.length > 0 && (
+      {!isLoading && !!data?.pages[0]?.results?.length && (
         <SearchResult
           searchResults={data?.pages
             .flatMap((page) => page.results)

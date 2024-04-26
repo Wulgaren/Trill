@@ -11,11 +11,7 @@ function ConnectLastFm() {
     localStorage.lastFmUsername ?? "",
   );
 
-  const {
-    data: getTopArtistsReq,
-    isFetching: isTopArtistsFetching,
-    isError: isTopArtistsError,
-  } = useQuery({
+  const { isFetching: isTopArtistsFetching } = useQuery({
     queryKey: ["last_fm_top_artists"],
     queryFn: LastFm.GetUserArtist,
     enabled: !!(

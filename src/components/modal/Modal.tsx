@@ -14,10 +14,9 @@ export default function Modal({
   locked = false,
   onClose,
   children,
-  ...props
 }: {
   open: boolean;
-  locked: boolean;
+  locked?: boolean;
   onClose: Function;
   children: ReactElement;
 }) {
