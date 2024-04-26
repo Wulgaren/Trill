@@ -127,18 +127,6 @@ const Discogs = {
         );
         if (savedCollection) {
           userCollection = {
-            pagination: {
-              per_page: 0,
-              pages: 0,
-              page: 0,
-              urls: {
-                last: undefined,
-                next: undefined,
-                prev: undefined,
-                first: undefined,
-              },
-              items: 0,
-            },
             results: savedCollection,
           };
 

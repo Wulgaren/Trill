@@ -1313,24 +1313,21 @@ export type LastFMUserGetTopAlbumsResponse = Readonly<{
 export type LastFmArtist = {
   name: string;
   mbid: string;
-};
-
-export type LastFmFullArtist = LastFmArtist & {
-  streamable: LastFMBooleanNumber;
-  image: Array<{
+  streamable?: LastFMBooleanNumber;
+  image?: Array<{
     "#text": string;
     size: string;
   }>;
-  url: string;
-  playcount: string;
-  "@attr": {
+  url?: string;
+  playcount?: string;
+  "@attr"?: {
     rank: string;
   };
 };
 
 export type LastFMUserGetTopArtistsResponse = Readonly<{
   topartists: {
-    artist: LastFmFullArtist[];
+    artist: LastFmArtist[];
     "@attr": {
       user: string;
       totalPages: string;
