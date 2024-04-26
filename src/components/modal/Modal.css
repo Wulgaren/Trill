@@ -4,7 +4,7 @@
 
 @layer components {
   .modal {
-    @apply relative shadow-sm bg-primary text-white dark:bg-black rounded-lg max-w-[80%] max-h-[80%] p-5;
+    @apply relative max-h-[80%] max-w-[80%] rounded-lg bg-primary p-5 text-white shadow-sm dark:bg-black;
 
     &[open] {
       animation: show 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;

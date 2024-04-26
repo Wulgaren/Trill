@@ -41,7 +41,7 @@ function ConnectLastFm() {
       <button
         type="button"
         title="Last.fm Options"
-        tabIndex={2}
+        tabIndex={0}
         className="flex items-center justify-center gap-2 bg-red-500 text-white hover:bg-red-700"
         onClick={() => setIsOpenLastFmDialog(true)}
       >
@@ -76,7 +76,7 @@ function ConnectLastFm() {
             name="LastFmUsername"
             placeholder="Last.FM Username"
             value={username}
-            tabIndex={10}
+            tabIndex={0}
             onChange={(e) => setUsername(e.target.value)}
             onBlur={SetLastFmUser}
           />

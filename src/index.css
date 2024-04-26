@@ -22,19 +22,16 @@
   }
 
   :focus,
+  :focus ~ label,
   :focus-visible {
-    @apply rounded-lg border-2 border-solid !border-focus shadow-sm shadow-focus outline-none;
+    @apply rounded-lg border-2 border-solid !border-focus shadow-sm shadow-focus outline-none transition-all duration-500;
   }
 
   .blob {
-    position: absolute;
-    opacity: 0.6;
-    width: 400px;
-    aspect-ratio: 1/1;
+    @apply absolute z-[-1] aspect-square w-[400px] transform-gpu opacity-60 blur-xl;
+
     animation: blob 10s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate
       forwards;
-    filter: blur(30px);
-    z-index: -1;
     background: linear-gradient(
       47deg,
       var(--color-focus) 11%,

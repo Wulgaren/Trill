@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
@@ -8,7 +8,7 @@ import SearchResult from "./SearchResult";
 
 function Search() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [input, setInput] = useState("");
+  const searchInput = useRef(null);
   const searchQueryKey = "searchQuery";
 
   const {
@@ -37,21 +37,20 @@ function Search() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setSearchQuery(input);
+    setSearchQuery(searchInput.current.value);
   };
 
   return (
     <>
       <form className="flex w-full" onSubmit={handleSearch}>
         <input
+          ref={searchInput}
           className="w-full"
           type="search"
-          placeholder="Search for an artist or release..."
-          tabIndex={4}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          placeholder="Search for an artist, release or a label..."
+          tabIndex={0}
         />
-        <button tabIndex={5} type="submit">
+        <button tabIndex={0} type="submit">
           Search
         </button>
       </form>

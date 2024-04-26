@@ -98,7 +98,7 @@ function ConnectDiscogs() {
   return (
     <button
       type="button"
-      tabIndex={3}
+      tabIndex={0}
       className="flex items-center justify-center gap-2 bg-gray-700 text-white hover:bg-gray-900"
       onClick={handleClick}
     >

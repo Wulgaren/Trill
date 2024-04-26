@@ -5,7 +5,7 @@ function SingleSearchResult({ result, index }) {
   return (
     <li
       className="relative m-2 flex flex-col items-center justify-center overflow-hidden rounded-md border-2 border-transparent bg-white dark:bg-black"
-      tabIndex={100 + index}
+      tabIndex={0}
     >
       <a className="h-full w-full" href={result.resource_url} target="_blank">
         <SearchImage result={result} />
