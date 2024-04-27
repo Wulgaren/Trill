@@ -2,7 +2,7 @@
 
 import { Handler } from "@netlify/functions";
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   try {
     // Retrieve your API key from environment variables
     const apiKey = process.env.LAST_FM_API_KEY;

@@ -5,6 +5,8 @@ import {
   DiscogsUser,
 } from "../../types/Discogs/DiscogsTypes";
 
+import GetErrorMessage from "../error-handling/ErrorHandling";
+
 const Discogs = {
   GetLoggedUserName: async (): Promise<string> => {
     const user: DiscogsUser = await Discogs.GetUserIdentity();
@@ -46,8 +48,11 @@ const Discogs = {
       localStorage.setItem("discogsUser", JSON.stringify(discogsUser));
 
       return discogsUser;
-    } catch (error: any) {
-      console.error("Error during getting user's identity:", error.message);
+    } catch (error) {
+      console.error(
+        "Error during getting user's identity:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },
@@ -69,8 +74,8 @@ const Discogs = {
       }
 
       return data;
-    } catch (error: any) {
-      console.error("Error during login:", error.message);
+    } catch (error) {
+      console.error("Error during login:", GetErrorMessage(error));
       throw error;
     }
   },
@@ -104,8 +109,8 @@ const Discogs = {
       }
 
       return data;
-    } catch (error: any) {
-      console.error("Error during getting token:", error.message);
+    } catch (error) {
+      console.error("Error during getting token:", GetErrorMessage(error));
       throw error;
     }
   },
@@ -118,7 +123,7 @@ const Discogs = {
     queryKey: string[];
   }): Promise<DiscogsSearchResponse> => {
     try {
-      let [_, username] = queryKey;
+      let username = queryKey[1];
       let userCollection: DiscogsSearchResponse;
 
       if (!username) {
@@ -154,8 +159,11 @@ const Discogs = {
       console.log("collection", userCollection);
 
       return userCollection;
-    } catch (error: any) {
-      console.error("Error during getting user's collection:", error.message);
+    } catch (error) {
+      console.error(
+        "Error during getting user's collection:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },
@@ -168,7 +176,7 @@ const Discogs = {
     queryKey: string[];
   }): Promise<DiscogsSearchResponse> => {
     try {
-      const [_, query] = queryKey;
+      const query = queryKey[1];
       if (!query) throw new Error("No search query");
 
       const response = await fetch(
@@ -203,8 +211,11 @@ const Discogs = {
       console.log("search", filtered);
 
       return filtered;
-    } catch (error: any) {
-      console.error("Error during getting search results:", error.message);
+    } catch (error) {
+      console.error(
+        "Error during getting search results:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },

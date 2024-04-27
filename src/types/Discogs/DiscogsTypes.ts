@@ -193,7 +193,7 @@ export type DiscogsFilters = {
   available: DiscogsAvailable;
 };
 
-export type DiscogsApplied = {};
+export type DiscogsApplied = object;
 
 export type DiscogsAvailable = {
   country: { [key: string]: number };

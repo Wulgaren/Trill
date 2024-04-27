@@ -4,6 +4,8 @@ import {
   LastFmArtist,
 } from "../../types/LastFm/LastFmTypes";
 
+import GetErrorMessage from "../error-handling/ErrorHandling";
+
 const LastFm = {
   FindArtistImage: async function (mbid: string) {
     try {
@@ -24,8 +26,11 @@ const LastFm = {
 
       url = url.replace("/File:", "/Special:FilePath/");
       return url;
-    } catch (error: any) {
-      console.error("Error during finding artists image:", error.message);
+    } catch (error) {
+      console.error(
+        "Error during finding artists image:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },
@@ -38,7 +43,7 @@ const LastFm = {
     queryKey: string;
   }) {
     try {
-      const [_, artist] = queryKey;
+      const artist = queryKey[1];
       if (!artist) return [];
 
       const response = await fetch(
@@ -52,10 +57,10 @@ const LastFm = {
       const data: LastFMArtistSearchResponse = await response.json();
 
       return data?.results?.artistmatches?.artist ?? [];
-    } catch (error: any) {
+    } catch (error) {
       console.error(
         "Error during searching for artist on lastfm:",
-        error.message,
+        GetErrorMessage(error),
       );
       throw error;
     }
@@ -81,16 +86,19 @@ const LastFm = {
 
       const data: LastFMUserGetTopArtistsResponse = await response.json();
 
-      const artists: LastFmArtist[] =
+      topArtists =
         data?.topartists?.artist?.map(({ name, mbid }) => ({
           name,
           mbid,
         })) ?? [];
-      localStorage.setItem("lastFmTopArtists", JSON.stringify(artists));
+      localStorage.setItem("lastFmTopArtists", JSON.stringify(topArtists));
 
-      return artists;
-    } catch (error: any) {
-      console.error("Error during getting user's top artists:", error.message);
+      return topArtists;
+    } catch (error) {
+      console.error(
+        "Error during getting user's top artists:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },

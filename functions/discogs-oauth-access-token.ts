@@ -2,7 +2,7 @@
 
 import { Handler } from "@netlify/functions";
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   try {
     const generateRandomString = () => {
       return Math.random().toString(36).substring(2);
