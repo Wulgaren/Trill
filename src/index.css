@@ -1,3 +1,7 @@
+@import "./components/navbar/Navbar.css";
+@import "./components/loading-animation/LoadingAnimation.css";
+@import "./components/modal/Modal.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

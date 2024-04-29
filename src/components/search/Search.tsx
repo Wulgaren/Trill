@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, Suspense, lazy, useRef, useState } from "react";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import NoSearchResult from "./NoSearchResult";
-import SearchResult from "./SearchResult";
+const SearchResult = lazy(() => import("./SearchResult"));
 
 function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,17 +60,19 @@ function Search() {
         <NoSearchResult />
       )}
       {!isLoading && !!data?.pages[0]?.results?.length && (
-        <SearchResult
-          searchResults={data?.pages
-            .flatMap((page) => page.results)
-            .filter(
-              (result, index, self) =>
-                self.findIndex((r) => r.id === result.id) === index,
-            )}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          fetchNextPage={fetchNextPage}
-        />
+        <Suspense fallback={<LoadingAnimation />}>
+          <SearchResult
+            searchResults={data?.pages
+              .flatMap((page) => page.results)
+              .filter(
+                (result, index, self) =>
+                  self.findIndex((r) => r.id === result.id) === index,
+              )}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            fetchNextPage={fetchNextPage}
+          />
+        </Suspense>
       )}
     </>
   );

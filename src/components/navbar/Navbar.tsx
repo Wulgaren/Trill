@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { Suspense, lazy, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
-import ConnectDiscogs from "../discogs/ConnectDiscogs";
-import ConnectLastFm from "../lastfm/ConnectLastFm";
-import "./Navbar.css";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
+const ConnectDiscogs = lazy(() => import("../discogs/ConnectDiscogs"));
+const ConnectLastFm = lazy(() => import("../lastfm/ConnectLastFm"));
 
 function Navbar({ onSearchIconClick }: { onSearchIconClick: () => void }) {
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -59,10 +59,14 @@ function Navbar({ onSearchIconClick }: { onSearchIconClick: () => void }) {
             aria-labelledby="hamburger-toggle"
           >
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
-              <ConnectLastFm />
+              <Suspense fallback={<LoadingAnimation />}>
+                <ConnectLastFm />
+              </Suspense>
             </li>
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
-              <ConnectDiscogs />
+              <Suspense fallback={<LoadingAnimation />}>
+                <ConnectDiscogs />
+              </Suspense>
             </li>
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
               <a

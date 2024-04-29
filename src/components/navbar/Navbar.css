@@ -1,31 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  .title p {
-    &:nth-child(odd) {
-      transform: skew(50deg, -20deg) scaleY(0.66667) translate3d(0, 0, 1px);
-    }
-
-    &:nth-child(even) {
-      transform: skew(-10deg, -20deg) scaleY(1.33333) translate3d(0, 0, 1px);
-    }
+.title p {
+  &:nth-child(odd) {
+    transform: skew(50deg, -20deg) scaleY(0.66667) translate3d(0, 0, 1px);
   }
 
-  #hamburger-toggle:checked {
-    & ~ label span {
-      @apply mb-[1px] opacity-100;
-      transform: rotate(45deg) translate(-2px, -1px) translate3d(0, 0, 1px);
+  &:nth-child(even) {
+    transform: skew(-10deg, -20deg) scaleY(1.33333) translate3d(0, 0, 1px);
+  }
+}
 
-      &:nth-of-type(2) {
-        @apply opacity-0;
-        transform: rotate(0deg) scale(0.2, 0.2) translate3d(0, 0, 1px);
-      }
+#hamburger-toggle:checked {
+  & ~ label span {
+    @apply mb-[1px] opacity-100;
+    transform: rotate(45deg) translate(-2px, -1px) translate3d(0, 0, 1px);
 
-      &:nth-of-type(3) {
-        transform: rotate(-45deg) translate(0, -1px) translate3d(0, 0, 1px);
-      }
+    &:nth-of-type(2) {
+      @apply opacity-0;
+      transform: rotate(0deg) scale(0.2, 0.2) translate3d(0, 0, 1px);
+    }
+
+    &:nth-of-type(3) {
+      transform: rotate(-45deg) translate(0, -1px) translate3d(0, 0, 1px);
     }
   }
 }

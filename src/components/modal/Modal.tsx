@@ -7,7 +7,6 @@ import {
   useRef,
 } from "react";
 import { FaTimes } from "react-icons/fa";
-import "./Modal.css";
 
 export default function Modal({
   open,
