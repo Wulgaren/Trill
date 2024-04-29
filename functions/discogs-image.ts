@@ -2,7 +2,7 @@
 
 import { Handler } from "@netlify/functions";
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   try {
     const method = event?.rawUrl?.split("/api/discogs-image/")[1];
     const proxyUrl = `https://i.discogs.com/${method}`;

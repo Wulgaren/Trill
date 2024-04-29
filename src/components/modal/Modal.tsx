@@ -17,7 +17,7 @@ export default function Modal({
 }: {
   open: boolean;
   locked?: boolean;
-  onClose: Function;
+  onClose: () => void;
   children: ReactElement;
 }) {
   const modalRef = useRef<HTMLDialogElement>(null);

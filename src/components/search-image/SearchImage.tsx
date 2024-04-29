@@ -4,7 +4,13 @@ import { FaCompactDisc } from "react-icons/fa";
 import type { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
-function SearchImage({ result }: { result: DiscogsSearchResult }) {
+function SearchImage({
+  result,
+  index,
+}: {
+  result: DiscogsSearchResult;
+  index: number;
+}) {
   const { data, error, isFetching } = useQuery({
     queryKey: ["ResultImage", result.id],
     queryFn: async () => {
@@ -17,7 +23,7 @@ function SearchImage({ result }: { result: DiscogsSearchResult }) {
       const url = URL.createObjectURL(blob);
       return url;
     },
-    retryDelay: 3000,
+    retryDelay: 5000 + 100 * (index + 1),
     enabled: !!result?.thumb,
   });
 
@@ -36,10 +42,13 @@ function SearchImage({ result }: { result: DiscogsSearchResult }) {
       <img
         className="h-full w-full object-cover"
         src={data}
+        loading="lazy"
         alt={result.title + " Image"}
       />
     </>
   );
 }
 
-export default memo(SearchImage);
+const MemoizedSearchImage = memo(SearchImage);
+
+export default MemoizedSearchImage;

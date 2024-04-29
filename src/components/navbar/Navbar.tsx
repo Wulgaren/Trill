@@ -4,7 +4,7 @@ import ConnectDiscogs from "../discogs/ConnectDiscogs";
 import ConnectLastFm from "../lastfm/ConnectLastFm";
 import "./Navbar.css";
 
-function Navbar({ onSearchIconClick }: { onSearchIconClick: Function }) {
+function Navbar({ onSearchIconClick }: { onSearchIconClick: () => void }) {
   const checkboxRef = useRef<HTMLInputElement>(null);
 
   const handleSearchIconClick = () => {

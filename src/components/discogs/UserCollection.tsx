@@ -33,7 +33,7 @@ function UserCollection({
       fetchNextPage();
     } else if (data && !username)
       sessionStorage.setItem("discogsCollection", JSON.stringify(data));
-  }, [data]);
+  }, [data, fetchNextPage, hasNextPage, username]);
 
   return <></>;
 }

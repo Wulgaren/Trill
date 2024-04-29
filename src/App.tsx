@@ -5,7 +5,7 @@ import Search from "./components/search/Search";
 function App() {
   const [isSearchActive, setIsSearchActive] = useState(false);
 
-  const handleSearchIconClick: Function = () => {
+  const handleSearchIconClick: () => void = () => {
     setIsSearchActive(!isSearchActive);
   };
 

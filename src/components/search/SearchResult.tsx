@@ -1,3 +1,7 @@
+import {
+  FetchNextPageOptions,
+  UseInfiniteQueryResult,
+} from "@tanstack/react-query";
 import { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import type { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
@@ -11,7 +15,9 @@ function SearchResult({
   hasNextPage,
 }: {
   searchResults: DiscogsSearchResult[] | undefined;
-  fetchNextPage: Function;
+  fetchNextPage: (
+    options?: FetchNextPageOptions,
+  ) => Promise<UseInfiniteQueryResult>;
   isFetchingNextPage: boolean;
   hasNextPage: boolean | undefined;
 }) {
@@ -34,8 +40,10 @@ function SearchResult({
         </li>
       }
     >
-      {searchResults?.map((result) => {
-        return <SingleSearchResult key={result.id} result={result} />;
+      {searchResults?.map((result, index) => {
+        return (
+          <SingleSearchResult key={result.id} result={result} index={index} />
+        );
       })}
     </InfiniteScroll>
   );

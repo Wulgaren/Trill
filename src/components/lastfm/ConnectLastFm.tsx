@@ -26,7 +26,7 @@ function ConnectLastFm() {
     if (isOpenLastFmDialog) return;
 
     if (!username) localStorage.removeItem("lastFmTopArtists");
-  }, [isOpenLastFmDialog]);
+  }, [isOpenLastFmDialog, username]);
 
   const SetLastFmUser = (e: FormEvent) => {
     e.preventDefault();

@@ -7,8 +7,7 @@
     @apply mx-2 w-auto scale-100 rounded-lg border-2 border-transparent bg-primary p-2 text-white shadow-sm transition-all hover:bg-secondary;
 
     &:hover:has(svg):not(:has(span)) {
-      box-shadow: none;
-      background: transparent;
+      @apply bg-transparent shadow-none;
       animation: scale 0.7s ease-in-out infinite alternate;
     }
   }
@@ -40,8 +39,7 @@
     );
 
     &:nth-of-type(2) {
-      right: 0px;
-      bottom: 0px;
+      @apply bottom-0 right-0;
       animation-duration: 7s;
       animation-name: blob, scale;
     }
