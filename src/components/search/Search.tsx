@@ -1,13 +1,21 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { FormEvent, Suspense, lazy, useRef, useState } from "react";
+import { UseNavigateResult } from "@tanstack/react-router";
+import { FormEvent, Suspense, lazy, useRef } from "react";
+import { DiscogsSearchQuery } from "../../types/Discogs/DiscogsTypes";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import NoSearchResult from "./NoSearchResult";
 const SearchResult = lazy(() => import("./SearchResult"));
 
-function Search() {
-  const [searchQuery, setSearchQuery] = useState("");
+function Search({
+  params,
+  navigate,
+}: {
+  params: DiscogsSearchQuery;
+  navigate: UseNavigateResult<"/search">;
+}) {
+  console.log(params);
   const searchInput = useRef<HTMLInputElement>(null);
   const searchQueryKey = "searchQuery";
 
@@ -20,11 +28,11 @@ function Search() {
     isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: [searchQueryKey, searchQuery],
+    queryKey: [searchQueryKey, params],
     queryFn: ({ pageParam = 1 }) =>
       Discogs.Search({
         pageParam,
-        queryKey: [searchQueryKey, searchQuery],
+        queryKey: [searchQueryKey, params],
       }),
     getNextPageParam: (lastPage) => {
       const page = lastPage?.pagination?.page ?? 0;
@@ -32,12 +40,15 @@ function Search() {
       if (page == allPages) return null;
       return page + 1;
     },
-    enabled: !!searchQuery,
+    enabled: !!params?.query,
   });
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (searchInput.current) setSearchQuery(searchInput.current.value);
+    if (searchInput?.current?.value)
+      navigate({
+        search: (prev) => ({ ...prev, query: searchInput?.current?.value }),
+      });
   };
 
   return (
@@ -56,7 +67,7 @@ function Search() {
       </form>
       {isFetching && !data && <LoadingAnimation />}
       {error && <ErrorResult />}
-      {!isLoading && searchQuery && !data?.pages[0]?.results?.length && (
+      {!isLoading && params?.query && !data?.pages[0]?.results?.length && (
         <NoSearchResult />
       )}
       {!isLoading && !!data?.pages[0]?.results?.length && (

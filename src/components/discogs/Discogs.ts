@@ -1,5 +1,6 @@
 import {
   DiscogsAuthorization,
+  DiscogsSearchQuery,
   DiscogsSearchResponse,
   DiscogsSearchResult,
   DiscogsUser,
@@ -173,19 +174,25 @@ const Discogs = {
     queryKey,
   }: {
     pageParam: number;
-    queryKey: string[];
+    queryKey: [string, DiscogsSearchQuery];
   }): Promise<DiscogsSearchResponse> => {
     try {
-      const query = queryKey[1];
-      if (!query) throw new Error("No search query");
+      const params = queryKey[1];
+      if (!params?.query) throw new Error("No search query");
 
-      const response = await fetch(
-        `/api/discogs-api/database/search?q=${query}&per_page=50&page=${pageParam}`,
-        {
-          method: "GET",
-          headers: Discogs.GetAuthHeader(),
-        },
-      );
+      let url = `/api/discogs-api/database/search?q=${params.query}&per_page=50&page=${pageParam}`;
+
+      // Iterate through object properties
+      for (const prop in params) {
+        if (prop == "query") continue;
+        // Concatenate each property and its value to the string
+        if (params[prop]) url += `&${prop}=${params[prop]}`;
+      }
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: Discogs.GetAuthHeader(),
+      });
 
       if (!response.ok) {
         throw new Error("Error getting search results.");

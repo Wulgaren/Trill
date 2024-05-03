@@ -240,6 +240,7 @@ export type DiscogsPagination = {
 // query
 
 export type DiscogsSearchQuery = {
+  [key: string]: unknown;
   per_page?: number;
   page?: number;
   query?: string;

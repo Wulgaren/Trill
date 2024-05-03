@@ -1,15 +1,15 @@
+import { Link } from "@tanstack/react-router";
 import { Suspense, lazy, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 const ConnectDiscogs = lazy(() => import("../discogs/ConnectDiscogs"));
 const ConnectLastFm = lazy(() => import("../lastfm/ConnectLastFm"));
 
-function Navbar({ onSearchIconClick }: { onSearchIconClick: () => void }) {
+function Navbar() {
   const checkboxRef = useRef<HTMLInputElement>(null);
 
   const handleSearchIconClick = () => {
     if (checkboxRef.current) checkboxRef.current.checked = false;
-    onSearchIconClick();
   };
 
   return (
@@ -19,18 +19,23 @@ function Navbar({ onSearchIconClick }: { onSearchIconClick: () => void }) {
     >
       <ul className="flex flex-row items-center">
         <li className="title relative bottom-[5px] text-[1.5em] font-black uppercase tracking-[-2px] antialiased md:bottom-[17px] md:text-[1.9em]">
-          <p className="h-[36px] p-0 pl-[13px] uppercase">Trill</p>
-          <p className="h-[36px] p-0 text-[0.8em] uppercase">Music Finder</p>
+          <Link to="/">
+            <p className="h-[36px] p-0 pl-[13px] uppercase">Trill</p>
+            <p className="h-[36px] p-0 text-[0.8em] uppercase">Music Finder</p>
+          </Link>
         </li>
+
         <li className="ml-auto" onClick={handleSearchIconClick}>
-          <button
-            title="search"
-            type="button"
-            tabIndex={0}
-            className="text-white shadow-none"
-          >
-            <FaSearch size={25} />
-          </button>
+          <Link to="/search">
+            <button
+              title="search"
+              type="button"
+              tabIndex={0}
+              className="text-white shadow-none"
+            >
+              <FaSearch size={25} />
+            </button>
+          </Link>
         </li>
 
         <li className="z-[1] select-none">
