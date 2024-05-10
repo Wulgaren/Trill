@@ -13,10 +13,7 @@ function Navbar() {
   };
 
   return (
-    <nav
-      role="navigation"
-      className="sticky top-0 z-10 w-full bg-primary px-5 py-5 text-white"
-    >
+    <nav className="sticky top-0 z-10 w-full bg-primary px-5 py-5 text-white">
       <ul className="flex flex-row items-center">
         <li className="title relative bottom-[5px] text-[1.5em] font-black uppercase tracking-[-2px] antialiased md:bottom-[17px] md:text-[1.9em]">
           <Link to="/">

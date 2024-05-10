@@ -7,6 +7,27 @@
 @tailwind utilities;
 
 @layer components {
+  /* custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+    min-height: 25px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
+  }
+
   button {
     @apply mx-2 w-auto scale-100 rounded-lg border-2 border-transparent bg-primary p-2 text-white shadow-sm transition-all hover:bg-secondary;
 
@@ -16,8 +37,43 @@
     }
   }
 
-  input {
+  input,
+  select {
     @apply rounded-lg bg-white p-2 text-black shadow-sm dark:bg-gray-700 dark:text-white;
+  }
+
+  select {
+    @apply appearance-none overflow-auto pr-8;
+
+    &:not([multiple]) {
+      background-image: url("data:image/svg+xml,<svg height='10px' width='10px' viewBox='0 0 16 16' fill='black' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: calc(100% - 0.75rem) center;
+
+      @media (prefers-color-scheme: dark) {
+        & {
+          background-image: url("data:image/svg+xml,<svg height='10px' width='10px' viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
+        }
+      }
+    }
+  }
+
+  label:has(input, select) {
+    @apply flex flex-col rounded-lg border-2 border-transparent bg-white dark:bg-gray-700;
+
+    span {
+      @apply p-2 pb-0 text-xs text-gray-400;
+    }
+
+    input,
+    select {
+      @apply !transition-none;
+
+      &:focus,
+      &:focus-visible {
+        @apply !border-transparent !shadow-none;
+      }
+    }
   }
 
   [tabindex] {
@@ -26,7 +82,8 @@
 
   :focus,
   :focus ~ label,
-  :focus-visible {
+  :focus-visible,
+  label:focus-within {
     @apply rounded-lg border-2 border-solid !border-focus shadow-sm shadow-focus outline-none transition-all duration-500;
   }
 

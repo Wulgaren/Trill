@@ -2,7 +2,7 @@ import { memo } from "react";
 import { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import SearchImage from "../search-image/SearchImage";
 
-function SingleSearchResult({
+function SingleSearchResultComponent({
   result,
   index,
 }: {
@@ -24,4 +24,6 @@ function SingleSearchResult({
   );
 }
 
-export default memo(SingleSearchResult);
+const SingleSearchResult = memo(SingleSearchResultComponent);
+
+export default SingleSearchResult;

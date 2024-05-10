@@ -244,16 +244,16 @@ export type DiscogsSearchQuery = {
   per_page?: number;
   page?: number;
   query?: string;
-  type?: "artist" | "master" | "release" | "label";
+  type?: DiscogsSearchTypes | DiscogsSearchTypes[];
   title?: string;
   release_title?: string;
   credit?: string;
   artist?: string;
   anv?: string;
   label?: string;
-  genre?: string;
-  style?: string;
-  country?: string;
+  genre?: string | string[];
+  style?: string | string[];
+  country?: string | string[];
   year?: string | number;
   format?: string;
   catno?: string;
@@ -262,6 +262,8 @@ export type DiscogsSearchQuery = {
   submitter?: string;
   contributor?: string;
 };
+
+export type DiscogsSearchTypes = "artist" | "master" | "release" | "label";
 
 export type DiscogsPaginationOpts = {
   page?: number;

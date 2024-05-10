@@ -1,0 +1,17 @@
+export default [
+  "Rock",
+  "Electronic",
+  "Pop",
+  "Hip Hop",
+  "Funk / Soul",
+  "Folk, World, & Country",
+  "Jazz",
+  "Classical",
+  "Reggae",
+  "Non-Music",
+  "Stage & Screen",
+  "Blues",
+  "Latin",
+  "Children's",
+  "Brass & Military",
+];
