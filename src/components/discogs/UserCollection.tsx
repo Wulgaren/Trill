@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { hasMorePages } from "../functions/Functions";
 import Discogs from "./Discogs";
 
 function UserCollection({
@@ -19,11 +20,7 @@ function UserCollection({
         queryKey: [userCollectionQueryKey, username],
       }),
     getNextPageParam: (lastPage) => {
-      const page = lastPage?.pagination?.page ?? 0;
-      const allPages = lastPage?.pagination?.pages ?? 0;
-
-      if (page == allPages) return null;
-      return page + 1;
+      return hasMorePages(lastPage);
     },
     enabled: !!accessToken,
   });

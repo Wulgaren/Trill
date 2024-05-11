@@ -28,13 +28,20 @@
     background-color: #a8bbbf;
   }
 
+  [aria-hidden="true"] {
+    @apply !max-h-0;
+  }
+
   button {
     @apply mx-2 w-auto scale-100 rounded-lg border-2 border-transparent bg-primary p-2 text-white shadow-sm transition-all hover:bg-secondary;
+  }
 
-    &:hover:has(svg):not(:has(span)) {
-      @apply bg-transparent shadow-none;
-      animation: scale 0.7s ease-in-out infinite alternate;
-    }
+  button.bg-transparent:hover:has(svg),
+  a.bg-transparent:hover:has(svg),
+  #hamburger-toggle:hover ~ label,
+  #hamburger-toggle ~ label:hover {
+    @apply shadow-none;
+    animation: scale 0.7s ease-in-out infinite alternate;
   }
 
   input,
@@ -67,7 +74,7 @@
 
     input,
     select {
-      @apply !transition-none;
+      @apply py-1 !transition-none;
 
       &:focus,
       &:focus-visible {

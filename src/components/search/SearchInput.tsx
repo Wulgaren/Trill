@@ -1,5 +1,6 @@
 import { UseNavigateResult } from "@tanstack/react-router";
-import { FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { RiFilterFill, RiFilterLine } from "react-icons/ri";
 import countries from "../../data/countries";
 import genres from "../../data/genres";
 import styles from "../../data/styles";
@@ -7,7 +8,7 @@ import {
   DiscogsSearchQuery,
   DiscogsSearchTypes,
 } from "../../types/Discogs/DiscogsTypes";
-import { GetSelectedValues } from "../functions/Functions";
+import { GetSelectedValues, createFormObject } from "../functions/Functions";
 
 function SearchInput({
   params,
@@ -16,15 +17,12 @@ function SearchInput({
   params: DiscogsSearchQuery;
   navigate: UseNavigateResult<"/search">;
 }) {
-  const searchQuery = useRef<HTMLInputElement>(null);
-  const searchCountry = useRef<HTMLSelectElement>(null);
-  const searchGenre = useRef<HTMLSelectElement>(null);
-  const searchStyle = useRef<HTMLSelectElement>(null);
-  const searchYear = useRef<HTMLInputElement>(null);
-  const searchCredit = useRef<HTMLInputElement>(null);
-  const [searchType, setSearchType] = useState<DiscogsSearchTypes[]>();
+  const [searchType, setSearchType] = useState<DiscogsSearchTypes[]>(
+    (params.type as []) ?? [],
+  );
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
-  const handleSearchTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSearchTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = GetSelectedValues(e);
     const newSearchType: DiscogsSearchTypes[] = selectedOptions.map(
       (x) => x as DiscogsSearchTypes,
@@ -34,35 +32,28 @@ function SearchInput({
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (searchQuery?.current?.value) {
-      const countries = GetSelectedValues(searchCountry);
-      const genres = GetSelectedValues(searchGenre);
-      const styles = GetSelectedValues(searchStyle);
+    const formData = new FormData(e.currentTarget);
+    if (formData.get("query")) {
+      const formEntries = createFormObject([...formData.entries()]);
+      setShowFilters(false);
 
       navigate({
         search: (prev) => ({
           ...prev,
-          query: searchQuery?.current?.value,
-          type: searchType,
-          style: styles,
-          genre: genres,
-          country: countries,
-          year: searchYear?.current?.value,
-          credit: searchCredit?.current?.value,
+          ...formEntries,
         }),
       });
     }
   };
 
   return (
-    <form className="flex flex-col gap-3" onSubmit={handleSearch}>
-      <div className="flex w-full">
+    <form className="flex flex-col gap-2" onSubmit={handleSearch}>
+      <div className="flex w-full gap-2 max-md:flex-wrap">
         <label className="w-full" htmlFor="searchInput">
           <span>Search for an artist, release or a label...</span>
           <input
+            name="query"
             id="searchInput"
-            ref={searchQuery}
             className="w-full"
             type="search"
             defaultValue={params.query}
@@ -70,24 +61,41 @@ function SearchInput({
             tabIndex={0}
           />
         </label>
-        <button className="w-24" tabIndex={0} type="submit">
+        <button className="mx-0 w-24 flex-1" tabIndex={0} type="submit">
           Search
+        </button>
+        <button
+          className="mx-0 flex flex-1 items-center justify-center max-md:max-w-[25%]"
+          tabIndex={0}
+          aria-label="Search filters"
+          aria-expanded={showFilters}
+          aria-controls="#searchFilters"
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          {showFilters ? (
+            <RiFilterFill size={28} />
+          ) : (
+            <RiFilterLine size={28} />
+          )}
         </button>
       </div>
 
-      <div className="flex flex-row flex-wrap gap-2 [&>label]:flex-1">
+      <div
+        id="searchFilters"
+        aria-hidden={!showFilters}
+        className="flex max-h-96 flex-row flex-wrap gap-2 overflow-hidden transition-all duration-500 [&>label]:flex-1"
+      >
         <label htmlFor="searchType">
           <span>Search type</span>
           <select
             multiple
+            name="type"
             id="searchType"
-            defaultValue={params.type}
             value={searchType}
             tabIndex={0}
             aria-label="Type of results to search"
             onChange={handleSearchTypeChange}
           >
-            <option>--None--</option>
             <option value={"artist"}>Artist</option>
             <option value={"master"}>Release</option>
             <option value={"label"}>Label</option>
@@ -98,13 +106,12 @@ function SearchInput({
           <span>Country</span>
           <select
             multiple
+            name="country"
             id="searchCountry"
-            ref={searchCountry}
             defaultValue={params.country}
             tabIndex={0}
             aria-label="Country"
           >
-            <option>--None--</option>
             {countries?.map((country, index) => {
               return (
                 <option key={index} value={country}>
@@ -119,13 +126,12 @@ function SearchInput({
           <span>Genre</span>
           <select
             multiple
+            name="genre"
             id="searchGenre"
-            ref={searchGenre}
             defaultValue={params.genre}
             tabIndex={0}
             aria-label="Genre"
           >
-            <option>--None--</option>
             {genres?.map((genre, index) => {
               return (
                 <option key={index} value={genre}>
@@ -137,16 +143,15 @@ function SearchInput({
         </label>
 
         <label htmlFor="searchStyle">
-          <span>Style</span>{" "}
+          <span>Style</span>
           <select
             multiple
+            name="style"
             id="searchStyle"
-            ref={searchStyle}
             defaultValue={params.style}
             tabIndex={0}
             aria-label="Style"
           >
-            <option>--None--</option>
             {styles?.map((style, index) => {
               return (
                 <option key={index} value={style}>
@@ -160,10 +165,10 @@ function SearchInput({
         {searchType?.length === 1 && searchType?.includes("master") && (
           <>
             <label htmlFor="searchYear">
-              <span>Year</span>{" "}
+              <span>Year</span>
               <input
+                name="year"
                 id="searchYear"
-                ref={searchYear}
                 defaultValue={params.year}
                 aria-label="Year"
                 type="number"
@@ -177,8 +182,8 @@ function SearchInput({
             <label htmlFor="searchCredit">
               <span>Release credit</span>
               <input
+                name="credit"
                 id="searchCredit"
-                ref={searchCredit}
                 defaultValue={params.credit}
                 aria-label="Release credit"
                 type="text"

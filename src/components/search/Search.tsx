@@ -4,6 +4,7 @@ import { Suspense, lazy } from "react";
 import { DiscogsSearchQuery } from "../../types/Discogs/DiscogsTypes";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
+import { hasMorePages } from "../functions/Functions";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import NoSearchResult from "./NoSearchResult";
 import SearchInput from "./SearchInput";
@@ -34,10 +35,7 @@ function Search({
         queryKey: [searchQueryKey, params],
       }),
     getNextPageParam: (lastPage) => {
-      const page = lastPage?.pagination?.page ?? 0;
-      const allPages = lastPage?.pagination?.pages ?? 0;
-      if (page == allPages) return null;
-      return page + 1;
+      return hasMorePages(lastPage);
     },
     enabled: !!params?.query,
   });

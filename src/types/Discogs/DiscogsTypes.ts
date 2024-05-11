@@ -499,7 +499,7 @@ export type DiscogsGetArtistReleasesResponse = {
   releases: (DiscogsArtistRelease | DiscogsArtistMaster)[];
 };
 export type DiscogsSearchResponse = {
-  pagination?: DiscogsPagination;
+  pagination?: DiscogsPagination | DiscogsPagination[];
   results: DiscogsSearchResult[];
 };
 export type DiscogsGetLabelReleasesResponse = {

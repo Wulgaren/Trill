@@ -7,6 +7,7 @@ import {
 } from "../../types/Discogs/DiscogsTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
+import { generateQueries } from "../functions/Functions";
 
 const Discogs = {
   GetLoggedUserName: async (): Promise<string> => {
@@ -178,34 +179,49 @@ const Discogs = {
   }): Promise<DiscogsSearchResponse> => {
     try {
       const params = queryKey[1];
+      params.page = pageParam;
       if (!params?.query) throw new Error("No search query");
 
-      let url = `/api/discogs-api/database/search?q=${params.query}&per_page=50&page=${pageParam}`;
+      const url = `/api/discogs-api/database/search`;
+      const generatedQueries = generateQueries(params);
 
-      // Iterate through object properties
-      for (const prop in params) {
-        if (prop == "query") continue;
-        // Concatenate each property and its value to the string
-        if (params[prop]) url += `&${prop}=${params[prop]}`;
-      }
-
-      const response = await fetch(url, {
+      const requestOptions = {
         method: "GET",
         headers: Discogs.GetAuthHeader(),
-      });
+      };
 
-      if (!response.ok) {
-        throw new Error("Error getting search results.");
+      console.log(url, generatedQueries);
+
+      const promises = generatedQueries.map((query) =>
+        fetch(url + query, requestOptions),
+      );
+      const responses = await Promise.all(promises);
+
+      const parsedResponses: DiscogsSearchResponse = {
+        results: [],
+        pagination: [],
+      };
+
+      for (const response of responses) {
+        if (!response.ok) {
+          throw new Error("Error getting search results.");
+        }
+
+        const parsed: DiscogsSearchResponse = await response.json();
+        parsedResponses.pagination = parsed.pagination;
+
+        parsedResponses.results = [
+          ...parsedResponses.results,
+          ...parsed.results,
+        ];
       }
-
-      const parsed: DiscogsSearchResponse = await response.json();
 
       const customOrder = { artist: 0, label: 1, master: 2, release: 3 };
 
       // Filter and sort search results
       const filtered: DiscogsSearchResponse = {
-        pagination: parsed.pagination,
-        results: parsed.results
+        pagination: parsedResponses.pagination,
+        results: parsedResponses.results
           .filter((x) => x.type !== "release")
           .sort((a, b) => customOrder[a.type] - customOrder[b.type])
           .map((result) => ({

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/search")({
       type:
         (typeof searchParams.type === "string" &&
         validTypes.includes(searchParams.type as string)
-          ? (searchParams.type as "artist" | "master" | "label")
+          ? [searchParams.type as "artist" | "master" | "label"]
           : undefined) ||
         (Array.isArray(searchParams.type) &&
         searchParams.type.every((item: string) =>
@@ -43,21 +43,21 @@ export const Route = createFileRoute("/search")({
         typeof searchParams.label === "string" ? searchParams.label : undefined,
       genre:
         typeof searchParams.genre === "string"
-          ? searchParams.genre
+          ? [searchParams.genre]
           : Array.isArray(searchParams.genre) &&
               searchParams.genre.every((item) => typeof item === "string")
             ? searchParams.genre
             : undefined,
       style:
         typeof searchParams.style === "string"
-          ? searchParams.style
+          ? [searchParams.style]
           : Array.isArray(searchParams.style) &&
               searchParams.style.every((item) => typeof item === "string")
             ? searchParams.style
             : undefined,
       country:
         typeof searchParams.country === "string"
-          ? searchParams.country
+          ? [searchParams.country]
           : Array.isArray(searchParams.country) &&
               searchParams.country.every((item) => typeof item === "string")
             ? searchParams.country
