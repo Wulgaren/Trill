@@ -1,5 +1,6 @@
 import {
   DiscogsAuthorization,
+  DiscogsPagination,
   DiscogsSearchQuery,
   DiscogsSearchResponse,
   DiscogsSearchResult,
@@ -179,11 +180,10 @@ const Discogs = {
   }): Promise<DiscogsSearchResponse> => {
     try {
       const params = queryKey[1];
-      params.page = pageParam;
       if (!params?.query) throw new Error("No search query");
 
       const url = `/api/discogs-api/database/search`;
-      const generatedQueries = generateQueries(params);
+      const generatedQueries = generateQueries({ ...params, page: pageParam });
 
       const requestOptions = {
         method: "GET",
@@ -199,7 +199,6 @@ const Discogs = {
 
       const parsedResponses: DiscogsSearchResponse = {
         results: [],
-        pagination: [],
       };
 
       for (const response of responses) {
@@ -208,7 +207,15 @@ const Discogs = {
         }
 
         const parsed: DiscogsSearchResponse = await response.json();
-        parsedResponses.pagination = parsed.pagination;
+        const pagination = parsedResponses.pagination as DiscogsPagination;
+        if (!pagination) parsedResponses.pagination = parsed.pagination;
+        else {
+          pagination.items += (parsed.pagination as DiscogsPagination)?.items;
+          if (
+            (parsed.pagination as DiscogsPagination)?.pages < pagination.pages
+          )
+            pagination.pages = (parsed.pagination as DiscogsPagination)?.pages;
+        }
 
         parsedResponses.results = [
           ...parsedResponses.results,

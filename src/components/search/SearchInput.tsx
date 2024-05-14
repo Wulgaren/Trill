@@ -48,7 +48,7 @@ function SearchInput({
 
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSearch}>
-      <div className="flex w-full gap-2 max-md:flex-wrap">
+      <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
         <label className="w-full" htmlFor="searchInput">
           <span>Search for an artist, release or a label...</span>
           <input
@@ -65,11 +65,12 @@ function SearchInput({
           Search
         </button>
         <button
-          className="mx-0 flex flex-1 items-center justify-center max-md:max-w-[25%]"
+          className="mx-0 flex max-w-[25%] flex-1 items-center justify-center md:max-w-full"
           tabIndex={0}
           aria-label="Search filters"
           aria-expanded={showFilters}
           aria-controls="#searchFilters"
+          type="button"
           onClick={() => setShowFilters((prev) => !prev)}
         >
           {showFilters ? (

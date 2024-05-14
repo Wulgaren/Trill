@@ -44,7 +44,6 @@ function Search({
     <>
       <SearchInput params={params} navigate={navigate} />
       {isFetching && !data && <LoadingAnimation />}
-      {error && <ErrorResult />}
       {!isLoading && params?.query && !data?.pages[0]?.results?.length && (
         <NoSearchResult />
       )}
@@ -63,6 +62,8 @@ function Search({
           />
         </Suspense>
       )}
+
+      {error && <ErrorResult />}
     </>
   );
 }

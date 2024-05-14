@@ -11,7 +11,7 @@ function App() {
         <Outlet />
       </main>
 
-      <div className="absolute top-0 z-[-1] h-full w-full overflow-hidden">
+      <div className="fixed bottom-0 z-[-1] h-full w-full overflow-hidden">
         <div className="blob"></div>
         <div className="blob"></div>
       </div>

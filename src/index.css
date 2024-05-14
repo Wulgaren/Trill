@@ -7,6 +7,16 @@
 @tailwind utilities;
 
 @layer components {
+  :root {
+    @apply selection:bg-secondary selection:text-black;
+    accent-color: var(--color-secondary);
+    caret-color: var(--color-secondary);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   /* custom scrollbar */
   ::-webkit-scrollbar {
     width: 20px;
@@ -28,7 +38,7 @@
     background-color: #a8bbbf;
   }
 
-  [aria-hidden="true"] {
+  div[aria-hidden="true"] {
     @apply !max-h-0;
   }
 

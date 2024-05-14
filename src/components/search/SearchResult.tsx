@@ -30,7 +30,7 @@ function SearchResult({
   return (
     <InfiniteScroll
       element="ul"
-      className="relative grid auto-rows-[250px] grid-cols-[repeat(auto-fill,minmax(200px,1fr))] overflow-x-hidden p-5"
+      className="relative grid auto-rows-[200px] grid-cols-[repeat(auto-fill,minmax(150px,1fr))] overflow-x-hidden p-2 md:auto-rows-[250px] md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] md:p-5"
       pageStart={2}
       loadMore={handleScrollToBottom}
       hasMore={hasNextPage}

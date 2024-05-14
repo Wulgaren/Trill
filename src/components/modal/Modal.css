@@ -1,5 +1,5 @@
 .modal {
-  @apply relative max-h-[80%] max-w-[80%] rounded-lg bg-primary p-5 text-white shadow-sm dark:bg-black;
+  @apply relative max-h-[80%] max-w-[80%] overscroll-contain rounded-lg bg-primary p-5 text-white shadow-sm dark:bg-black;
 
   &[open] {
     animation: show 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;

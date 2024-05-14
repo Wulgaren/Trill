@@ -63,7 +63,7 @@ export function generateQueries(
 }
 
 export function hasMorePages(lastPage: DiscogsSearchResponse) {
-  if (!lastPage.pagination) return null;
+  if (!lastPage.pagination) return 1;
 
   const paginations = Array.isArray(lastPage?.pagination)
     ? lastPage.pagination
