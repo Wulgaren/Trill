@@ -61,16 +61,11 @@ export function generateQueries(
   return queryObjs.map(generateQueryString);
 }
 
-export function hasMorePages(lastPage: DiscogsSearchResponse) {
-  if (!lastPage.pagination) return 1;
-
-  const paginations = Array.isArray(lastPage?.pagination)
-    ? lastPage.pagination
-    : [lastPage.pagination];
-  const morePages = paginations?.filter((pag) => pag.page != pag.pages);
-
-  if (!morePages?.length) return null;
-  return morePages[0].page + 1;
+export function getNextPage(lastPage: DiscogsSearchResponse) {
+  const page = lastPage?.pagination?.page ?? 0;
+  const allPages = lastPage?.pagination?.pages ?? 0;
+  if (page == allPages) return null;
+  return page + 1;
 }
 
 export function createFormObject(formEntries: [string, FormDataEntryValue][]) {
