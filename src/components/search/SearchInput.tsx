@@ -1,6 +1,15 @@
 import { UseNavigateResult } from "@tanstack/react-router";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { BiCalendar } from "react-icons/bi";
+import { FaGlobeAmericas } from "react-icons/fa";
+import {
+  PiMusicNoteSimpleFill,
+  PiPianoKeysFill,
+  PiUserListFill,
+  PiVinylRecordFill,
+} from "react-icons/pi";
 import { RiFilterFill, RiFilterLine } from "react-icons/ri";
+import { VscSettings } from "react-icons/vsc";
 import countries from "../../data/countries";
 import genres from "../../data/genres";
 import styles from "../../data/styles";
@@ -50,7 +59,10 @@ function SearchInput({
     <form className="flex flex-col gap-2" onSubmit={handleSearch}>
       <div className="flex w-full flex-wrap gap-2 md:flex-nowrap">
         <label className="w-full" htmlFor="searchInput">
-          <span>Search for an artist, release or a label...</span>
+          <span className="flex gap-1">
+            <PiVinylRecordFill size={16} />
+            Search for an artist, release or a label...
+          </span>
           <input
             name="query"
             id="searchInput"
@@ -74,9 +86,9 @@ function SearchInput({
           onClick={() => setShowFilters((prev) => !prev)}
         >
           {showFilters ? (
-            <RiFilterFill size={28} />
+            <RiFilterFill size={24} className="w-8" />
           ) : (
-            <RiFilterLine size={28} />
+            <RiFilterLine size={24} className="w-8" />
           )}
         </button>
       </div>
@@ -87,7 +99,9 @@ function SearchInput({
         className="flex max-h-96 flex-row flex-wrap gap-2 overflow-hidden transition-all duration-500 [&>label]:flex-1"
       >
         <label htmlFor="searchType">
-          <span>Search type</span>
+          <span className="flex gap-1">
+            <VscSettings size={16} /> Search type
+          </span>
           <select
             multiple
             name="type"
@@ -104,7 +118,10 @@ function SearchInput({
         </label>
 
         <label htmlFor="searchCountry">
-          <span>Country</span>
+          <span className="flex gap-1">
+            <FaGlobeAmericas size={16} />
+            Country
+          </span>
           <select
             multiple
             name="country"
@@ -124,7 +141,10 @@ function SearchInput({
         </label>
 
         <label htmlFor="searchGenre">
-          <span>Genre</span>
+          <span className="flex gap-1">
+            <PiPianoKeysFill size={16} />
+            Genre
+          </span>
           <select
             multiple
             name="genre"
@@ -144,7 +164,10 @@ function SearchInput({
         </label>
 
         <label htmlFor="searchStyle">
-          <span>Style</span>
+          <span className="flex gap-1">
+            <PiMusicNoteSimpleFill size={16} />
+            Style
+          </span>
           <select
             multiple
             name="style"
@@ -166,7 +189,10 @@ function SearchInput({
         {searchType?.length === 1 && searchType?.includes("master") && (
           <>
             <label htmlFor="searchYear">
-              <span>Year</span>
+              <span className="flex gap-1">
+                <BiCalendar size={16} />
+                Year
+              </span>
               <input
                 name="year"
                 id="searchYear"
@@ -181,7 +207,10 @@ function SearchInput({
             </label>
 
             <label htmlFor="searchCredit">
-              <span>Release credit</span>
+              <span className="flex gap-1">
+                <PiUserListFill size={16} />
+                Release credit
+              </span>
               <input
                 name="credit"
                 id="searchCredit"

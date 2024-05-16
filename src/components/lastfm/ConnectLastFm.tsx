@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FormEvent, useEffect, useState } from "react";
-import { FaCog } from "react-icons/fa";
+import { FaCog, FaLastfm } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
 import LastFm from "./LastFM";
@@ -49,11 +49,15 @@ function ConnectLastFm() {
           <>
             {username ? (
               <>
-                <FaCog />
+                <FaLastfm />
                 <span>Last.fm</span>
+                <FaCog />
               </>
             ) : (
-              "Connect to Last.fm"
+              <>
+                <FaLastfm />
+                <span>Connect to Last.fm</span>
+              </>
             )}
           </>
         )}

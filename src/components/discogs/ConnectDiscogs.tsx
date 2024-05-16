@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import { PiVinylRecordFill } from "react-icons/pi";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Discogs from "./Discogs";
@@ -120,12 +121,16 @@ function ConnectDiscogs() {
         <>
           {accessToken ? (
             <>
-              <RiLogoutBoxRFill />
+              <PiVinylRecordFill />
               <span>Discogs</span>
+              <RiLogoutBoxRFill />
               <UserCollection accessToken={accessToken} />
             </>
           ) : (
-            "Connect to Discogs"
+            <>
+              <PiVinylRecordFill />
+              <span>Connect to Discogs</span>
+            </>
           )}
         </>
       )}
