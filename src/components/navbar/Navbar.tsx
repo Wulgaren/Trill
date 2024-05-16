@@ -73,6 +73,7 @@ function Navbar() {
                 href="https://github.com/wulgaren/"
                 tabIndex={0}
                 target="_blank"
+                rel="noreferrer"
               >
                 Creator: Natan Wojtyła
               </a>

@@ -1,10 +1,10 @@
 export type LastFMParam = string | string[];
 export type LastFMParams<T> = Record<string, LastFMParam | T>;
-export type LastFMVoidOrNumber = void | number;
+export type LastFMundefinedOrNumber = undefined | number;
 export type LastFMBooleanNumber = 0 | 1;
 export type LastFMUnknownFunction = (...args: unknown[]) => unknown;
 export type LastFMRequestParams<T> = Record<string, LastFMParam | T>;
-export type LastFMBooleanNumberOrVoid = LastFMBooleanNumber | void;
+export type LastFMBooleanNumberOrundefined = LastFMBooleanNumber | undefined;
 
 export type LastFMAlbumParams = Readonly<{
   album: string;
@@ -23,7 +23,7 @@ export type LastFMAlbumAddTagsParams = LastFMRequestParams<LastFMParam> &
   }>;
 
 export type LastFMAlbumGetInfoParams =
-  LastFMRequestParams<LastFMBooleanNumberOrVoid> &
+  LastFMRequestParams<LastFMBooleanNumberOrundefined> &
     LastFMAlbumParams &
     LastFMAlbumOptionalParams &
     Readonly<{
@@ -32,7 +32,7 @@ export type LastFMAlbumGetInfoParams =
     }>;
 
 export type LastFMAlbumGetTagsParams =
-  LastFMRequestParams<LastFMBooleanNumberOrVoid> &
+  LastFMRequestParams<LastFMBooleanNumberOrundefined> &
     LastFMAlbumParams &
     LastFMAlbumOptionalParams &
     Readonly<{
@@ -40,7 +40,7 @@ export type LastFMAlbumGetTagsParams =
     }>;
 
 export type LastFMAlbumGetTopTagsParams =
-  LastFMRequestParams<LastFMBooleanNumberOrVoid> &
+  LastFMRequestParams<LastFMBooleanNumberOrundefined> &
     LastFMAlbumParams &
     LastFMAlbumOptionalParams;
 
@@ -51,7 +51,7 @@ export type LastFMAlbumRemoveLastFMTagParams =
       tag: string;
     }>;
 
-export type LastFMAlbumSearchParams = LastFMRequestParams<number | void> &
+export type LastFMAlbumSearchParams = LastFMRequestParams<number | undefined> &
   Readonly<{
     page?: number;
     album: string;
@@ -153,7 +153,7 @@ export type LastFMArtistAddTagsParams = LastFMRequestParams<LastFMParam> &
   }>;
 
 export type LastFMArtistGetInfoParams =
-  LastFMRequestParams<LastFMBooleanNumberOrVoid> &
+  LastFMRequestParams<LastFMBooleanNumberOrundefined> &
     Readonly<{
       lang?: string;
       mbid?: string;
@@ -163,7 +163,7 @@ export type LastFMArtistGetInfoParams =
     }>;
 
 export type LastFMArtistGetSimilarParams =
-  LastFMRequestParams<LastFMVoidOrNumber> &
+  LastFMRequestParams<LastFMundefinedOrNumber> &
     Readonly<{
       mbid?: string;
       limit?: number;
@@ -172,7 +172,7 @@ export type LastFMArtistGetSimilarParams =
     }>;
 
 export type LastFMArtistGetTagsParams =
-  LastFMRequestParams<LastFMBooleanNumberOrVoid> &
+  LastFMRequestParams<LastFMBooleanNumberOrundefined> &
     Readonly<{
       mbid?: string;
       user?: string;
@@ -181,7 +181,7 @@ export type LastFMArtistGetTagsParams =
     }>;
 
 export type LastFMArtistGetTopAlbumsParams =
-  LastFMRequestParams<LastFMVoidOrNumber> &
+  LastFMRequestParams<LastFMundefinedOrNumber> &
     Readonly<{
       mbid?: string;
       page?: number;
@@ -191,7 +191,7 @@ export type LastFMArtistGetTopAlbumsParams =
     }>;
 
 export type LastFMArtistGetTopTagsParams =
-  LastFMRequestParams<LastFMBooleanNumberOrVoid> &
+  LastFMRequestParams<LastFMBooleanNumberOrundefined> &
     Readonly<{
       mbid?: string;
       artist: string;
@@ -199,7 +199,7 @@ export type LastFMArtistGetTopTagsParams =
     }>;
 
 export type LastFMArtistGetTopTracksParams =
-  LastFMRequestParams<LastFMVoidOrNumber> &
+  LastFMRequestParams<LastFMundefinedOrNumber> &
     Readonly<{
       mbid?: string;
       page?: number;
@@ -215,7 +215,7 @@ export type LastFMArtistRemoveLastFMTagParams =
       artist: string;
     }>;
 
-export type LastFMArtistSearchParams = LastFMRequestParams<number | void> &
+export type LastFMArtistSearchParams = LastFMRequestParams<number | undefined> &
   Readonly<{
     page?: number;
     limit?: number;
@@ -440,7 +440,7 @@ export type LastFMAuthGetTokenResponse = Readonly<{
   token: string;
 }>;
 
-export type LastFMChartParams = LastFMRequestParams<number | void> &
+export type LastFMChartParams = LastFMRequestParams<number | undefined> &
   Readonly<{
     page?: number;
     limit?: number;
@@ -523,7 +523,9 @@ export type LastFMChartGetTopTracksResponse = Readonly<{
   };
 }>;
 
-export type LastFMGeoGetTopArtistsParams = LastFMRequestParams<number | void> &
+export type LastFMGeoGetTopArtistsParams = LastFMRequestParams<
+  number | undefined
+> &
   Readonly<{
     page?: number;
     limit?: number;
@@ -593,7 +595,9 @@ export type LastFMGeoGetTopTracksResponse = Readonly<{
   };
 }>;
 
-export type LastFMLibraryGetArtistsParams = LastFMRequestParams<number | void> &
+export type LastFMLibraryGetArtistsParams = LastFMRequestParams<
+  number | undefined
+> &
   Readonly<{
     user: string;
     page?: number;
@@ -624,7 +628,7 @@ export type LastFMLibraryGetArtistsResponse = Readonly<{
   };
 }>;
 
-export type LastFMTagParams = LastFMRequestParams<number | void> &
+export type LastFMTagParams = LastFMRequestParams<number | undefined> &
   Readonly<{
     tag: string;
   }>;
@@ -634,13 +638,13 @@ export type LastFMTagOptionalParams = Readonly<{
   limit?: number;
 }>;
 
-export type LastFMTagGetInfoParams = LastFMRequestParams<number | void> &
+export type LastFMTagGetInfoParams = LastFMRequestParams<number | undefined> &
   LastFMTagParams &
   Readonly<{
     lang?: string;
   }>;
 
-export type LastFMTagGetTopParams = LastFMRequestParams<number | void> &
+export type LastFMTagGetTopParams = LastFMRequestParams<number | undefined> &
   LastFMTagParams &
   LastFMTagOptionalParams;
 
@@ -784,7 +788,7 @@ export type LastFMTagGetWeeklyChartListResponse = Readonly<{
   };
 }>;
 
-export type LastFMTrackParams = LastFMRequestParams<number | void> &
+export type LastFMTrackParams = LastFMRequestParams<number | undefined> &
   Readonly<{
     track: string;
     artist: string;
@@ -839,7 +843,7 @@ export type LastFMTrackScrobbleParams = LastFMTrackParams &
     duration?: number;
   }>;
 
-export type LastFMTrackSearchParams = LastFMRequestParams<number | void> &
+export type LastFMTrackSearchParams = LastFMRequestParams<number | undefined> &
   Readonly<{
     page?: number;
     limit?: number;
@@ -1068,7 +1072,7 @@ export type LastFMUpdateNowPlayingResponse = Readonly<{
 }>;
 
 export type LastFMUserParams = LastFMRequestParams<
-  LastFMParam | number | void | boolean
+  LastFMParam | number | undefined | boolean
 > &
   Readonly<{
     user: string;
@@ -1110,7 +1114,7 @@ export type LastFMUserGetTopParams = LastFMUserParams &
   }>;
 
 export type LastFMUserGetTopTagsParams = LastFMRequestParams<
-  string | number | void
+  string | number | undefined
 > &
   Readonly<{
     user: string;
@@ -1118,7 +1122,7 @@ export type LastFMUserGetTopTagsParams = LastFMRequestParams<
   }>;
 
 export type LastFMUserGetWeeklyParams = LastFMRequestParams<
-  string | number | void
+  string | number | undefined
 > &
   Readonly<{
     to?: string;

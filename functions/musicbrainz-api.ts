@@ -2,7 +2,7 @@
 
 import { Handler } from "@netlify/functions";
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   try {
     // Extract necessary data from the request, if needed
     const { queryStringParameters } = event;

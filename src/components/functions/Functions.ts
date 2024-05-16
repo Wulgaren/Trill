@@ -4,11 +4,10 @@ import {
 } from "../../types/Discogs/DiscogsTypes";
 
 export function GetSelectedValues(
-  selectInput: React.RefObject<HTMLSelectElement>,
-): string[];
-export function GetSelectedValues(selectInput: HTMLSelectElement): string[];
-export function GetSelectedValues(
-  selectInput: React.ChangeEvent<HTMLSelectElement>,
+  selectInput:
+    | HTMLSelectElement
+    | React.ChangeEvent<HTMLSelectElement>
+    | React.RefObject<HTMLSelectElement>,
 ): string[];
 export function GetSelectedValues(selectInput: unknown): string[] {
   let options: HTMLCollectionOf<HTMLOptionElement> | [];
