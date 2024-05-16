@@ -77,7 +77,7 @@ function SearchInput({
           Search
         </button>
         <button
-          className="mx-0 flex max-w-[25%] flex-1 items-center justify-center md:max-w-full"
+          className="mx-0 flex min-w-14 max-w-[25%] flex-1 items-center justify-center md:max-w-full"
           tabIndex={0}
           aria-label="Search filters"
           aria-expanded={showFilters}
@@ -86,9 +86,9 @@ function SearchInput({
           onClick={() => setShowFilters((prev) => !prev)}
         >
           {showFilters ? (
-            <RiFilterFill size={24} className="w-8" />
+            <RiFilterFill size={24} />
           ) : (
-            <RiFilterLine size={24} className="w-8" />
+            <RiFilterLine size={24} />
           )}
         </button>
       </div>
