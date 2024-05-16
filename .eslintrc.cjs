@@ -8,11 +8,17 @@ module.exports = {
     "plugin:@typescript-eslint/strict",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
     "prettier",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
-  plugins: ["react", "react-hooks", "react-refresh"],
+  plugins: [
+    "react",
+    "react-hooks",
+    "react-refresh",
+    "eslint-plugin-react-compiler",
+  ],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -20,6 +26,7 @@ module.exports = {
     ],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "react-compiler/react-compiler": 2,
   },
   settings: {
     react: {

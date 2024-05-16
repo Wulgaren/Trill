@@ -37,6 +37,7 @@ function Search({
     getNextPageParam: (lastPage) => {
       return hasMorePages(lastPage);
     },
+    initialPageParam: 1,
     enabled: !!params?.query,
   });
 

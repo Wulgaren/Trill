@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { memo } from "react";
 import { FaCompactDisc } from "react-icons/fa";
+import { useInView } from "react-intersection-observer";
 import type { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
@@ -11,8 +12,13 @@ function SearchImage({
   result: DiscogsSearchResult;
   index: number;
 }) {
+  const [inViewRef, inView] = useInView({
+    triggerOnce: true,
+    rootMargin: "0px 0px 200px 0px",
+  });
+
   const { data, error, isFetching } = useQuery({
-    queryKey: ["ResultImage", result.id],
+    queryKey: ["ResultImage", result.cover_image],
     queryFn: async () => {
       const res = await fetch(result.cover_image);
       if (!res.ok) throw new Error("Error downloading image.");
@@ -24,7 +30,7 @@ function SearchImage({
       return url;
     },
     retryDelay: 5000 + 100 * (index + 1),
-    enabled: !!result?.thumb,
+    enabled: !!(result?.thumb && inView),
   });
 
   if (!result?.thumb || error)
@@ -40,6 +46,7 @@ function SearchImage({
   return (
     <>
       <img
+        ref={inViewRef}
         className="h-full w-full object-cover"
         src={data}
         loading="lazy"

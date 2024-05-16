@@ -16,7 +16,7 @@ function App() {
         <div className="blob"></div>
       </div>
 
-      <ReactQueryDevtools />
+      <ReactQueryDevtools buttonPosition="bottom-left" />
       <TanStackRouterDevtools position="bottom-right" />
     </>
   );
