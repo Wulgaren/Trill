@@ -494,6 +494,16 @@ export type DiscogsGetMasterResponse = DiscogsMaster;
 export type DiscogsGetReleaseResponse = DiscogsRelease;
 export type DiscogsGetLabelResponse = DiscogsLabel;
 
+export type DiscogsGetPageResponse =
+  | DiscogsLabel
+  | DiscogsMaster
+  | DiscogsArtist;
+
+export type DiscogsPageParams = {
+  id: string;
+  type: "artist" | "master" | "label";
+};
+
 export type DiscogsGetArtistReleasesResponse = {
   pagination: DiscogsPagination;
   releases: (DiscogsArtistRelease | DiscogsArtistMaster)[];

@@ -47,7 +47,7 @@ function SearchImage({
     <>
       <img
         ref={inViewRef}
-        className="h-full w-full object-cover"
+        className="h-full w-full rounded-md object-cover"
         src={data}
         loading="lazy"
         alt={result.title + " Image"}

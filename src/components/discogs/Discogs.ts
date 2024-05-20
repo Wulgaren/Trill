@@ -1,5 +1,7 @@
 import {
   DiscogsAuthorization,
+  DiscogsGetPageResponse,
+  DiscogsPageParams,
   DiscogsPagination,
   DiscogsSearchQuery,
   DiscogsSearchResponse,
@@ -246,6 +248,33 @@ const Discogs = {
         "Error during getting search results:",
         GetErrorMessage(error),
       );
+      throw error;
+    }
+  },
+
+  GetResultData: async ({
+    id,
+    type,
+  }: DiscogsPageParams): Promise<DiscogsGetPageResponse> => {
+    try {
+      const url = `/api/discogs-api/${type}s/${id}`;
+
+      const requestOptions = {
+        method: "GET",
+        headers: Discogs.GetAuthHeader(),
+      };
+
+      const response = await fetch(url, requestOptions);
+
+      if (!response.ok) {
+        throw new Error("Error getting page.");
+      }
+
+      const parsed: DiscogsGetPageResponse = await response.json();
+
+      return parsed;
+    } catch (error) {
+      console.error("Error during getting page:", GetErrorMessage(error));
       throw error;
     }
   },
