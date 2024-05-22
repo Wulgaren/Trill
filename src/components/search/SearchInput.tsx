@@ -42,8 +42,9 @@ function SearchInput({
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    if (formData.get("query")) {
-      const formEntries = createFormObject([...formData.entries()]);
+    const formEntries = createFormObject([...formData.entries()]);
+
+    if (Object.values(formEntries)?.filter((x) => x)?.length) {
       setShowFilters(false);
 
       navigate({
@@ -96,7 +97,7 @@ function SearchInput({
       <div
         id="searchFilters"
         aria-hidden={!showFilters}
-        className="flex max-h-96 flex-row flex-wrap gap-2 overflow-hidden transition-all duration-500 [&>label]:flex-1"
+        className="flex max-h-svh flex-row flex-wrap gap-2 overflow-y-clip transition-all duration-500 [&:not([aria-hidden=true])]:pb-2 [&>label]:flex-1"
       >
         <label htmlFor="searchType">
           <span className="flex gap-1">

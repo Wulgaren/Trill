@@ -17,7 +17,7 @@ function App() {
       </div>
 
       <ReactQueryDevtools buttonPosition="bottom-left" />
-      <TanStackRouterDevtools position="bottom-right" />
+      <TanStackRouterDevtools position="top-left" />
     </>
   );
 }

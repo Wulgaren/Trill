@@ -182,7 +182,8 @@ const Discogs = {
   }): Promise<DiscogsSearchResponse> => {
     try {
       const params = queryKey[1];
-      if (!params?.query) throw new Error("No search query");
+      if (!Object.values(params)?.filter((x) => x)?.length)
+        throw new Error("No search params");
 
       const url = `/api/discogs-api/database/search`;
       const generatedQueries = generateQueries({ ...params, page: pageParam });

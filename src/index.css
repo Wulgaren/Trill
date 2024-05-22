@@ -39,7 +39,7 @@
   }
 
   div[aria-hidden="true"] {
-    @apply !max-h-0;
+    @apply !max-h-0 overflow-clip;
 
     input,
     select {
@@ -81,7 +81,7 @@
   }
 
   label:has(input, select) {
-    @apply flex flex-col rounded-lg bg-white dark:bg-gray-700;
+    @apply flex max-w-full flex-col rounded-lg bg-white dark:bg-gray-700;
 
     span {
       @apply p-2 pb-0 text-xs text-gray-400;

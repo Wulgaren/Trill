@@ -18,6 +18,7 @@ function Search({
   navigate: UseNavigateResult<"/search">;
 }) {
   const searchQueryKey = "searchQuery";
+  const searchActive = Object.values(params)?.filter((x) => x)?.length > 0;
 
   const {
     data,
@@ -38,14 +39,14 @@ function Search({
       return getNextPage(lastPage);
     },
     initialPageParam: 1,
-    enabled: !!params?.query,
+    enabled: !!searchActive,
   });
 
   return (
     <>
       <SearchInput params={params} navigate={navigate} />
       {isFetching && !data && <LoadingAnimation />}
-      {!isLoading && params?.query && !data?.pages[0]?.results?.length && (
+      {!isLoading && searchActive && !data?.pages[0]?.results?.length && (
         <NoSearchResult />
       )}
       {!isLoading && !!data?.pages[0]?.results?.length && (
