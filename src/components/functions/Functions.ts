@@ -96,6 +96,7 @@ export function removeTags(text: string): string {
 export function removeNumberFromName(text: string): string {
   // Remove number
   text = text.replace(/\s*\(\d+\)/g, "");
+  text = text.replace(/\s*\[\d+\]/g, "");
 
   return text;
 }
@@ -114,4 +115,25 @@ export function convertHTMLTags(text: string): string {
     .replaceAll("[/i]", "</i>");
 
   return text;
+}
+
+export function calculateComma(len: number, index: number): string {
+  return len - (index + 1) != 0 ? "," : "";
+}
+
+export function groupByProperty<T>(
+  arr: Array<T>,
+  property: keyof T,
+): Record<string, Array<T>> {
+  const groupedArtists: Record<string, Array<T>> = {};
+
+  arr.forEach((x) => {
+    const key = String(x[property]); // Convert the property value to a string
+    if (!groupedArtists[key]) {
+      groupedArtists[key] = [];
+    }
+    groupedArtists[key].push(x);
+  });
+
+  return groupedArtists;
 }

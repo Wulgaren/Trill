@@ -3,13 +3,16 @@ import { Link } from "@tanstack/react-router";
 import { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { DiscogsArtist } from "../../types/Discogs/DiscogsTypes";
+import CollapsibleText from "../collapsible-text/CollapsibleText";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
 import {
+  calculateComma,
   convertHTMLTags,
   getNextPage,
   getSimpleLink,
   removeNumberFromName,
+  removeTags,
 } from "../functions/Functions";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
@@ -62,12 +65,12 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
 
         <div className="w-full rounded-md bg-white !bg-opacity-40 p-5 dark:bg-black dark:text-white">
           <h1 className="mb-3 break-words text-4xl">{data.name}</h1>
-          <span
-            className="whitespace-pre-wrap"
-            dangerouslySetInnerHTML={{
-              __html: convertHTMLTags(removeNumberFromName(data.profile)),
-            }}
-          ></span>
+          <CollapsibleText
+            text={convertHTMLTags(
+              removeNumberFromName(removeTags(data.profile)),
+            )}
+            maxLength={250}
+          />
         </div>
       </div>
 
@@ -88,7 +91,8 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
                       }}
                       className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
                     >
-                      {removeNumberFromName(member.name)}
+                      {removeNumberFromName(member.name) +
+                        calculateComma(data.members?.length ?? 0, index)}
                     </Link>
                   </li>
                 );
@@ -113,7 +117,8 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
                       }}
                       className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
                     >
-                      {removeNumberFromName(group.name)}
+                      {removeNumberFromName(group.name) +
+                        calculateComma(data.groups?.length ?? 0, index)}
                     </Link>
                   </li>
                 );
@@ -138,7 +143,8 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
                       }}
                       className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
                     >
-                      {removeNumberFromName(alias.name)}
+                      {removeNumberFromName(alias.name) +
+                        calculateComma(data.aliases?.length ?? 0, index)}
                     </Link>
                   </li>
                 );
@@ -161,7 +167,8 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {getSimpleLink(url)}
+                      {getSimpleLink(url) +
+                        calculateComma(data.urls?.length ?? 0, index)}
                     </a>
                   </li>
                 );
