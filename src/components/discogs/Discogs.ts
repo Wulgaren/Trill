@@ -2,7 +2,9 @@ import {
   DiscogsAuthorization,
   DiscogsGetArtistReleasesResponse,
   DiscogsGetArtistResponse,
+  DiscogsGetMasterResponse,
   DiscogsGetPageResponse,
+  DiscogsGetReleaseResponse,
   DiscogsPageParams,
   DiscogsPagination,
   DiscogsSearchQuery,
@@ -255,7 +257,7 @@ const Discogs = {
     }
   },
 
-  GetResultData: async ({
+  GetPageData: async ({
     id,
     type,
   }: DiscogsPageParams): Promise<DiscogsGetPageResponse> => {
@@ -273,14 +275,26 @@ const Discogs = {
         throw new Error("Error getting page.");
       }
 
-      const parsed: DiscogsGetPageResponse = await response.json();
+      let parsed: DiscogsGetPageResponse = await response.json();
 
-      const artistResponse = parsed as DiscogsGetArtistResponse;
-
-      if (artistResponse.profile) {
-        (parsed as DiscogsGetArtistResponse).profile = removeTags(
-          artistResponse.profile,
+      if (type == "master") {
+        // master doesn't have tracklist
+        const releaseFromMaster = await fetch(
+          `/api/discogs-api/releases/${(parsed as DiscogsGetMasterResponse).main_release}`,
+          requestOptions,
         );
+        const parsedRelease: DiscogsGetReleaseResponse =
+          await releaseFromMaster.json();
+
+        parsed = { ...parsedRelease, ...parsed };
+      } else if (type == "artist") {
+        const artistResponse = parsed as DiscogsGetArtistResponse;
+
+        if (artistResponse.profile) {
+          (parsed as DiscogsGetArtistResponse).profile = removeTags(
+            artistResponse.profile,
+          );
+        }
       }
 
       parsed.images?.map(

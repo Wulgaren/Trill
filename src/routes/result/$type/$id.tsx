@@ -9,13 +9,14 @@ import {
   DiscogsLabel,
   DiscogsMaster,
   DiscogsPageParams,
+  DiscogsRelease,
 } from "../../../types/Discogs/DiscogsTypes.ts";
 
 export const Route = createFileRoute("/result/$type/$id")({
   component: () => <ResultPageParams />,
   pendingComponent: LoadingAnimation,
   loader: async ({ params }: { params: DiscogsPageParams }) =>
-    await Discogs.GetResultData(params),
+    await Discogs.GetPageData(params),
 });
 
 function ResultPageParams() {
@@ -30,6 +31,6 @@ function ResultPageParams() {
       return <LabelPage data={data as DiscogsLabel} />;
     case "master":
     case "release":
-      return <MasterPage data={data as DiscogsMaster} />;
+      return <MasterPage data={data as DiscogsMaster & DiscogsRelease} />;
   }
 }

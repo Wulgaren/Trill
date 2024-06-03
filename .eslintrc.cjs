@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  env: { browser: true, esnext: true },
+  env: { browser: true, es2023: true },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -13,6 +13,9 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: "latest", // Always use the latest ECMAScript features.
+  },
   plugins: [
     "react",
     "react-hooks",

@@ -8,7 +8,7 @@ function SearchImage({
   url,
   title = "",
   index = 0,
-  className = "object-cover",
+  className = "object-cover w-full h-full rounded-md",
 }: {
   url: string;
   title?: string;
@@ -40,7 +40,7 @@ function SearchImage({
     return (
       <FaCompactDisc
         size={50}
-        className="h-full w-full object-cover p-5 pb-12 opacity-70"
+        className={`p-5 pb-12 opacity-70 ${className}`}
       />
     );
 
@@ -50,7 +50,7 @@ function SearchImage({
     <>
       <img
         ref={inViewRef}
-        className={`h-full w-full rounded-md ${className}`}
+        className={`${className}`}
         src={data}
         loading="lazy"
         alt={title + " Image"}
