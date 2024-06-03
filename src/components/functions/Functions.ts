@@ -1,6 +1,6 @@
 import {
+  DiscogsPagination,
   DiscogsSearchQuery,
-  DiscogsSearchResponse,
 } from "../../types/Discogs/DiscogsTypes";
 
 export function GetSelectedValues(
@@ -61,9 +61,9 @@ export function generateQueries(
   return queryObjs.map(generateQueryString);
 }
 
-export function getNextPage(lastPage: DiscogsSearchResponse) {
-  const page = lastPage?.pagination?.page ?? 0;
-  const allPages = lastPage?.pagination?.pages ?? 0;
+export function getNextPage(lastPage: DiscogsPagination | undefined) {
+  const page = lastPage?.page ?? 0;
+  const allPages = lastPage?.pages ?? 0;
   if (page == allPages) return null;
   return page + 1;
 }
@@ -84,4 +84,34 @@ export function createFormObject(formEntries: [string, FormDataEntryValue][]) {
   });
 
   return result;
+}
+
+export function removeTags(text: string): string {
+  // Replace [x=name]
+  text = text.replace(/\[([a-z])=([^\]]+)\]/g, "$2");
+
+  return text;
+}
+
+export function removeNumberFromName(text: string): string {
+  // Remove number
+  text = text.replace(/\s*\(\d+\)/g, "");
+
+  return text;
+}
+
+export function getSimpleLink(link: string): string {
+  link = link.split("://")[1].split("/")[0].replace("www.", "");
+
+  return link;
+}
+
+export function convertHTMLTags(text: string): string {
+  text = text
+    .replaceAll("[b]", "<b>")
+    .replaceAll("[/b]", "</b>")
+    .replaceAll("[i]", "<i>")
+    .replaceAll("[/i]", "</i>");
+
+  return text;
 }

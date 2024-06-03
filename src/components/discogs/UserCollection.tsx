@@ -21,7 +21,7 @@ function UserCollection({
         queryKey: [userCollectionQueryKey, username],
       }),
     getNextPageParam: (lastPage: DiscogsSearchResponse) => {
-      return getNextPage(lastPage);
+      return getNextPage(lastPage.pagination);
     },
     initialPageParam: 1,
     enabled: !!accessToken,

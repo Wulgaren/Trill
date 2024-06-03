@@ -17,6 +17,10 @@
     scroll-behavior: smooth;
   }
 
+  body {
+    @apply h-full w-full bg-white font-sans text-black transition-colors dark:bg-[#212327] dark:text-white;
+  }
+
   /* custom scrollbar */
   ::-webkit-scrollbar {
     width: 20px;
@@ -91,20 +95,16 @@
     select {
       &:focus,
       &:focus-visible {
-        @apply !shadow-none;
+        @apply !shadow-none !outline-none;
       }
     }
   }
 
-  [tabindex],
-  a {
-    @apply outline-none;
-  }
   :focus,
   :focus ~ label,
   :focus-visible,
   label:focus-within {
-    @apply rounded-lg shadow-sm shadow-focus outline-offset-4 !outline-focus transition-all duration-500;
+    @apply rounded-lg shadow-none outline-none outline-offset-4 !outline-focus transition-all duration-300;
   }
 
   .blob {

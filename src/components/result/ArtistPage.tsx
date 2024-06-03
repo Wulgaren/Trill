@@ -1,17 +1,234 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { useCallback } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import { DiscogsArtist } from "../../types/Discogs/DiscogsTypes";
+import Discogs from "../discogs/Discogs";
+import ErrorResult from "../error-result/ErrorResult";
+import {
+  convertHTMLTags,
+  getNextPage,
+  getSimpleLink,
+  removeNumberFromName,
+} from "../functions/Functions";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
+import SearchImage from "../search-image/SearchImage";
+import NoSearchResult from "../search/NoSearchResult";
 
 function ArtistPage({ data }: { data: DiscogsArtist }) {
+  console.log(data);
+
+  const queryKey = "artistDiscog";
+
+  const {
+    data: releases,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    isLoading,
+    error,
+  } = useInfiniteQuery({
+    queryKey: [queryKey, data.id],
+    queryFn: ({ pageParam = 1 }) =>
+      Discogs.GetArtistReleases({
+        pageParam,
+        queryKey: [queryKey, data.id.toString()],
+      }),
+    getNextPageParam: (lastPage) => {
+      return getNextPage(lastPage.pagination);
+    },
+    initialPageParam: 1,
+  });
+
+  const handleScrollToBottom = useCallback(() => {
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, isFetchingNextPage, hasNextPage]);
+
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-row flex-wrap gap-5 md:flex-nowrap">
-        {data.images?.length && (
-          <img
-            className="max-w-1/4 min-h-80 w-80 rounded-lg object-cover shadow-sm"
-            src={data.images[0]?.resource_url}
-          />
+      <div className="grid grid-flow-row grid-cols-1 gap-5 md:grid-cols-[auto_1fr]">
+        {data?.images?.[0]?.resource_url && (
+          <div className="max-h-80 max-w-md rounded-lg shadow-sm">
+            <SearchImage
+              url={data?.images?.[0]?.resource_url}
+              title={data.name}
+              className="object-contain"
+            />
+          </div>
         )}
-        <div className="flex w-3/4">
-          <h1>{data.name}</h1>
+
+        <div className="rounded-md bg-white !bg-opacity-40 p-5 dark:bg-black dark:text-white">
+          <h1 className="mb-3 break-words text-4xl">{data.name}</h1>
+          <span
+            className="whitespace-pre-wrap"
+            dangerouslySetInnerHTML={{
+              __html: convertHTMLTags(removeNumberFromName(data.profile)),
+            }}
+          ></span>
+        </div>
+
+        <div className="flex flex-col rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
+          {data.members && (
+            <>
+              <h2 className="text-xl">Members: </h2>
+
+              <ul>
+                {data.members?.map((member, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <Link
+                        to={`/result/$type/$id`}
+                        params={{
+                          id: member.id.toString(),
+                          type: "artist",
+                        }}
+                        className="relative mx-2 ml-0 py-2 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                      >
+                        {removeNumberFromName(member.name)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+
+          {data.groups && (
+            <>
+              <h2 className="text-xl">Groups: </h2>
+
+              <ul>
+                {data.groups?.map((group, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <Link
+                        to={`/result/$type/$id`}
+                        params={{
+                          id: group.id.toString(),
+                          type: "artist",
+                        }}
+                        className="relative mx-2 ml-0 py-2 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                      >
+                        {removeNumberFromName(group.name)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+
+          {data.aliases && (
+            <>
+              <h2 className="mt-3 text-xl">Aliases: </h2>
+
+              <ul>
+                {data.aliases?.map((alias, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <Link
+                        to={`/result/$type/$id`}
+                        params={{
+                          id: alias.id.toString(),
+                          type: "artist",
+                        }}
+                        className="relative mx-2 ml-0 py-2 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                      >
+                        {removeNumberFromName(alias.name)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+
+          {data.urls && (
+            <>
+              <h2 className="mt-3 text-xl">Sites:</h2>
+
+              <ul>
+                {data.urls.map((url, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <a
+                        className="relative mx-2 ml-0 py-2 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                        href={url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {getSimpleLink(url)}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+
+        <div className="rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
+          <h2 className="text-xl">Releases:</h2>
+
+          {isFetching && !data && <LoadingAnimation />}
+          {!isLoading && !releases?.pages[0]?.releases?.length && (
+            <NoSearchResult />
+          )}
+          {!isLoading && !!releases?.pages[0]?.releases?.length && (
+            <InfiniteScroll
+              element="ul"
+              className="mt-3 grid max-h-96 gap-5 overflow-auto overscroll-contain"
+              pageStart={2}
+              loadMore={handleScrollToBottom}
+              hasMore={hasNextPage}
+              loader={
+                <li
+                  className="flex flex-col items-center justify-center p-2"
+                  key={0}
+                >
+                  <LoadingAnimation />
+                </li>
+              }
+            >
+              {releases?.pages
+                ?.flatMap((page) => page.releases)
+                .map((release, index) => {
+                  return (
+                    <li key={index}>
+                      <Link
+                        to="/result/$type/$id"
+                        params={{
+                          id: release.id.toString(),
+                          type: release.type,
+                        }}
+                      >
+                        <div className="flex flex-row items-center gap-3">
+                          <div className="w-2/12">
+                            <SearchImage
+                              url={release.thumb}
+                              title={release.title}
+                              index={index}
+                            />
+                          </div>
+
+                          <div>
+                            <h3 className="relative mx-2 ml-0 py-2 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
+                              {release.title}
+                            </h3>
+                            <span>{release.year}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                  );
+                })}
+            </InfiniteScroll>
+          )}
+
+          {error && <ErrorResult />}
         </div>
       </div>
     </div>

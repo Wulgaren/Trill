@@ -14,8 +14,8 @@ import {
 export const Route = createFileRoute("/result/$type/$id")({
   component: () => <ResultPageParams />,
   pendingComponent: LoadingAnimation,
-  loader: async ({ params }) =>
-    await Discogs.GetResultData(params as DiscogsPageParams),
+  loader: async ({ params }: { params: DiscogsPageParams }) =>
+    await Discogs.GetResultData(params),
 });
 
 function ResultPageParams() {
@@ -29,6 +29,7 @@ function ResultPageParams() {
     case "label":
       return <LabelPage data={data as DiscogsLabel} />;
     case "master":
+    case "release":
       return <MasterPage data={data as DiscogsMaster} />;
   }
 }

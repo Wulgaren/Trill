@@ -69,6 +69,7 @@ function SearchInput({
             id="searchInput"
             className="w-full"
             type="search"
+            autoFocus={true}
             defaultValue={params.query}
             aria-label="Search for an artist, release or a label..."
             tabIndex={0}

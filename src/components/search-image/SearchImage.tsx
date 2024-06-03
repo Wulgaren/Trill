@@ -2,15 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { memo } from "react";
 import { FaCompactDisc } from "react-icons/fa";
 import { useInView } from "react-intersection-observer";
-import type { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
 function SearchImage({
-  result,
-  index,
+  url,
+  title = "",
+  index = 0,
+  className = "object-cover",
 }: {
-  result: DiscogsSearchResult;
-  index: number;
+  url: string;
+  title?: string;
+  index?: number;
+  className?: string;
 }) {
   const [inViewRef, inView] = useInView({
     triggerOnce: true,
@@ -18,22 +21,22 @@ function SearchImage({
   });
 
   const { data, error, isFetching } = useQuery({
-    queryKey: ["ResultImage", result.cover_image],
+    queryKey: ["ResultImage", url],
     queryFn: async () => {
-      const res = await fetch(result.cover_image);
+      const res = await fetch(url);
       if (!res.ok) throw new Error("Error downloading image.");
 
       const blob = await res?.blob();
       if (blob.size <= 0) throw new Error("Error image.");
 
-      const url = URL.createObjectURL(blob);
-      return url;
+      const objectUrl = URL.createObjectURL(blob);
+      return objectUrl;
     },
     retryDelay: 5000 + 100 * (index + 1),
-    enabled: !!(result?.thumb && inView),
+    enabled: !!(url && inView),
   });
 
-  if (!result?.thumb || error)
+  if (!url || error)
     return (
       <FaCompactDisc
         size={50}
@@ -47,10 +50,10 @@ function SearchImage({
     <>
       <img
         ref={inViewRef}
-        className="h-full w-full rounded-md object-cover"
+        className={`h-full w-full rounded-md ${className}`}
         src={data}
         loading="lazy"
-        alt={result.title + " Image"}
+        alt={title + " Image"}
       />
     </>
   );

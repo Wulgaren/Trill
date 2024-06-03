@@ -497,11 +497,14 @@ export type DiscogsGetLabelResponse = DiscogsLabel;
 export type DiscogsGetPageResponse =
   | DiscogsLabel
   | DiscogsMaster
-  | DiscogsArtist;
+  | DiscogsArtist
+  | DiscogsRelease;
+
+export type DiscogsAllowedPageTypes = "artist" | "master" | "label" | "release";
 
 export type DiscogsPageParams = {
   id: string;
-  type: "artist" | "master" | "label";
+  type: DiscogsAllowedPageTypes;
 };
 
 export type DiscogsGetArtistReleasesResponse = {

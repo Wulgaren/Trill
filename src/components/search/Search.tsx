@@ -36,7 +36,7 @@ function Search({
         queryKey: [searchQueryKey, params],
       }),
     getNextPageParam: (lastPage) => {
-      return getNextPage(lastPage);
+      return getNextPage(lastPage.pagination);
     },
     initialPageParam: 1,
     enabled: !!searchActive,

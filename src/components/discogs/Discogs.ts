@@ -1,5 +1,7 @@
 import {
   DiscogsAuthorization,
+  DiscogsGetArtistReleasesResponse,
+  DiscogsGetArtistResponse,
   DiscogsGetPageResponse,
   DiscogsPageParams,
   DiscogsPagination,
@@ -10,7 +12,7 @@ import {
 } from "../../types/Discogs/DiscogsTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
-import { generateQueries } from "../functions/Functions";
+import { generateQueries, removeTags } from "../functions/Functions";
 
 const Discogs = {
   GetLoggedUserName: async (): Promise<string> => {
@@ -273,9 +275,65 @@ const Discogs = {
 
       const parsed: DiscogsGetPageResponse = await response.json();
 
+      const artistResponse = parsed as DiscogsGetArtistResponse;
+
+      if (artistResponse.profile) {
+        (parsed as DiscogsGetArtistResponse).profile = removeTags(
+          artistResponse.profile,
+        );
+      }
+
+      parsed.images?.map(
+        (x) =>
+          (x.resource_url =
+            "/api/discogs-image" + x.resource_url?.split("discogs.com")[1]),
+      );
+
       return parsed;
     } catch (error) {
       console.error("Error during getting page:", GetErrorMessage(error));
+      throw error;
+    }
+  },
+
+  GetArtistReleases: async ({
+    pageParam = 1,
+    queryKey,
+  }: {
+    pageParam: number;
+    queryKey: string[];
+  }): Promise<DiscogsGetArtistReleasesResponse> => {
+    try {
+      const artistId = queryKey[1];
+      console.log(artistId);
+
+      const response = await fetch(
+        `/api/discogs-api/artists/${artistId}/releases?per_page=50&page=${pageParam}`,
+        {
+          method: "GET",
+          headers: Discogs.GetAuthHeader(),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error requesting artist's releases.");
+      }
+
+      const artistReleases: DiscogsGetArtistReleasesResponse =
+        await response.json();
+
+      artistReleases.releases.map(
+        (x) =>
+          (x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1]),
+      );
+      console.log("releases", artistReleases);
+
+      return artistReleases;
+    } catch (error) {
+      console.error(
+        "Error during getting artist's releases:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },

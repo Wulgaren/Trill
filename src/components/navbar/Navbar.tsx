@@ -69,7 +69,7 @@ function Navbar() {
             </li>
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
               <a
-                className="relative mx-2 py-2 text-white after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-500 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full"
+                className="relative mx-2 py-2 text-white after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full"
                 href="https://github.com/wulgaren/"
                 tabIndex={0}
                 target="_blank"
