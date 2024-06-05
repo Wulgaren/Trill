@@ -88,15 +88,15 @@ export function createFormObject(formEntries: [string, FormDataEntryValue][]) {
 
 export function removeTags(text: string): string {
   // Replace [x=name]
-  text = text.replace(/\[([a-z])=([^\]]+)\]/g, "$2");
+  text = text.replaceAll(/\[([a-z])=([^\]]+)\]/g, "$2");
 
   return text;
 }
 
 export function removeNumberFromName(text: string): string {
   // Remove number
-  text = text.replace(/\s*\(\d+\)/g, "");
-  text = text.replace(/\s*\[\d+\]/g, "");
+  text = text.replaceAll(/\s*\(\d+\)/g, "");
+  text = text.replaceAll(/\s*\[\d+\]/g, "");
 
   return text;
 }
@@ -112,7 +112,9 @@ export function convertHTMLTags(text: string): string {
     .replaceAll("[b]", "<b>")
     .replaceAll("[/b]", "</b>")
     .replaceAll("[i]", "<i>")
-    .replaceAll("[/i]", "</i>");
+    .replaceAll("[/i]", "</i>")
+    .replaceAll("[u]", "<ul>")
+    .replaceAll("[/u]", "</ul>");
 
   return text;
 }
@@ -136,4 +138,8 @@ export function groupByProperty<T>(
   });
 
   return groupedArtists;
+}
+
+export function removeAsterisk(text: string): string {
+  return text[text.length - 1] == "*" ? text.replace("*", "") : text;
 }

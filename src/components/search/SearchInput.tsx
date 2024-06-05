@@ -85,7 +85,10 @@ function SearchInput({
           aria-expanded={showFilters}
           aria-controls="#searchFilters"
           type="button"
-          onClick={() => setShowFilters((prev) => !prev)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowFilters((prev) => !prev);
+          }}
         >
           {showFilters ? (
             <RiFilterFill size={24} />

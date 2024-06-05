@@ -118,6 +118,7 @@ export type DiscogsLabel = {
   resource_url: string;
   id: number;
   data_quality: string;
+  sublabels?: DiscogsLabel[];
 };
 
 // LabelRelease

@@ -2,6 +2,7 @@ import {
   DiscogsAuthorization,
   DiscogsGetArtistReleasesResponse,
   DiscogsGetArtistResponse,
+  DiscogsGetLabelReleasesResponse,
   DiscogsGetMasterResponse,
   DiscogsGetPageResponse,
   DiscogsGetReleaseResponse,
@@ -346,6 +347,48 @@ const Discogs = {
     } catch (error) {
       console.error(
         "Error during getting artist's releases:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetLabelReleases: async ({
+    pageParam = 1,
+    queryKey,
+  }: {
+    pageParam: number;
+    queryKey: string[];
+  }): Promise<DiscogsGetLabelReleasesResponse> => {
+    try {
+      const labelId = queryKey[1];
+      console.log(labelId);
+
+      const response = await fetch(
+        `/api/discogs-api/labels/${labelId}/releases?per_page=50&page=${pageParam}`,
+        {
+          method: "GET",
+          headers: Discogs.GetAuthHeader(),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error requesting label's releases.");
+      }
+
+      const labelReleases: DiscogsGetLabelReleasesResponse =
+        await response.json();
+
+      labelReleases.releases.map(
+        (x) =>
+          (x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1]),
+      );
+      console.log("label releases", labelReleases);
+
+      return labelReleases;
+    } catch (error) {
+      console.error(
+        "Error during getting label's releases:",
         GetErrorMessage(error),
       );
       throw error;

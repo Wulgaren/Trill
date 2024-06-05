@@ -74,109 +74,111 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
         </div>
       </div>
 
-      <div className="flex flex-col rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
-        {data.members && (
-          <>
-            <h2 className="text-xl">Members: </h2>
+      {(data.members || data.groups || data.aliases || data.urls) && (
+        <div className="flex flex-col rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
+          {data.members && (
+            <>
+              <h2 className="text-xl">Members: </h2>
 
-            <ul>
-              {data.members?.map((member, index) => {
-                return (
-                  <li className="inline-block py-2" key={index}>
-                    <Link
-                      to={`/result/$type/$id`}
-                      params={{
-                        id: member.id.toString(),
-                        type: "artist",
-                      }}
-                      className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                    >
-                      {removeNumberFromName(member.name) +
-                        calculateComma(data.members?.length ?? 0, index)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
+              <ul>
+                {data.members?.map((member, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <Link
+                        to={`/result/$type/$id`}
+                        params={{
+                          id: member.id.toString(),
+                          type: "artist",
+                        }}
+                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                      >
+                        {removeNumberFromName(member.name) +
+                          calculateComma(data.members?.length ?? 0, index)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
-        {data.groups && (
-          <>
-            <h2 className="text-xl">Groups: </h2>
+          {data.groups && (
+            <>
+              <h2 className="text-xl">Groups: </h2>
 
-            <ul>
-              {data.groups?.map((group, index) => {
-                return (
-                  <li className="inline-block py-2" key={index}>
-                    <Link
-                      to={`/result/$type/$id`}
-                      params={{
-                        id: group.id.toString(),
-                        type: "artist",
-                      }}
-                      className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                    >
-                      {removeNumberFromName(group.name) +
-                        calculateComma(data.groups?.length ?? 0, index)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
+              <ul>
+                {data.groups?.map((group, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <Link
+                        to={`/result/$type/$id`}
+                        params={{
+                          id: group.id.toString(),
+                          type: "artist",
+                        }}
+                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                      >
+                        {removeNumberFromName(group.name) +
+                          calculateComma(data.groups?.length ?? 0, index)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
-        {data.aliases && (
-          <>
-            <h2 className="mt-3 text-xl">Aliases: </h2>
+          {data.aliases && (
+            <>
+              <h2 className="mt-3 text-xl">Aliases: </h2>
 
-            <ul>
-              {data.aliases?.map((alias, index) => {
-                return (
-                  <li className="inline-block py-2" key={index}>
-                    <Link
-                      to={`/result/$type/$id`}
-                      params={{
-                        id: alias.id.toString(),
-                        type: "artist",
-                      }}
-                      className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                    >
-                      {removeNumberFromName(alias.name) +
-                        calculateComma(data.aliases?.length ?? 0, index)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
+              <ul>
+                {data.aliases?.map((alias, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <Link
+                        to={`/result/$type/$id`}
+                        params={{
+                          id: alias.id.toString(),
+                          type: "artist",
+                        }}
+                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                      >
+                        {removeNumberFromName(alias.name) +
+                          calculateComma(data.aliases?.length ?? 0, index)}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
-        {data.urls && (
-          <>
-            <h2 className="mt-3 text-xl">Sites:</h2>
+          {data.urls && (
+            <>
+              <h2 className="mt-3 text-xl">Sites:</h2>
 
-            <ul>
-              {data.urls.map((url, index) => {
-                return (
-                  <li className="inline-block py-2" key={index}>
-                    <a
-                      className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      href={url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {getSimpleLink(url) +
-                        calculateComma(data.urls?.length ?? 0, index)}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
-      </div>
+              <ul>
+                {data.urls.map((url, index) => {
+                  return (
+                    <li className="inline-block py-2" key={index}>
+                      <a
+                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                        href={url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {getSimpleLink(url) +
+                          calculateComma(data.urls?.length ?? 0, index)}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
 
       <div className="rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
         <h2 className="text-xl">Releases:</h2>
@@ -186,54 +188,57 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
           <NoSearchResult />
         )}
         {!isLoading && !!releases?.pages[0]?.releases?.length && (
-          <InfiniteScroll
-            element="ul"
-            className="mt-3 grid max-h-96 gap-5 overflow-auto overscroll-contain"
-            pageStart={2}
-            loadMore={handleScrollToBottom}
-            hasMore={hasNextPage}
-            loader={
-              <li
-                className="flex flex-col items-center justify-center p-2"
-                key={0}
-              >
-                <LoadingAnimation />
-              </li>
-            }
-          >
-            {releases?.pages
-              ?.flatMap((page) => page.releases)
-              .map((release, index) => {
-                return (
-                  <li key={index}>
-                    <Link
-                      to="/result/$type/$id"
-                      params={{
-                        id: release.id.toString(),
-                        type: release.type,
-                      }}
-                    >
-                      <div className="flex flex-row items-center gap-3">
-                        <div className="w-2/12">
-                          <SearchImage
-                            url={release.thumb}
-                            title={release.title}
-                            index={index}
-                          />
-                        </div>
+          <div className="overflow-auto overscroll-contain">
+            <InfiniteScroll
+              element="ul"
+              className="mt-3 grid max-h-96 gap-5"
+              pageStart={2}
+              loadMore={handleScrollToBottom}
+              hasMore={hasNextPage}
+              useWindow={false}
+              loader={
+                <li
+                  className="flex flex-col items-center justify-center p-2"
+                  key={0}
+                >
+                  <LoadingAnimation />
+                </li>
+              }
+            >
+              {releases?.pages
+                ?.flatMap((page) => page.releases)
+                .map((release, index) => {
+                  return (
+                    <li key={index}>
+                      <Link
+                        to="/result/$type/$id"
+                        params={{
+                          id: release.id.toString(),
+                          type: release.type,
+                        }}
+                      >
+                        <div className="flex flex-row items-center gap-3">
+                          <div className="w-2/12">
+                            <SearchImage
+                              url={release.thumb}
+                              title={release.title}
+                              index={index}
+                            />
+                          </div>
 
-                        <div>
-                          <h3 className="relative mx-2 ml-0 py-2 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
-                            {release.title}
-                          </h3>
-                          <span>{release.year}</span>
+                          <div>
+                            <h3 className="relative mx-2 ml-0 py-2 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
+                              {release.title}
+                            </h3>
+                            <span>{release.year}</span>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
-          </InfiniteScroll>
+                      </Link>
+                    </li>
+                  );
+                })}
+            </InfiniteScroll>
+          </div>
         )}
 
         {error && <ErrorResult />}
