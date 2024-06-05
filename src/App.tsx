@@ -1,5 +1,5 @@
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, ScrollRestoration } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import Navbar from "./components/navbar/Navbar";
 
@@ -7,7 +7,8 @@ function App() {
   return (
     <>
       <Navbar />
-      <main className="p-5">
+      <main className="p-3 md:p-5">
+        <ScrollRestoration />
         <Outlet />
       </main>
 

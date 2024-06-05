@@ -15,6 +15,7 @@ import {
   removeNumberFromName,
   removeTags,
 } from "../functions/Functions";
+import LinkIcon from "../link-icon/LinkIcon";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
 import NoSearchResult from "../search/NoSearchResult";
@@ -84,10 +85,10 @@ function LabelPage({ data }: { data: DiscogsLabel }) {
             <>
               <h2 className="text-xl">Sublabels: </h2>
 
-              <ul>
+              <ul className="flex flex-wrap">
                 {data.sublabels?.map((sublabel, index) => {
                   return (
-                    <li className="inline-block py-2" key={index}>
+                    <li className="inline-block max-w-full py-1" key={index}>
                       <Link
                         to={`/result/$type/$id`}
                         params={{
@@ -96,8 +97,10 @@ function LabelPage({ data }: { data: DiscogsLabel }) {
                         }}
                         className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
                       >
-                        {removeNumberFromName(sublabel.name) +
-                          calculateComma(data.sublabels?.length ?? 0, index)}
+                        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+                          {removeNumberFromName(sublabel.name) +
+                            calculateComma(data.sublabels?.length ?? 0, index)}
+                        </span>
                       </Link>
                     </li>
                   );
@@ -108,20 +111,23 @@ function LabelPage({ data }: { data: DiscogsLabel }) {
 
           {data.urls && (
             <>
-              <h2 className="mt-3 text-xl">Sites:</h2>
+              <h3 className="mt-3 text-lg">Sites:</h3>
 
-              <ul>
+              <ul className="flex flex-wrap">
                 {data.urls.map((url, index) => {
                   return (
-                    <li className="inline-block py-2" key={index}>
+                    <li className="inline-block max-w-full py-1" key={index}>
                       <a
-                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
+                        className="relative mx-2 ml-0 flex gap-2 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
                         href={url}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {getSimpleLink(url) +
-                          calculateComma(data.urls?.length ?? 0, index)}
+                        <LinkIcon url={url} />
+                        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+                          {getSimpleLink(url) +
+                            calculateComma(data.urls?.length ?? 0, index)}
+                        </span>
                       </a>
                     </li>
                   );
@@ -140,7 +146,7 @@ function LabelPage({ data }: { data: DiscogsLabel }) {
           <NoSearchResult />
         )}
         {!isLoading && !!releases?.pages[0]?.releases?.length && (
-          <div className="overflow-auto overscroll-contain">
+          <div className="overflow-scroll overscroll-contain">
             <InfiniteScroll
               element="ul"
               className="mt-3 grid max-h-96 gap-5"
@@ -169,8 +175,8 @@ function LabelPage({ data }: { data: DiscogsLabel }) {
                           type: "release",
                         }}
                       >
-                        <div className="flex flex-row items-center gap-3">
-                          <div className="w-2/12">
+                        <div className="flex flex-row flex-wrap items-center justify-center gap-3 text-center md:flex-nowrap md:justify-start md:text-start">
+                          <div className="md:w-2/12">
                             <SearchImage
                               url={release.thumb}
                               title={release.title}
