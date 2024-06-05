@@ -1,7 +1,19 @@
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Outlet, ScrollRestoration } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import React from "react";
 import Navbar from "./components/navbar/Navbar";
+
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === "development"
+    ? React.lazy(() =>
+        // Lazy load in development
+        import("@tanstack/router-devtools").then((res) => ({
+          default: res.TanStackRouterDevtools,
+          // For Embedded Mode
+          // default: res.TanStackRouterDevtoolsPanel
+        })),
+      )
+    : () => null; // Render nothing in production
 
 function App() {
   return (

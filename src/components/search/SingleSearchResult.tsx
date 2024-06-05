@@ -1,9 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { memo } from "react";
-import {
-  DiscogsAllowedPageTypes,
-  DiscogsSearchResult,
-} from "../../types/Discogs/DiscogsTypes";
+import { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import SearchImage from "../search-image/SearchImage";
 
 function SingleSearchResultComponent({
@@ -19,7 +16,7 @@ function SingleSearchResultComponent({
         to={`/result/$type/$id`}
         params={{
           id: result.id.toString(),
-          type: result.type as DiscogsAllowedPageTypes,
+          type: result.type,
         }}
         className="h-full w-full overflow-clip"
         alt={"Page for " + result.title}
