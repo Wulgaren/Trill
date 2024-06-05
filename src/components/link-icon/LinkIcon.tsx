@@ -1,17 +1,21 @@
 import {
   FaBandcamp,
+  FaBuildingColumns,
   FaDailymotion,
   FaFacebook,
   FaInstagram,
+  FaLastfm,
   FaLinkedin,
   FaSoundcloud,
   FaTumblr,
+  FaTwitch,
   FaTwitter,
   FaVimeo,
   FaWikipediaW,
   FaYoutube,
 } from "react-icons/fa6";
-import { SiMyspace } from "react-icons/si";
+import { GiPitchfork } from "react-icons/gi";
+import { SiMyspace, SiSongkick } from "react-icons/si";
 
 const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
   if (!url) return;
@@ -44,6 +48,16 @@ const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
       return <FaDailymotion size={size} />;
     case url.includes("myspace"):
       return <SiMyspace size={size} />;
+    case url.includes("pitchfork"):
+      return <GiPitchfork size={size} />;
+    case url.includes("twitch"):
+      return <FaTwitch size={size} />;
+    case url.includes("archive.org"):
+      return <FaBuildingColumns size={size} />;
+    case url.includes("last.fm"):
+      return <FaLastfm size={size} />;
+    case url.includes("songkick"):
+      return <SiSongkick size={size} />;
   }
 
   return;
