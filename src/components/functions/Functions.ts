@@ -141,5 +141,8 @@ export function groupByProperty<T>(
 }
 
 export function removeAsterisk(text: string): string {
-  return text[text.length - 1] == "*" ? text.replace("*", "") : text;
+  if (text?.endsWith("*")) text = text.slice(0, -1);
+  else if (text?.includes("* -")) text = text.replace("* -", " -");
+
+  return text;
 }

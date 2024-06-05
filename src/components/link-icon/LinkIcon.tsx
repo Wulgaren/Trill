@@ -14,7 +14,6 @@ import {
   FaWikipediaW,
   FaYoutube,
 } from "react-icons/fa6";
-import { GiPitchfork } from "react-icons/gi";
 import { SiMyspace, SiSongkick } from "react-icons/si";
 
 const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
@@ -48,8 +47,6 @@ const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
       return <FaDailymotion size={size} />;
     case url.includes("myspace"):
       return <SiMyspace size={size} />;
-    case url.includes("pitchfork"):
-      return <GiPitchfork size={size} />;
     case url.includes("twitch"):
       return <FaTwitch size={size} />;
     case url.includes("archive.org"):

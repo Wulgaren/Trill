@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { memo } from "react";
 import { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
+import { removeAsterisk } from "../functions/Functions";
 import SearchImage from "../search-image/SearchImage";
 
 function SingleSearchResultComponent({
@@ -27,7 +28,7 @@ function SingleSearchResultComponent({
           index={index}
         />
         <p className="absolute bottom-0 w-full rounded-bl-md rounded-br-md bg-white !bg-opacity-40 p-2 text-center text-black backdrop-blur-sm dark:bg-black dark:text-white">
-          {result.title}
+          {removeAsterisk(result.title)}
         </p>
       </Link>
     </li>
