@@ -8,12 +8,22 @@ const CollapsibleText = ({
   maxLength: number;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  if (!text?.trim()) return;
 
   const toggleText = () => {
     setIsExpanded((prev) => !prev);
   };
 
   const displayedText = isExpanded ? text : text.slice(0, maxLength);
+
+  if (text.length <= maxLength) {
+    return (
+      <p
+        className="inline whitespace-pre-wrap text-sm"
+        dangerouslySetInnerHTML={{ __html: displayedText }}
+      ></p>
+    );
+  }
 
   return (
     <div
