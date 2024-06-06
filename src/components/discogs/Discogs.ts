@@ -311,19 +311,24 @@ const Discogs = {
     }
   },
 
-  GetArtistReleases: async ({
+  GetReleases: async ({
     pageParam = 1,
     queryKey,
   }: {
     pageParam: number;
     queryKey: string[];
-  }): Promise<DiscogsGetArtistReleasesResponse> => {
+  }): Promise<
+    DiscogsGetArtistReleasesResponse | DiscogsGetLabelReleasesResponse
+  > => {
     try {
-      const artistId = queryKey[1];
-      console.log(artistId);
+      const id = queryKey[1];
+      const which = queryKey[0].toLowerCase().includes("label")
+        ? "labels"
+        : "artists";
+      console.log(id, which);
 
       const response = await fetch(
-        `/api/discogs-api/artists/${artistId}/releases?per_page=50&page=${pageParam}`,
+        `/api/discogs-api/${which}/${id}/releases?per_page=50&page=${pageParam}`,
         {
           method: "GET",
           headers: Discogs.GetAuthHeader(),
@@ -331,66 +336,22 @@ const Discogs = {
       );
 
       if (!response.ok) {
-        throw new Error("Error requesting artist's releases.");
+        throw new Error(`Error requesting ${which} releases.`);
       }
 
-      const artistReleases: DiscogsGetArtistReleasesResponse =
-        await response.json();
+      const parsed:
+        | DiscogsGetArtistReleasesResponse
+        | DiscogsGetLabelReleasesResponse = await response.json();
 
-      artistReleases.releases.map(
+      parsed.releases.map(
         (x) =>
           (x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1]),
       );
-      console.log("releases", artistReleases);
+      console.log(`${which} releases`, parsed);
 
-      return artistReleases;
+      return parsed;
     } catch (error) {
-      console.error(
-        "Error during getting artist's releases:",
-        GetErrorMessage(error),
-      );
-      throw error;
-    }
-  },
-
-  GetLabelReleases: async ({
-    pageParam = 1,
-    queryKey,
-  }: {
-    pageParam: number;
-    queryKey: string[];
-  }): Promise<DiscogsGetLabelReleasesResponse> => {
-    try {
-      const labelId = queryKey[1];
-      console.log(labelId);
-
-      const response = await fetch(
-        `/api/discogs-api/labels/${labelId}/releases?per_page=50&page=${pageParam}`,
-        {
-          method: "GET",
-          headers: Discogs.GetAuthHeader(),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Error requesting label's releases.");
-      }
-
-      const labelReleases: DiscogsGetLabelReleasesResponse =
-        await response.json();
-
-      labelReleases.releases.map(
-        (x) =>
-          (x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1]),
-      );
-      console.log("label releases", labelReleases);
-
-      return labelReleases;
-    } catch (error) {
-      console.error(
-        "Error during getting label's releases:",
-        GetErrorMessage(error),
-      );
+      console.error(`Error during getting releases:`, GetErrorMessage(error));
       throw error;
     }
   },

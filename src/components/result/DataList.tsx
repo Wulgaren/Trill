@@ -23,7 +23,7 @@ type combinedTypes =
   | DiscogsEntityArtist
   | DiscogsCompany;
 
-const DataList = ({
+function DataList({
   title,
   titleAs: TitleElement = "span",
   items,
@@ -39,7 +39,7 @@ const DataList = ({
   isLink?: boolean;
   isInline?: boolean;
   className?: string;
-}) => {
+}) {
   return (
     <div className={className}>
       <TitleElement
@@ -111,6 +111,6 @@ const DataList = ({
       </ul>
     </div>
   );
-};
+}
 
 export default DataList;
