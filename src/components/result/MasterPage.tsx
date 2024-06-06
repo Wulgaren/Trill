@@ -11,6 +11,7 @@ import {
   removeNumberFromName,
 } from "../functions/Functions";
 import SearchImage from "../search-image/SearchImage";
+import DataList from "./DataList";
 
 function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
   console.log(data);
@@ -50,90 +51,46 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
           <span>Released: {data.year}</span>
 
           {data.genres?.length > 0 && (
-            <div className="flex gap-1">
-              <span>{data.genres.length > 1 ? "Genres" : "Genre"}: </span>
-
-              <ul className="flex">
-                {data.genres.map((genre, index) => {
-                  return (
-                    <li key={index}>
-                      <Link
-                        to="/search"
-                        search={{ genre: genre }}
-                        className="relative mx-1 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      >
-                        {genre + calculateComma(data.genres.length, index)}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <DataList
+              title="Genre"
+              items={data.genres}
+              type="search"
+              isLink={true}
+              isInline={true}
+              className="flex gap-1"
+            />
           )}
 
           {data.styles && (
-            <div className="flex gap-1">
-              <span>{data.styles.length > 1 ? "Styles" : "Style"}: </span>
-
-              <ul className="flex">
-                {data.styles.map((style, index) => {
-                  return (
-                    <li key={index}>
-                      <Link
-                        to="/search"
-                        search={{ style: style }}
-                        className="relative mx-1 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      >
-                        {style +
-                          calculateComma(data.styles?.length ?? 0, index)}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <DataList
+              title="Style"
+              items={data.styles}
+              type="search"
+              isLink={true}
+              isInline={true}
+              className="flex gap-1"
+            />
           )}
 
           {data.labels?.length > 0 && (
-            <div className="flex gap-1">
-              <span>{data.labels.length > 1 ? "Labels" : "Label"}: </span>
-
-              <ul className="flex">
-                {data.labels.map((label, index) => {
-                  return (
-                    <li key={index}>
-                      <Link
-                        to="/result/$type/$id"
-                        params={{ id: label.id.toString(), type: "label" }}
-                        className="relative mx-1 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      >
-                        {label.name + calculateComma(data.labels.length, index)}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <DataList
+              title="Label"
+              items={data.labels}
+              type="label"
+              isLink={true}
+              isInline={true}
+              className="flex gap-1"
+            />
           )}
 
           {data.formats?.length > 0 && (
-            <div className="flex gap-1">
-              <span>{data.formats.length > 1 ? "Formats" : "Format"}: </span>
-
-              <ul className="flex gap-1">
-                {data.formats.map((format, index) => {
-                  return (
-                    <li key={index}>
-                      {format.name}
-                      {format.descriptions
-                        ? " - " + format.descriptions?.join(", ")
-                        : ""}
-                      {calculateComma(data.formats.length, index)}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <DataList
+              title="Format"
+              items={data.formats}
+              isLink={false}
+              isInline={true}
+              className="flex gap-1"
+            />
           )}
 
           {data.country && (

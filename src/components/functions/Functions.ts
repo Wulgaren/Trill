@@ -88,6 +88,8 @@ export function createFormObject(formEntries: [string, FormDataEntryValue][]) {
 
 export function removeTags(text: string): string {
   // Replace [x=name]
+  if (!text) return text;
+
   text = text.replaceAll(/\[([a-z])=([^\]]+)\]/g, "$2");
 
   return text;
@@ -95,6 +97,8 @@ export function removeTags(text: string): string {
 
 export function removeNumberFromName(text: string): string {
   // Remove number
+  if (!text) return text;
+
   text = text.replaceAll(/\s*\(\d+\)/g, "");
   text = text.replaceAll(/\s*\[\d+\]/g, "");
 
@@ -102,12 +106,16 @@ export function removeNumberFromName(text: string): string {
 }
 
 export function getSimpleLink(link: string): string {
+  if (!link) return link;
+
   link = link.split("://")[1].split("/")[0].replace("www.", "");
 
   return link;
 }
 
 export function convertHTMLTags(text: string): string {
+  if (!text) return text;
+
   text = text
     .replaceAll("[b]", "<b>")
     .replaceAll("[/b]", "</b>")

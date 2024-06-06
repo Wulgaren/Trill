@@ -286,10 +286,10 @@ export type DiscogsGetMasterVersionsOpts = {
 // Release
 
 export type DiscogsRelease = {
-  identifiers: Identifier[];
+  identifiers: DiscogsIdentifier[];
   series: unknown[];
-  labels: Company[];
-  community: ReleaseCommunity;
+  labels: DiscogsCompany[];
+  community: DiscogsReleaseCommunity;
   year: number;
   images?: DiscogsImage[];
   format_quantity: number;
@@ -310,9 +310,9 @@ export type DiscogsRelease = {
   country?: string;
   notes?: string;
   tracklist: ReleaseTrack[];
-  companies: Company[];
+  companies: DiscogsCompany[];
   uri: string;
-  formats: Format[];
+  formats: DiscogsFormat[];
   resource_url: string;
   data_quality: string;
   estimated_weight?: number;
@@ -322,27 +322,27 @@ export type DiscogsRelease = {
   master_url?: string;
 };
 
-export interface ReleaseCommunity {
+export interface DiscogsReleaseCommunity {
   status: string;
-  rating: Rating;
+  rating: DiscogsRating;
   want: number;
-  contributors: Contributor[];
+  contributors: DiscogsContributor[];
   have: number;
-  submitter: Contributor | null;
+  submitter: DiscogsContributor | null;
   data_quality: string;
 }
 
-export interface Contributor {
+export interface DiscogsContributor {
   username: string;
   resource_url: string;
 }
 
-export interface Rating {
+export interface DiscogsRating {
   count: number;
   average: number;
 }
 
-export interface Company {
+export interface DiscogsCompany {
   name: string;
   entity_type: string;
   catno: string;
@@ -351,14 +351,7 @@ export interface Company {
   entity_type_name: string;
 }
 
-export interface Format {
-  qty: string;
-  descriptions?: string[];
-  name: string;
-  text?: string;
-}
-
-export interface Identifier {
+export interface DiscogsIdentifier {
   type: string;
   value: string;
   description?: string;
@@ -471,7 +464,7 @@ export type DiscogsSearchRelease = {
   };
 };
 
-type DiscogsFormat = {
+export type DiscogsFormat = {
   qty: string;
   descriptions?: string[];
   name: string;

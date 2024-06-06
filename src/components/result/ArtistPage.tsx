@@ -7,17 +7,15 @@ import CollapsibleText from "../collapsible-text/CollapsibleText";
 import Discogs from "../discogs/Discogs";
 import ErrorResult from "../error-result/ErrorResult";
 import {
-  calculateComma,
   convertHTMLTags,
   getNextPage,
-  getSimpleLink,
   removeNumberFromName,
   removeTags,
 } from "../functions/Functions";
-import LinkIcon from "../link-icon/LinkIcon";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
 import NoSearchResult from "../search/NoSearchResult";
+import DataList from "./DataList";
 
 function ArtistPage({ data }: { data: DiscogsArtist }) {
   console.log(data);
@@ -78,116 +76,45 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
       {(data.members || data.groups || data.aliases || data.urls) && (
         <div className="flex flex-col rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
           {data.members && (
-            <>
-              <h2 className="text-xl">Members: </h2>
-
-              <ul className="flex flex-wrap">
-                {data.members?.map((member, index) => {
-                  return (
-                    <li className="inline-block max-w-full py-1" key={index}>
-                      <Link
-                        to={`/result/$type/$id`}
-                        params={{
-                          id: member.id.toString(),
-                          type: "artist",
-                        }}
-                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      >
-                        <span
-                          className={`overflow-hidden text-ellipsis whitespace-nowrap ${!member.active ? "line-through" : ""}`}
-                        >
-                          {removeNumberFromName(member.name) +
-                            calculateComma(data.members?.length ?? 0, index)}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
+            <DataList
+              title="Member"
+              titleAs={"h2"}
+              isLink={true}
+              items={data.members}
+              type="artist"
+            />
           )}
 
           {data.groups && (
-            <>
-              <h2 className="text-xl">Groups: </h2>
-
-              <ul className="flex flex-wrap">
-                {data.groups?.map((group, index) => {
-                  return (
-                    <li className="inline-block max-w-full py-1" key={index}>
-                      <Link
-                        to={`/result/$type/$id`}
-                        params={{
-                          id: group.id.toString(),
-                          type: "artist",
-                        }}
-                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      >
-                        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                          {removeNumberFromName(group.name) +
-                            calculateComma(data.groups?.length ?? 0, index)}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
+            <DataList
+              title="Group"
+              titleAs={"h2"}
+              isLink={true}
+              items={data.groups}
+              type="artist"
+              className="mt-3"
+            />
           )}
 
           {data.aliases && (
-            <>
-              <h2 className="mt-3 text-xl">Aliases: </h2>
-
-              <ul className="flex flex-wrap">
-                {data.aliases?.map((alias, index) => {
-                  return (
-                    <li className="inline-block max-w-full py-1" key={index}>
-                      <Link
-                        to={`/result/$type/$id`}
-                        params={{
-                          id: alias.id.toString(),
-                          type: "artist",
-                        }}
-                        className="relative mx-2 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                      >
-                        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                          {removeNumberFromName(alias.name) +
-                            calculateComma(data.aliases?.length ?? 0, index)}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
+            <DataList
+              title="Alias"
+              titleAs={"h2"}
+              isLink={true}
+              items={data.aliases}
+              type="artist"
+              className="mt-3"
+            />
           )}
 
           {data.urls && (
-            <>
-              <h3 className="mt-3 text-lg">Sites:</h3>
-
-              <ul className="flex flex-wrap">
-                {data.urls.map((url, index) => {
-                  return (
-                    <li className="inline-block max-w-full py-1" key={index}>
-                      <a
-                        className="relative mx-2 ml-0 flex gap-2 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                        href={url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <LinkIcon url={url} />
-                        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                          {getSimpleLink(url) +
-                            calculateComma(data.urls?.length ?? 0, index)}
-                        </span>
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
+            <DataList
+              title="Site"
+              titleAs={"h3"}
+              isLink={true}
+              items={data.urls}
+              className="mt-3"
+            />
           )}
         </div>
       )}
