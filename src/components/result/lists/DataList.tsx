@@ -8,13 +8,13 @@ import {
   DiscogsEntityArtist,
   DiscogsFormat,
   DiscogsLabel,
-} from "../../types/Discogs/DiscogsTypes";
+} from "../../../types/Discogs/DiscogsTypes";
 import {
   calculateComma,
   getSimpleLink,
   removeNumberFromName,
-} from "../functions/Functions";
-import LinkIcon from "../link-icon/LinkIcon";
+} from "../../functions/Functions";
+import LinkIcon from "../../link-icon/LinkIcon";
 
 type combinedTypes =
   | DiscogsLabel

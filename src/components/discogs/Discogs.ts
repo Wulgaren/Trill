@@ -322,13 +322,13 @@ const Discogs = {
   > => {
     try {
       const id = queryKey[1];
-      const which = queryKey[0].toLowerCase().includes("label")
+      const type = queryKey[0].toLowerCase().includes("label")
         ? "labels"
         : "artists";
-      console.log(id, which);
+      console.log(id, type);
 
       const response = await fetch(
-        `/api/discogs-api/${which}/${id}/releases?per_page=50&page=${pageParam}`,
+        `/api/discogs-api/${type}/${id}/releases?per_page=50&page=${pageParam}`,
         {
           method: "GET",
           headers: Discogs.GetAuthHeader(),
@@ -336,7 +336,7 @@ const Discogs = {
       );
 
       if (!response.ok) {
-        throw new Error(`Error requesting ${which} releases.`);
+        throw new Error(`Error requesting ${type} releases.`);
       }
 
       const parsed:
@@ -347,7 +347,7 @@ const Discogs = {
         (x) =>
           (x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1]),
       );
-      console.log(`${which} releases`, parsed);
+      console.log(`${type} releases`, parsed);
 
       return parsed;
     } catch (error) {

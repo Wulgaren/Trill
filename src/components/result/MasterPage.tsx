@@ -11,11 +11,9 @@ import {
   removeNumberFromName,
 } from "../functions/Functions";
 import SearchImage from "../search-image/SearchImage";
-import DataList from "./DataList";
+import DataList from "./lists/DataList";
 
 function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
-  console.log(data);
-
   return (
     <div className="flex h-full flex-col gap-3">
       <div className="flex flex-row flex-wrap gap-3 md:flex-nowrap">

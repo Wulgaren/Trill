@@ -8,22 +8,22 @@ import {
   DiscogsArtistRelease,
   DiscogsLabel,
   DiscogsLabelRelease,
-} from "../../types/Discogs/DiscogsTypes";
-import Discogs from "../discogs/Discogs";
-import ErrorResult from "../error-result/ErrorResult";
-import { getNextPage, removeAsterisk } from "../functions/Functions";
-import LoadingAnimation from "../loading-animation/LoadingAnimation";
-import SearchImage from "../search-image/SearchImage";
-import NoSearchResult from "../search/NoSearchResult";
+} from "../../../types/Discogs/DiscogsTypes";
+import Discogs from "../../discogs/Discogs";
+import ErrorResult from "../../error-result/ErrorResult";
+import { getNextPage, removeAsterisk } from "../../functions/Functions";
+import LoadingAnimation from "../../loading-animation/LoadingAnimation";
+import SearchImage from "../../search-image/SearchImage";
+import NoSearchResult from "../../search/NoSearchResult";
 
 function ReleasesListComponent({
   data,
-  queryKey,
+  type,
 }: {
   data: DiscogsArtist | DiscogsLabel;
-  queryKey: string;
+  type: "artists" | "labels";
 }) {
-  const which = queryKey.toLowerCase().includes("label") ? "labels" : "artists";
+  const queryKey = type + "Releases";
 
   const {
     data: releases,
@@ -110,7 +110,7 @@ function ReleasesListComponent({
                         </div>
 
                         <div className="flex flex-col">
-                          {which == "labels" && (
+                          {type == "labels" && (
                             <h3 className="text-lg">
                               {removeAsterisk(release.artist)}
                             </h3>
@@ -118,12 +118,12 @@ function ReleasesListComponent({
                           <h3 className="relative mx-2 ml-0 pb-1 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
                             {release.title}
                           </h3>
-                          {which == "labels" && (
+                          {type == "labels" && (
                             <span className="text-sm">
                               {(release as DiscogsLabelRelease).format}
                             </span>
                           )}
-                          {which == "labels" && (
+                          {type == "labels" && (
                             <span className="pb-1 text-xs">
                               Catalog Number:
                               {(release as DiscogsLabelRelease).catno}

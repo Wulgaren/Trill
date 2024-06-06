@@ -8,12 +8,10 @@ import {
 } from "../functions/Functions";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
-import DataList from "./DataList";
-const ReleasesList = lazy(() => import("./ReleasesList"));
+import DataList from "./lists/DataList";
+const ReleasesList = lazy(() => import("./lists/ReleasesList"));
 
 function ArtistPage({ data }: { data: DiscogsArtist }) {
-  console.log(data);
-
   return (
     <div className="flex h-full flex-col gap-3">
       <div className="flex flex-row flex-wrap gap-3 md:flex-nowrap">
@@ -88,7 +86,7 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
         <h2 className="text-xl">Releases:</h2>
 
         <Suspense fallback={<LoadingAnimation />}>
-          <ReleasesList data={data} queryKey="artistReleases" />
+          <ReleasesList data={data} type="artists" />
         </Suspense>
       </div>
     </div>
