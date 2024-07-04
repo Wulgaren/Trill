@@ -1,19 +1,32 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
   DiscogsMaster,
   DiscogsRelease,
 } from "../../types/Discogs/DiscogsTypes";
 import CollapsibleText from "../collapsible-text/CollapsibleText";
+import Discogs from "../discogs/Discogs";
 import {
   calculateComma,
   convertHTMLTags,
-  groupByProperty,
   removeNumberFromName,
 } from "../functions/Functions";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
 import DataList from "./lists/DataList";
+import TrackList from "./lists/TrackList";
 
 function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
+  const { data: bonusTracks, isFetching: bonusTracksFetching } = useQuery({
+    queryKey: ["bonus tracks", data.id, data.tracklist],
+    queryFn: () =>
+      Discogs.GetBonusTracks({
+        id: data.id,
+        originalTracklist: data.tracklist,
+      }),
+    enabled: !!(data.id && data.tracklist),
+  });
+
   return (
     <div className="flex h-full flex-col gap-3">
       <div className="flex flex-row flex-wrap gap-3 md:flex-nowrap">
@@ -117,61 +130,16 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
 
       {data.tracklist?.length > 0 && (
         <div className="flex flex-col rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
-          <h2 className="text-xl">Tracklist: </h2>
+          <TrackList tracklist={data.tracklist} />
 
-          <ol className="list-decimal pl-6">
-            {data.tracklist?.map((track, trackIndex) => {
-              return (
-                <li className="py-1" key={trackIndex}>
-                  <div className="flex flex-row justify-between">
-                    <div className="flex flex-col">
-                      <span className="break-words">{track.title}</span>
-
-                      {track.extraartists && (
-                        <ul className="flex gap-1">
-                          {Object.entries(
-                            groupByProperty(track.extraartists, "role"),
-                          ).map(([role, artist], roleIndex) => {
-                            return (
-                              <div
-                                key={roleIndex}
-                                className="flex gap-1 text-sm"
-                              >
-                                <span>{role + ": "}</span>
-
-                                {artist.map((artist, artistIndex) => {
-                                  return (
-                                    <li key={roleIndex + artistIndex}>
-                                      <Link
-                                        to="/result/$type/$id"
-                                        params={{
-                                          id: artist.id.toString(),
-                                          type: "artist",
-                                        }}
-                                        className="relative pb-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
-                                      >
-                                        {artist.name +
-                                          calculateComma(
-                                            track.extraartists?.length ?? 0,
-                                            roleIndex + artistIndex,
-                                          )}
-                                      </Link>
-                                    </li>
-                                  );
-                                })}
-                              </div>
-                            );
-                          })}
-                        </ul>
-                      )}
-                    </div>
-
-                    <span className="text-sm">{track.duration}</span>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
+          {bonusTracksFetching && <LoadingAnimation />}
+          {!bonusTracksFetching && bonusTracks && bonusTracks?.length > 0 && (
+            <TrackList
+              tracklist={bonusTracks}
+              title="Bonus tracks"
+              ordered={false}
+            />
+          )}
         </div>
       )}
 

@@ -4,14 +4,17 @@ import {
   DiscogsGetArtistResponse,
   DiscogsGetLabelReleasesResponse,
   DiscogsGetMasterResponse,
+  DiscogsGetMasterVersionsResponse,
   DiscogsGetPageResponse,
   DiscogsGetReleaseResponse,
+  DiscogsMasterTrack,
   DiscogsPageParams,
   DiscogsPagination,
   DiscogsSearchQuery,
   DiscogsSearchResponse,
   DiscogsSearchResult,
   DiscogsUser,
+  ReleaseTrack,
 } from "../../types/Discogs/DiscogsTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
@@ -298,11 +301,11 @@ const Discogs = {
         }
       }
 
-      parsed.images?.map(
-        (x) =>
-          (x.resource_url =
-            "/api/discogs-image" + x.resource_url?.split("discogs.com")[1]),
-      );
+      parsed.images?.forEach((x) => {
+        if (x.resource_url)
+          x.resource_url =
+            "/api/discogs-image" + x.resource_url?.split("discogs.com")[1];
+      });
 
       return parsed;
     } catch (error) {
@@ -343,15 +346,77 @@ const Discogs = {
         | DiscogsGetArtistReleasesResponse
         | DiscogsGetLabelReleasesResponse = await response.json();
 
-      parsed.releases.map(
-        (x) =>
-          (x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1]),
-      );
+      parsed.releases.forEach((x) => {
+        if (x.thumb)
+          x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1];
+      });
       console.log(`${type} releases`, parsed);
 
       return parsed;
     } catch (error) {
       console.error(`Error during getting releases:`, GetErrorMessage(error));
+      throw error;
+    }
+  },
+
+  GetBonusTracks: async ({
+    id,
+    originalTracklist,
+  }: {
+    id: number;
+    originalTracklist: DiscogsMasterTrack[] & ReleaseTrack[];
+  }): Promise<ReleaseTrack[]> => {
+    try {
+      const response = await fetch(`/api/discogs-api/masters/${id}/versions?`, {
+        method: "GET",
+        headers: Discogs.GetAuthHeader(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error getting bonus tracks.");
+      }
+
+      const parsed: DiscogsGetMasterVersionsResponse = await response.json();
+
+      const filtered = parsed.versions.filter(
+        (x) =>
+          !x.format.includes("Promo") &&
+          !x.format.includes("Club Edition") &&
+          (x.country === "Japan" ||
+            x.format.includes("Vinyl") ||
+            x.format.includes("LP") ||
+            x.format.includes("Cassette") ||
+            x.format.includes("Edition")),
+      );
+
+      const requests = filtered.map((x) =>
+        Discogs.GetPageData({
+          id: x.id.toString(),
+          type: "release",
+        }),
+      );
+      const responses = await Promise.all(requests);
+
+      const bonusTracks: ReleaseTrack[] = [];
+      for (const response of responses) {
+        (response as DiscogsGetReleaseResponse).tracklist.forEach((track) => {
+          if (
+            !originalTracklist.find((y) => y.title === track.title) &&
+            !bonusTracks.find((z) => z.title === track.title)
+          ) {
+            bonusTracks.push(track);
+          }
+        });
+      }
+
+      console.log("bonus tracks", bonusTracks);
+
+      return bonusTracks;
+    } catch (error) {
+      console.error(
+        "Error during getting bonus tracks:",
+        GetErrorMessage(error),
+      );
       throw error;
     }
   },
