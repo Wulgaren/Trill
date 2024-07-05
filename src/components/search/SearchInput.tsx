@@ -122,77 +122,77 @@ function SearchInput({
           </select>
         </label>
 
-        <label htmlFor="searchCountry">
-          <span className="flex gap-1">
-            <FaGlobeAmericas size={16} />
-            Country
-          </span>
-          <select
-            multiple
-            name="country"
-            id="searchCountry"
-            defaultValue={params.country}
-            tabIndex={0}
-            aria-label="Country"
-          >
-            {countries?.map((country, index) => {
-              return (
-                <option key={index} value={country}>
-                  {country}
-                </option>
-              );
-            })}
-          </select>
-        </label>
-
-        <label htmlFor="searchGenre">
-          <span className="flex gap-1">
-            <PiPianoKeysFill size={16} />
-            Genre
-          </span>
-          <select
-            multiple
-            name="genre"
-            id="searchGenre"
-            defaultValue={params.genre}
-            tabIndex={0}
-            aria-label="Genre"
-          >
-            {genres?.map((genre, index) => {
-              return (
-                <option key={index} value={genre}>
-                  {genre}
-                </option>
-              );
-            })}
-          </select>
-        </label>
-
-        <label htmlFor="searchStyle">
-          <span className="flex gap-1">
-            <PiMusicNoteSimpleFill size={16} />
-            Style
-          </span>
-          <select
-            multiple
-            name="style"
-            id="searchStyle"
-            defaultValue={params.style}
-            tabIndex={0}
-            aria-label="Style"
-          >
-            {styles?.map((style, index) => {
-              return (
-                <option key={index} value={style}>
-                  {style}
-                </option>
-              );
-            })}
-          </select>
-        </label>
-
         {searchType?.length === 1 && searchType?.includes("master") && (
           <>
+            <label htmlFor="searchCountry">
+              <span className="flex gap-1">
+                <FaGlobeAmericas size={16} />
+                Country
+              </span>
+              <select
+                multiple
+                name="country"
+                id="searchCountry"
+                defaultValue={params.country}
+                tabIndex={0}
+                aria-label="Country"
+              >
+                {countries?.map((country, index) => {
+                  return (
+                    <option key={index} value={country}>
+                      {country}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+
+            <label htmlFor="searchGenre">
+              <span className="flex gap-1">
+                <PiPianoKeysFill size={16} />
+                Genre
+              </span>
+              <select
+                multiple
+                name="genre"
+                id="searchGenre"
+                defaultValue={params.genre}
+                tabIndex={0}
+                aria-label="Genre"
+              >
+                {genres?.map((genre, index) => {
+                  return (
+                    <option key={index} value={genre}>
+                      {genre}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+
+            <label htmlFor="searchStyle">
+              <span className="flex gap-1">
+                <PiMusicNoteSimpleFill size={16} />
+                Style
+              </span>
+              <select
+                multiple
+                name="style"
+                id="searchStyle"
+                defaultValue={params.style}
+                tabIndex={0}
+                aria-label="Style"
+              >
+                {styles?.map((style, index) => {
+                  return (
+                    <option key={index} value={style}>
+                      {style}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+
             <label htmlFor="searchYear">
               <span className="flex gap-1">
                 <BiCalendar size={16} />

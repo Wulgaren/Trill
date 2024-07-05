@@ -201,7 +201,7 @@ const Discogs = {
         headers: Discogs.GetAuthHeader(),
       };
 
-      console.log(url, generatedQueries);
+      console.log({ url, generatedQueries });
 
       const promises = generatedQueries.map((query) =>
         fetch(url + query, requestOptions),
