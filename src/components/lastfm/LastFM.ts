@@ -1,7 +1,7 @@
 import {
   LastFMArtistSearchResponse,
   LastFMUserGetTopArtistsResponse,
-  LastFmArtist,
+  LastFMUserGetTopTagsResponse,
 } from "../../types/LastFm/LastFmTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
@@ -66,9 +66,9 @@ const LastFm = {
     }
   },
 
-  GetUserArtist: async function (): Promise<LastFmArtist[] | undefined> {
+  GetUserArtist: async function (): Promise<string[] | undefined> {
     try {
-      let topArtists: LastFmArtist[] = JSON.parse(
+      let topArtists: string[] = JSON.parse(
         localStorage.lastFmTopArtists ?? null,
       );
       if (topArtists) return topArtists;
@@ -86,14 +86,41 @@ const LastFm = {
 
       const data: LastFMUserGetTopArtistsResponse = await response.json();
 
-      topArtists =
-        data?.topartists?.artist?.map(({ name, mbid }) => ({
-          name,
-          mbid,
-        })) ?? [];
+      topArtists = data?.topartists?.artist?.map(({ name }) => name) ?? [];
       localStorage.setItem("lastFmTopArtists", JSON.stringify(topArtists));
 
       return topArtists;
+    } catch (error) {
+      console.error(
+        "Error during getting user's top artists:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetUserTags: async function (): Promise<string[] | undefined> {
+    try {
+      let userTags: string[] = JSON.parse(localStorage.lastFmUserTags ?? null);
+      if (userTags) return userTags;
+
+      const username: string = localStorage.lastFmUsername ?? "";
+      if (!username) return;
+
+      const response = await fetch(
+        `/api/lastfm-api/?method=user.getTopTags&user=${username}&format=json&limit=100`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data: LastFMUserGetTopTagsResponse = await response.json();
+
+      userTags = data?.toptags?.tag?.map(({ name }) => name) ?? [];
+      localStorage.setItem("lastFmUserTags", JSON.stringify(userTags));
+
+      return userTags;
     } catch (error) {
       console.error(
         "Error during getting user's top artists:",

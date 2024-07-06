@@ -22,10 +22,23 @@ function ConnectLastFm() {
     ),
   });
 
+  const { isFetching: isTopTagsFetching } = useQuery({
+    queryKey: ["last_fm_top_tags"],
+    queryFn: LastFm.GetUserTags,
+    enabled: !!(
+      username &&
+      !isOpenLastFmDialog &&
+      (localStorage.lastFmUsername != username || !localStorage.lastFmUserTags)
+    ),
+  });
+
   useEffect(() => {
     if (isOpenLastFmDialog) return;
 
-    if (!username) localStorage.removeItem("lastFmTopArtists");
+    if (!username) {
+      localStorage.removeItem("lastFmTopArtists");
+      localStorage.removeItem("lastFmUserTags");
+    }
   }, [isOpenLastFmDialog, username]);
 
   const SetLastFmUser = (e: FormEvent) => {
@@ -43,7 +56,7 @@ function ConnectLastFm() {
         className="flex items-center justify-center gap-2 bg-red-500 text-white hover:bg-red-700"
         onClick={() => setIsOpenLastFmDialog(true)}
       >
-        {isTopArtistsFetching ? (
+        {isTopArtistsFetching || isTopTagsFetching ? (
           <LoadingAnimation />
         ) : (
           <>

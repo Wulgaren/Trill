@@ -1314,6 +1314,12 @@ export type LastFMUserGetTopAlbumsResponse = Readonly<{
   };
 }>;
 
+export type LastFmTag = {
+  name: string;
+  count: number;
+  url: string;
+};
+
 export type LastFmArtist = {
   name: string;
   mbid: string;
