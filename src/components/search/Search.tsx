@@ -33,7 +33,7 @@ function Search({
     queryFn: ({ pageParam = 1 }) =>
       Discogs.Search({
         pageParam,
-        queryKey: [searchQueryKey, params],
+        searchParams: params,
       }),
     getNextPageParam: (lastPage) => {
       return getNextPage(lastPage.pagination);

@@ -536,3 +536,46 @@ export type DiscogsGetCommunityReleaseRatingResponse = {
   };
   release_id: number;
 };
+
+export type DiscogsCollectionItem = {
+  /**
+   * The basic information of the collection item.
+   */
+  basic_information: {
+    id: number;
+    master_id: number;
+    master_url: string;
+    resource_url: string;
+    thumb: string;
+  };
+
+  /**
+   * The date the item was added to the collection.
+   */
+  date_added: string;
+
+  /**
+   * The id of the folder the item belongs to.
+   */
+  folder_id: number;
+
+  /**
+   * The id of the item.
+   */
+  id: number;
+
+  /**
+   * The instance id of the item.
+   */
+  instance_id: number;
+
+  /**
+   * The rating of the item.
+   */
+  rating: number;
+};
+
+export type DiscogsCollectionResponse = {
+  pagination?: DiscogsPagination;
+  releases: DiscogsCollectionItem[];
+};

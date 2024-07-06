@@ -1,5 +1,7 @@
 import {
   DiscogsAuthorization,
+  DiscogsCollectionItem,
+  DiscogsCollectionResponse,
   DiscogsGetArtistReleasesResponse,
   DiscogsGetArtistResponse,
   DiscogsGetLabelReleasesResponse,
@@ -12,7 +14,6 @@ import {
   DiscogsPagination,
   DiscogsSearchQuery,
   DiscogsSearchResponse,
-  DiscogsSearchResult,
   DiscogsUser,
   ReleaseTrack,
 } from "../../types/Discogs/DiscogsTypes";
@@ -130,22 +131,21 @@ const Discogs = {
 
   GetUserCollection: async ({
     pageParam = 1,
-    queryKey,
+    username,
   }: {
     pageParam: number;
-    queryKey: string[];
-  }): Promise<DiscogsSearchResponse> => {
+    username: string;
+  }): Promise<DiscogsCollectionResponse> => {
     try {
-      let username = queryKey[1];
-      let userCollection: DiscogsSearchResponse;
+      let userCollection: DiscogsCollectionResponse;
 
       if (!username) {
-        const savedCollection: DiscogsSearchResult[] = JSON.parse(
+        const savedCollection: DiscogsCollectionItem[] = JSON.parse(
           sessionStorage.userCollection ?? null,
         );
         if (savedCollection) {
           userCollection = {
-            results: savedCollection,
+            releases: savedCollection,
           };
 
           return userCollection;
@@ -168,7 +168,11 @@ const Discogs = {
         throw new Error("Error requesting the user's collection.");
       }
 
-      userCollection = await response.json();
+      const parsed: DiscogsCollectionResponse = await response.json();
+      userCollection = {
+        pagination: parsed.pagination,
+        releases: parsed.releases,
+      };
       console.log("collection", userCollection);
 
       return userCollection;
@@ -183,18 +187,20 @@ const Discogs = {
 
   Search: async ({
     pageParam = 1,
-    queryKey,
+    searchParams,
   }: {
     pageParam: number;
-    queryKey: [string, DiscogsSearchQuery];
+    searchParams: DiscogsSearchQuery;
   }): Promise<DiscogsSearchResponse> => {
     try {
-      const params = queryKey[1];
-      if (!Object.values(params)?.filter((x) => x)?.length)
+      if (!Object.values(searchParams)?.filter((x) => x)?.length)
         throw new Error("No search params");
 
       const url = `/api/discogs-api/database/search`;
-      const generatedQueries = generateQueries({ ...params, page: pageParam });
+      const generatedQueries = generateQueries({
+        ...searchParams,
+        page: pageParam,
+      });
 
       const requestOptions = {
         method: "GET",
@@ -316,18 +322,22 @@ const Discogs = {
 
   GetReleases: async ({
     pageParam = 1,
-    queryKey,
+    id,
+    requestType,
   }: {
     pageParam: number;
-    queryKey: string[];
+    id: string;
+    requestType: string;
   }): Promise<
     DiscogsGetArtistReleasesResponse | DiscogsGetLabelReleasesResponse
   > => {
     try {
-      const id = queryKey[1];
-      const type = queryKey[0].toLowerCase().includes("label")
+      const type = requestType?.toLowerCase()?.includes("label")
         ? "labels"
         : "artists";
+
+      if (!id) throw new Error("No id");
+      if (!type) throw new Error("No type");
       console.log(id, type);
 
       const response = await fetch(
@@ -415,6 +425,38 @@ const Discogs = {
     } catch (error) {
       console.error(
         "Error during getting bonus tracks:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetRecommendations: async ({
+    id,
+  }: {
+    id: number;
+  }): Promise<DiscogsGetReleaseResponse> => {
+    try {
+      const response = await fetch(
+        `/api/discogs-api/releases/${id}/recommendations`,
+        {
+          method: "GET",
+          headers: Discogs.GetAuthHeader(),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error getting recommendations.");
+      }
+
+      const parsed: DiscogsGetReleaseResponse = await response.json();
+
+      console.log("recommendations", parsed);
+
+      return parsed;
+    } catch (error) {
+      console.error(
+        "Error during getting recommendations:",
         GetErrorMessage(error),
       );
       throw error;

@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { FaCog, FaLastfm } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
+import { useNavbarContext } from "../start-page/NavbarContextUtils";
 import LastFm from "./LastFM";
 
 function ConnectLastFm() {
@@ -10,6 +11,7 @@ function ConnectLastFm() {
   const [username, setUsername] = useState<string>(
     localStorage.lastFmUsername ?? "",
   );
+  const { setLastFmUsername } = useNavbarContext();
 
   const { isFetching: isTopArtistsFetching } = useQuery({
     queryKey: ["last_fm_top_artists"],
@@ -39,7 +41,9 @@ function ConnectLastFm() {
       localStorage.removeItem("lastFmTopArtists");
       localStorage.removeItem("lastFmUserTags");
     }
-  }, [isOpenLastFmDialog, username]);
+
+    setLastFmUsername(username);
+  }, [isOpenLastFmDialog, username, setLastFmUsername]);
 
   const SetLastFmUser = (e: FormEvent) => {
     e.preventDefault();

@@ -38,7 +38,8 @@ function ReleasesListComponent({
     queryFn: ({ pageParam = 1 }) =>
       Discogs.GetReleases({
         pageParam,
-        queryKey: [queryKey, data.id.toString()],
+        id: data.id.toString(),
+        requestType: queryKey,
       }),
     getNextPageParam: (lastPage) => {
       return getNextPage(lastPage.pagination);

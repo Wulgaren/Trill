@@ -1,15 +1,17 @@
 import { Link } from "@tanstack/react-router";
-import { Suspense, lazy, useRef } from "react";
+import { Suspense, lazy } from "react";
 import { FaSearch } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
+import { useNavbarContext } from "../start-page/NavbarContextUtils";
 const ConnectDiscogs = lazy(() => import("../discogs/ConnectDiscogs"));
 const ConnectLastFm = lazy(() => import("../lastfm/ConnectLastFm"));
 
 function Navbar() {
-  const checkboxRef = useRef<HTMLInputElement>(null);
+  const { navbarButtonRef, triggerClick } = useNavbarContext();
 
   const handleSearchIconClick = () => {
-    if (checkboxRef.current) checkboxRef.current.checked = false;
+    // Hide menu
+    if (navbarButtonRef.current?.checked) triggerClick();
   };
 
   return (
@@ -36,7 +38,7 @@ function Navbar() {
           <input
             id="hamburger-toggle"
             aria-controls="hamburger-menu"
-            ref={checkboxRef}
+            ref={navbarButtonRef}
             type="checkbox"
             className="peer/checkbox absolute z-[2] block h-[32px] w-[40px] cursor-pointer opacity-0"
             tabIndex={0}

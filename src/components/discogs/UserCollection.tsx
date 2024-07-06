@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { DiscogsSearchResponse } from "../../types/Discogs/DiscogsTypes";
+import { DiscogsCollectionResponse } from "../../types/Discogs/DiscogsTypes";
 import { getNextPage } from "../functions/Functions";
 import Discogs from "./Discogs";
 
@@ -18,9 +18,9 @@ function UserCollection({
     queryFn: ({ pageParam = 1 }) =>
       Discogs.GetUserCollection({
         pageParam,
-        queryKey: [userCollectionQueryKey, username],
+        username,
       }),
-    getNextPageParam: (lastPage: DiscogsSearchResponse) => {
+    getNextPageParam: (lastPage: DiscogsCollectionResponse) => {
       return getNextPage(lastPage.pagination);
     },
     initialPageParam: 1,
@@ -28,10 +28,15 @@ function UserCollection({
   });
 
   useEffect(() => {
+    console.log(data, username, hasNextPage);
     if (hasNextPage) {
       fetchNextPage();
-    } else if (data && !username)
-      sessionStorage.setItem("discogsCollection", JSON.stringify(data));
+    } else if (data && !username) {
+      sessionStorage.setItem(
+        "discogsCollection",
+        JSON.stringify(data.pages.flatMap((x) => x.releases?.map((y) => y.id))),
+      );
+    }
   }, [data, fetchNextPage, hasNextPage, username]);
 
   return <></>;

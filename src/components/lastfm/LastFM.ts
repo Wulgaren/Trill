@@ -1,5 +1,8 @@
 import {
+  LastFMAlbumParams,
+  LastFMArtistGetSimilarResponse,
   LastFMArtistSearchResponse,
+  LastFMTagGetTopAlbumsResponse,
   LastFMUserGetTopArtistsResponse,
   LastFMUserGetTopTagsResponse,
 } from "../../types/LastFm/LastFmTypes";
@@ -7,7 +10,7 @@ import {
 import GetErrorMessage from "../error-handling/ErrorHandling";
 
 const LastFm = {
-  FindArtistImage: async function (mbid: string) {
+  FindArtistImage: async (mbid: string) => {
     try {
       if (!mbid) return;
 
@@ -35,15 +38,14 @@ const LastFm = {
     }
   },
 
-  SearchForArtist: async function ({
+  SearchForArtist: async ({
     pageParam = 1,
-    queryKey,
+    artist,
   }: {
     pageParam: number;
-    queryKey: string;
-  }) {
+    artist: string;
+  }) => {
     try {
-      const artist = queryKey[1];
       if (!artist) return [];
 
       const response = await fetch(
@@ -66,7 +68,7 @@ const LastFm = {
     }
   },
 
-  GetUserArtist: async function (): Promise<string[] | undefined> {
+  GetUserArtist: async (): Promise<string[] | undefined> => {
     try {
       let topArtists: string[] = JSON.parse(
         localStorage.lastFmTopArtists ?? null,
@@ -99,7 +101,7 @@ const LastFm = {
     }
   },
 
-  GetUserTags: async function (): Promise<string[] | undefined> {
+  GetUserTags: async (): Promise<string[] | undefined> => {
     try {
       let userTags: string[] = JSON.parse(localStorage.lastFmUserTags ?? null);
       if (userTags) return userTags;
@@ -124,6 +126,67 @@ const LastFm = {
     } catch (error) {
       console.error(
         "Error during getting user's top artists:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetSimilarArtists: async ({
+    artist,
+  }: {
+    artist: string;
+  }): Promise<string[]> => {
+    try {
+      const response = await fetch(
+        `/api/lastfm-api/?method=artist.getSimilar&artist=${artist}&autocorrect=1&limit=50&format=json`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data: LastFMArtistGetSimilarResponse = await response.json();
+
+      return data?.similarartists?.artist?.map(({ name }) => name) ?? [];
+    } catch (error) {
+      console.error(
+        "Error during getting similar artists:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetTopAlbumsFromTag: async ({
+    pageParam = 1,
+    tag,
+  }: {
+    pageParam: number;
+    tag: string;
+  }): Promise<LastFMAlbumParams[] | undefined> => {
+    try {
+      if (!tag) throw new Error("No tag");
+
+      const response = await fetch(
+        `/api/lastfm-api/?method=tag.getTopAlbums&tag=${tag}&page=${pageParam}&limit=100&format=json`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data: LastFMTagGetTopAlbumsResponse = await response.json();
+
+      return (
+        data?.albums?.album?.map(({ name, artist }) => ({
+          album: name,
+          artist: artist.name,
+        })) ?? []
+      );
+    } catch (error) {
+      console.error(
+        "Error during getting top albums from tag:",
         GetErrorMessage(error),
       );
       throw error;

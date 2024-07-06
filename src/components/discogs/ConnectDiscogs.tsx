@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { PiVinylRecordFill } from "react-icons/pi";
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
+import { useNavbarContext } from "../start-page/NavbarContextUtils";
 import Discogs from "./Discogs";
 import UserCollection from "./UserCollection";
 
@@ -60,6 +61,7 @@ function ConnectDiscogs() {
     localStorage.OAuthRequestToken,
   );
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
+  const { setDiscogsUsername } = useNavbarContext();
 
   const {
     data: requestTokenRes,
@@ -93,11 +95,13 @@ function ConnectDiscogs() {
     );
     handleRequestToken(requestTokenRes, setRequestToken);
     handleAccessToken(accessTokenRes, setAccessToken);
+    Discogs.GetLoggedUserName().then(setDiscogsUsername);
   }, [
     isRequestTokenError,
     isAccessTokenError,
     requestTokenRes,
     accessTokenRes,
+    setDiscogsUsername,
   ]);
 
   const handleClick = () => {

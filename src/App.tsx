@@ -2,6 +2,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Outlet, ScrollRestoration } from "@tanstack/react-router";
 import React from "react";
 import Navbar from "./components/navbar/Navbar";
+import { ClickProvider } from "./components/start-page/NavbarContext.tsx";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "development"
@@ -18,11 +19,13 @@ const TanStackRouterDevtools =
 function App() {
   return (
     <>
-      <Navbar />
-      <main className="p-3 md:p-5">
-        <ScrollRestoration />
-        <Outlet />
-      </main>
+      <ClickProvider>
+        <Navbar />
+        <main className="p-3 md:p-5">
+          <ScrollRestoration />
+          <Outlet />
+        </main>
+      </ClickProvider>
 
       <div className="fixed bottom-0 z-[-1] h-full w-full overflow-hidden">
         <div className="blob"></div>
