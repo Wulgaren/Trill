@@ -110,13 +110,23 @@ function ReleasesListComponent({
                         </div>
 
                         <div className="flex flex-col">
-                          {type == "labels" && (
+                          {(type == "labels" ||
+                            (release as DiscogsArtistRelease).role !=
+                              "Main") && (
                             <h3 className="text-lg">
                               {removeAsterisk(release.artist)}
                             </h3>
                           )}
                           <h3 className="relative mx-2 ml-0 pb-1 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
                             {release.title}
+                            {(release as DiscogsArtistRelease).role !=
+                            "Main" ? (
+                              <span className="text-xs">
+                                &nbsp;({(release as DiscogsArtistRelease).role})
+                              </span>
+                            ) : (
+                              ""
+                            )}
                           </h3>
                           {type == "labels" && (
                             <span className="text-sm">

@@ -10,6 +10,7 @@ import {
   calculateComma,
   convertHTMLTags,
   removeNumberFromName,
+  removeTags,
 } from "../functions/Functions";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
@@ -120,7 +121,9 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
           {data.notes && (
             <span className="break-words pt-3">
               <CollapsibleText
-                text={convertHTMLTags(removeNumberFromName(data.notes))}
+                text={convertHTMLTags(
+                  removeNumberFromName(removeTags(data.notes)),
+                )}
                 maxLength={100}
               />
             </span>
