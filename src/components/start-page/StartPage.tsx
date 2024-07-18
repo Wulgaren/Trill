@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaList } from "react-icons/fa";
+import RecommendationsList from "../recommendations/RecommendationsList";
 import { useNavbarContext } from "./NavbarContextUtils";
 
 function StartPage() {
@@ -9,8 +10,9 @@ function StartPage() {
     localStorage.lastFmUsername != null && localStorage.discogsUser != null;
 
   useEffect(() => {
-    setExists(discogsUsername != null && lastFmUsername != null);
-  }, [discogsUsername, lastFmUsername]);
+    const loggedIn = discogsUsername != null && lastFmUsername != null;
+    if (exists != loggedIn) setExists(loggedIn);
+  }, [exists, discogsUsername, lastFmUsername]);
 
   if (!exists && !savedInlocalStorage) {
     return (
@@ -26,7 +28,11 @@ function StartPage() {
     );
   }
 
-  return <div>{/* <RecommendationsList title="fav-artists" /> */}</div>;
+  return (
+    <div>
+      <RecommendationsList title="Based on your favorite genres" />
+    </div>
+  );
 }
 
 export default StartPage;

@@ -1359,6 +1359,7 @@ export type LastFMUserGetTopTagsResponse = Readonly<{
       user: string;
     };
   };
+  error?: number;
 }>;
 
 export type LastFMUserGetTopTracksResponse = Readonly<{

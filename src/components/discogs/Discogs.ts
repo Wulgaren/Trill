@@ -17,6 +17,7 @@ import {
   DiscogsUser,
   ReleaseTrack,
 } from "../../types/Discogs/DiscogsTypes";
+import { LastFMAlbumParams } from "../../types/LastFm/LastFmTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
 import {
@@ -61,7 +62,7 @@ const Discogs = {
       }
 
       discogsUser = await response.json();
-      console.log(discogsUser);
+      console.log("discogs Username", discogsUser);
 
       localStorage.setItem("discogsUser", JSON.stringify(discogsUser));
 
@@ -83,7 +84,7 @@ const Discogs = {
       }
 
       const parsed = await response.json();
-      console.log("login", parsed);
+      console.log("discogs login", parsed);
 
       const data = new URLSearchParams(parsed);
 
@@ -105,7 +106,7 @@ const Discogs = {
       const params = new URLSearchParams(window.location.search);
       const verifier = params?.get("oauth_verifier");
 
-      console.log("handleGetAccessToken", verifier, requestToken);
+      console.log("discogs handleGetAccessToken", verifier, requestToken);
       const response = await fetch("/api/discogs-oauth-access-token", {
         method: "POST",
         headers: {
@@ -118,7 +119,7 @@ const Discogs = {
       }
 
       const parsed = await response.json();
-      console.log("token", parsed);
+      console.log("discogs token", parsed);
 
       const data = new URLSearchParams(parsed);
 
@@ -158,7 +159,7 @@ const Discogs = {
         username = await Discogs.GetLoggedUserName();
       }
 
-      console.log(username);
+      console.log("discogs logged in username", username);
 
       const response = await fetch(
         `/api/discogs-api/users/${username}/collection/folders/0/releases?per_page=50&page=${pageParam}`,
@@ -177,7 +178,7 @@ const Discogs = {
         pagination: parsed.pagination,
         releases: parsed.releases,
       };
-      console.log("collection", userCollection);
+      console.log("discogs collection", userCollection);
 
       return userCollection;
     } catch (error) {
@@ -211,7 +212,7 @@ const Discogs = {
         headers: Discogs.GetAuthHeader(),
       };
 
-      console.log({ url, generatedQueries });
+      console.log("discogs search queries", { url, generatedQueries });
 
       const promises = generatedQueries.map((query) =>
         fetch(url + query, requestOptions),
@@ -259,7 +260,7 @@ const Discogs = {
               result?.cover_image?.split("discogs.com")[1],
           })),
       };
-      console.log("search", filtered);
+      console.log("discogs search results", filtered);
 
       return filtered;
     } catch (error) {
@@ -274,8 +275,12 @@ const Discogs = {
   GetPageData: async ({
     id,
     type,
-  }: DiscogsPageParams): Promise<DiscogsGetPageResponse> => {
+  }: DiscogsPageParams): Promise<DiscogsGetPageResponse | undefined> => {
     try {
+      if (!id || !type) throw new Error("No id or type");
+
+      if (id == "-1") return;
+
       const url = `/api/discogs-api/${type}s/${id}`;
 
       const requestOptions = {
@@ -346,7 +351,7 @@ const Discogs = {
 
       if (!id) throw new Error("No id");
       if (!type) throw new Error("No type");
-      console.log(id, type);
+      console.log("discogs get releases", id, type);
 
       const response = await fetch(
         `/api/discogs-api/${type}/${id}/releases?per_page=50&page=${pageParam}`,
@@ -368,7 +373,7 @@ const Discogs = {
         if (x.thumb)
           x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1];
       });
-      console.log(`${type} releases`, parsed);
+      console.log(`discogs ${type} releases`, parsed);
 
       return parsed;
     } catch (error) {
@@ -427,7 +432,7 @@ const Discogs = {
         });
       }
 
-      console.log("bonus tracks", bonusTracks);
+      console.log("discogs bonus tracks", bonusTracks);
 
       return bonusTracks;
     } catch (error) {
@@ -440,28 +445,71 @@ const Discogs = {
   },
 
   GetRecommendations: async ({
-    id,
+    query,
+    pageParam = 1,
   }: {
-    id: number;
-  }): Promise<DiscogsGetReleaseResponse> => {
+    query: string | (unknown[] | undefined)[] | undefined;
+    pageParam: number;
+  }): Promise<DiscogsSearchResponse | undefined> => {
     try {
-      const response = await fetch(
-        `/api/discogs-api/releases/${id}/recommendations`,
-        {
-          method: "GET",
-          headers: Discogs.GetAuthHeader(),
-        },
+      if (!query?.length) return;
+
+      const recsToSearch = Array.isArray(query)
+        ? query.map((x) => x?.slice(pageParam - 1, pageParam)[0])
+        : [query];
+
+      const search = recsToSearch
+        .filter((x) => x)
+        .map((x) => {
+          if (typeof x === "string") return x;
+          if (typeof x === "object") {
+            if (Object.prototype.hasOwnProperty.call(x, "artist")) {
+              return (
+                (x as LastFMAlbumParams).artist +
+                " - " +
+                (x as LastFMAlbumParams).album
+              );
+            }
+            return Object.values(x as Record<string, string>)?.join(" - ");
+          }
+        });
+
+      console.log("discogs recommendations albums", search);
+
+      const promises = search.map((rec) =>
+        Discogs.Search({
+          pageParam,
+          searchParams: {
+            query: rec,
+          },
+        }),
       );
 
-      if (!response.ok) {
-        throw new Error("Error getting recommendations.");
-      }
+      const results = await Promise.all(promises);
+      const parsedResponses: DiscogsSearchResponse = {
+        results: [],
+      };
 
-      const parsed: DiscogsGetReleaseResponse = await response.json();
+      results.forEach((result, index) => {
+        if (!result.results.length) {
+          parsedResponses.results.push({
+            id: -1,
+            title: search[index] ?? "",
+            type: "master",
+          });
+        } else {
+          if (!parsedResponses.pagination)
+            parsedResponses.pagination = result.pagination;
 
-      console.log("recommendations", parsed);
+          parsedResponses.results = [
+            ...parsedResponses.results,
+            ...result.results,
+          ];
+        }
+      });
+      console.log("Discogs recommendations results", parsedResponses);
 
-      return parsed;
+      return parsedResponses;
     } catch (error) {
       console.error(
         "Error during getting recommendations:",

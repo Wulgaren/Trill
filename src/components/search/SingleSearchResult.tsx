@@ -23,7 +23,7 @@ function SingleSearchResultComponent({
         title={"Page for " + result.title}
       >
         <SearchImage
-          url={result.cover_image}
+          url={result.cover_image ?? ""}
           title={result.title}
           index={index}
         />

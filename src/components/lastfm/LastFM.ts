@@ -103,23 +103,38 @@ const LastFm = {
 
   GetUserTags: async (): Promise<string[] | undefined> => {
     try {
-      let userTags: string[] = JSON.parse(localStorage.lastFmUserTags ?? null);
-      if (userTags) return userTags;
+      let userTags: string[] =
+        JSON.parse(localStorage.lastFmUserTags ?? null) ?? [];
+      if (userTags?.length) return userTags;
 
       const username: string = localStorage.lastFmUsername ?? "";
       if (!username) return;
 
-      const response = await fetch(
-        `/api/lastfm-api/?method=user.getTopTags&user=${username}&format=json&limit=100`,
-      );
+      const topArtists: string[] | undefined = await LastFm.GetUserArtist();
+      if (!topArtists?.length) return;
+      console.log("lastfm top artists", topArtists);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+      const responses = topArtists
+        .slice(0, 10)
+        .map((x) =>
+          fetch(
+            `/api/lastfm-api/?method=artist.getTopTags&artist=${encodeURIComponent(x)}&autocorrect=1&format=json&limit=100`,
+          ),
+        );
+
+      for await (const response of responses) {
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const data: LastFMUserGetTopTagsResponse = await response.json();
+
+        if (data.error) continue;
+
+        const tags = data?.toptags?.tag?.map((x) => x.name);
+        userTags = [...userTags, ...tags];
       }
 
-      const data: LastFMUserGetTopTagsResponse = await response.json();
-
-      userTags = data?.toptags?.tag?.map(({ name }) => name) ?? [];
       localStorage.setItem("lastFmUserTags", JSON.stringify(userTags));
 
       return userTags;
@@ -184,6 +199,56 @@ const LastFm = {
           artist: artist.name,
         })) ?? []
       );
+    } catch (error) {
+      console.error(
+        "Error during getting top albums from tag:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetFavGenreRecommendations: async ({
+    startGenreNum = 1,
+  }: {
+    startGenreNum: number;
+  }): Promise<
+    (
+      | Readonly<{
+          album: string;
+          artist: string;
+        }>[]
+      | undefined
+    )[]
+  > => {
+    try {
+      const topGenres: string[] | undefined = await LastFm.GetUserTags();
+      if (!topGenres?.length) return [];
+
+      const lastGenreNum = (startGenreNum - 1) * 4;
+      const genresToDownload = topGenres.slice(lastGenreNum, lastGenreNum + 4);
+      console.log("lastfm recommendations to download", genresToDownload);
+
+      if (!genresToDownload.length) return [];
+
+      const promises = genresToDownload.map((genre) =>
+        LastFm.GetTopAlbumsFromTag({
+          pageParam: startGenreNum,
+          tag: genre,
+        }),
+      );
+
+      const responses = await Promise.all(promises);
+
+      console.log("lastfm fav genre albums", responses);
+
+      //TODO - add keys for each genre, append to this list every time theres a new call so its a little cache for less requests
+      localStorage.setItem(
+        "lastFmFavGenreRecommendations",
+        JSON.stringify(responses),
+      );
+
+      return responses;
     } catch (error) {
       console.error(
         "Error during getting top albums from tag:",
