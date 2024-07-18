@@ -18,7 +18,7 @@ function Navbar() {
     <nav className="sticky top-0 z-10 w-full bg-primary px-5 py-5 text-white">
       <ul className="flex flex-row items-center">
         <li className="title relative bottom-[5px] text-[1.5em] font-black uppercase tracking-[-2px] antialiased md:bottom-[17px] md:text-[1.9em]">
-          <Link to="/" className="border-0" alt="Main page">
+          <Link to="/" className="border-0" title="Main page">
             <p className="h-[36px] p-0 pl-[13px] uppercase">Trill</p>
             <p className="h-[36px] p-0 text-[0.8em] uppercase">Music Finder</p>
           </Link>
@@ -26,7 +26,7 @@ function Navbar() {
 
         <li className="ml-auto" onClick={handleSearchIconClick}>
           <Link
-            alt="Open search function"
+            title="Open search"
             to="/search"
             className="mx-2 block scale-100 border-2 border-transparent !bg-transparent p-2 text-white shadow-none transition-all"
           >
