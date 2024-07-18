@@ -20,7 +20,7 @@ function SingleSearchResultComponent({
           type: result.type,
         }}
         className="h-full w-full overflow-clip"
-        alt={"Page for " + result.title}
+        title={"Page for " + result.title}
       >
         <SearchImage
           url={result.cover_image}

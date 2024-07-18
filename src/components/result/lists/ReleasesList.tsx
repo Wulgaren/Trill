@@ -100,9 +100,10 @@ function ReleasesListComponent({
                               | DiscogsArtistMaster
                           ).type ?? "release",
                       }}
+                      title={release.title}
                     >
-                      <div className="flex flex-row flex-wrap items-center justify-center gap-3 text-center md:flex-nowrap md:justify-start md:text-start">
-                        <div className="md:w-2/12">
+                      <div className="flex flex-col flex-wrap items-center justify-center gap-3 text-center md:flex-row md:flex-nowrap md:justify-start md:text-start">
+                        <div className="flex aspect-square items-center justify-center md:w-2/12">
                           <SearchImage
                             url={release.thumb}
                             title={release.title}

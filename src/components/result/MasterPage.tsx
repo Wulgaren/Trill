@@ -48,6 +48,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                 return (
                   <li key={index}>
                     <Link
+                      title={artist.name}
                       to="/result/$type/$id"
                       params={{ id: artist.id.toString(), type: "artist" }}
                       className="relative mx-1 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
@@ -109,6 +110,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
             <div className="flex gap-1">
               <span>Country: </span>
               <Link
+                title={"Search by " + data.country}
                 to="/search"
                 search={{ country: data.country }}
                 className="relative pb-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
@@ -160,6 +162,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                   <Link
                     to="/result/$type/$id"
                     params={{ id: artist.id.toString(), type: "artist" }}
+                    title={artist.name}
                     className="flex flex-col gap-2"
                   >
                     <span className="break-words text-sm text-secondary">

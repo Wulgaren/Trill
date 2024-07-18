@@ -70,6 +70,7 @@ function DataList({
                 search={
                   type === "search" ? { [title.toLowerCase()]: item } : {}
                 }
+                title={(item as combinedTypes).name}
                 className={`${isInline ? "mx-1" : "mx-2"} relative ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white`}
               >
                 <span

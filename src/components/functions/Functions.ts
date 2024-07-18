@@ -90,7 +90,8 @@ export function removeTags(text: string): string {
   // Replace [x=name]
   if (!text) return text;
 
-  text = text.replaceAll(/\[([a-z])=([^\]]+)\]/g, "$2");
+  text = text.replaceAll(/\[([a-zA-Z])=([^\]]+)\]/g, "$2");
+  console.log(text);
 
   return text;
 }
@@ -153,4 +154,20 @@ export function removeAsterisk(text: string): string {
   else if (text?.includes("* -")) text = text.replace("* -", " -");
 
   return text;
+}
+interface Identifiable {
+  id: number;
+  [key: string]: unknown;
+}
+
+export function removeDuplicates<T extends Identifiable>(data: T[]): T[] {
+  const seenIds = new Set<number>();
+  return data.filter((item) => {
+    if (seenIds.has(item.id)) {
+      return false;
+    } else {
+      seenIds.add(item.id);
+      return true;
+    }
+  });
 }

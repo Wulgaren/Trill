@@ -14,7 +14,7 @@ import {
   FaWikipediaW,
   FaYoutube,
 } from "react-icons/fa6";
-import { SiMyspace, SiSongkick } from "react-icons/si";
+import { SiImdb, SiMyspace, SiSongkick } from "react-icons/si";
 
 const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
   if (!url) return;
@@ -55,6 +55,8 @@ const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
       return <FaLastfm size={size} />;
     case url.includes("songkick"):
       return <SiSongkick size={size} />;
+    case url.includes("imdb"):
+      return <SiImdb size={size} />;
   }
 
   return;

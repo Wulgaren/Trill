@@ -19,7 +19,11 @@ import {
 } from "../../types/Discogs/DiscogsTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
-import { generateQueries, removeTags } from "../functions/Functions";
+import {
+  generateQueries,
+  removeDuplicates,
+  removeTags,
+} from "../functions/Functions";
 
 const Discogs = {
   GetLoggedUserName: async (): Promise<string> => {
@@ -297,6 +301,10 @@ const Discogs = {
           await releaseFromMaster.json();
 
         parsed = { ...parsedRelease, ...parsed };
+
+        (parsed as DiscogsGetMasterResponse).artists = removeDuplicates(
+          (parsed as DiscogsGetMasterResponse).artists,
+        );
       } else if (type == "artist") {
         const artistResponse = parsed as DiscogsGetArtistResponse;
 

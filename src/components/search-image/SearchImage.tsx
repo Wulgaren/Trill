@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { FaCompactDisc } from "react-icons/fa";
 import { useInView } from "react-intersection-observer";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
@@ -20,7 +20,7 @@ function SearchImage({
     rootMargin: "0px 0px 200px 0px",
   });
 
-  const { data, error, isFetching, refetch } = useQuery({
+  const { data, error, isFetching } = useQuery({
     queryKey: ["ResultImage", url],
     queryFn: async () => {
       const res = await fetch(url);
@@ -35,12 +35,6 @@ function SearchImage({
     retryDelay: 5000 + 100 * (index + 1),
     enabled: !!(url && inView),
   });
-
-  // Handle changes in the 'url' prop
-  // Helps with wrong images ???
-  useEffect(() => {
-    refetch();
-  }, [url, refetch]);
 
   if (!url || error) {
     return (

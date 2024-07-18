@@ -61,7 +61,7 @@ function ConnectDiscogs() {
     localStorage.OAuthRequestToken,
   );
   const [buttonClicked, setButtonClicked] = useState<boolean>(false);
-  const { setDiscogsUsername } = useNavbarContext();
+  const { setDiscogsUsername, discogsUsername } = useNavbarContext();
 
   const {
     data: requestTokenRes,
@@ -95,12 +95,17 @@ function ConnectDiscogs() {
     );
     handleRequestToken(requestTokenRes, setRequestToken);
     handleAccessToken(accessTokenRes, setAccessToken);
-    Discogs.GetLoggedUserName().then(setDiscogsUsername);
+
+    if (!discogsUsername && accessTokenRes && requestTokenRes)
+      Discogs.GetLoggedUserName()
+        .then(setDiscogsUsername)
+        .catch(() => handleTokenRemoval(true, setRequestToken, setAccessToken));
   }, [
     isRequestTokenError,
     isAccessTokenError,
     requestTokenRes,
     accessTokenRes,
+    discogsUsername,
     setDiscogsUsername,
   ]);
 
