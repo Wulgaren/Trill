@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer";
 import { DiscogsSearchRelease } from "../../types/Discogs/DiscogsTypes";
 import { LastFMAlbumParams } from "../../types/LastFm/LastFmTypes";
 import Discogs from "../discogs/Discogs";
-import { removeAsterisk } from "../functions/Functions";
+import { removeAsterisk, removeNumberFromName } from "../functions/Functions";
 import SearchImage from "../search-image/SearchImage";
 
 function LastFmAlbum({
@@ -61,9 +61,11 @@ function LastFmAlbum({
 
           <div className="flex flex-col">
             <h3 className="relative line-clamp-2 text-ellipsis break-words text-lg text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
-              {removeAsterisk(
-                release?.results[0]?.title ??
-                  lastFmRelease.artist + " - " + lastFmRelease.album,
+              {removeNumberFromName(
+                removeAsterisk(
+                  release?.results[0]?.title ??
+                    lastFmRelease.artist + " - " + lastFmRelease.album,
+                ),
               )}
             </h3>
             {(release?.results[0] as DiscogsSearchRelease)?.year && (

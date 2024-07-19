@@ -58,7 +58,7 @@ const Discogs = {
       });
 
       if (!response.ok) {
-        throw new Error("Error requesting user's identity.");
+        throw new Error(response.statusText);
       }
 
       discogsUser = await response.json();
@@ -80,7 +80,7 @@ const Discogs = {
     try {
       const response = await fetch("/api/discogs-oauth-request-token");
       if (!response.ok) {
-        throw new Error("Error requesting the token.");
+        throw new Error(response.statusText);
       }
 
       const parsed = await response.json();
@@ -115,7 +115,7 @@ const Discogs = {
       });
 
       if (!response.ok) {
-        throw new Error("Error requesting the token.");
+        throw new Error(response.statusText);
       }
 
       const parsed = await response.json();
@@ -170,7 +170,7 @@ const Discogs = {
       );
 
       if (!response.ok) {
-        throw new Error("Error requesting the user's collection.");
+        throw new Error(response.statusText);
       }
 
       const parsed: DiscogsCollectionResponse = await response.json();
@@ -207,12 +207,12 @@ const Discogs = {
         page: pageParam,
       });
 
+      console.log("discogs generated queries", generatedQueries);
+
       const requestOptions = {
         method: "GET",
         headers: Discogs.GetAuthHeader(),
       };
-
-      console.log("discogs search queries", { url, generatedQueries });
 
       const promises = generatedQueries.map((query) =>
         fetch(url + query, requestOptions),
@@ -225,7 +225,7 @@ const Discogs = {
 
       for (const response of responses) {
         if (!response.ok) {
-          throw new Error("Error getting search results.");
+          throw new Error(response.statusText);
         }
 
         const parsed: DiscogsSearchResponse = await response.json();
@@ -259,7 +259,7 @@ const Discogs = {
               result?.cover_image?.split("discogs.com")[1],
           })),
       };
-      console.log("discogs search results", filtered);
+      console.log("discogs search results", searchParams.query, filtered);
 
       return filtered;
     } catch (error) {
@@ -290,7 +290,7 @@ const Discogs = {
       const response = await fetch(url, requestOptions);
 
       if (!response.ok) {
-        throw new Error("Error getting page.");
+        throw new Error(response.statusText);
       }
 
       let parsed: DiscogsGetPageResponse = await response.json();
@@ -361,7 +361,7 @@ const Discogs = {
       );
 
       if (!response.ok) {
-        throw new Error(`Error requesting ${type} releases.`);
+        throw new Error(response.statusText);
       }
 
       const parsed:
@@ -395,7 +395,7 @@ const Discogs = {
       });
 
       if (!response.ok) {
-        throw new Error("Error getting bonus tracks.");
+        throw new Error(response.statusText);
       }
 
       const parsed: DiscogsGetMasterVersionsResponse = await response.json();

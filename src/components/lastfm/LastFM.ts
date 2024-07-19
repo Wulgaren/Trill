@@ -20,7 +20,7 @@ const LastFm = {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error(response.statusText);
       }
 
       const data = await response.json();
@@ -54,7 +54,7 @@ const LastFm = {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error(response.statusText);
       }
 
       const data: LastFMArtistSearchResponse = await response.json();
@@ -84,7 +84,7 @@ const LastFm = {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error(response.statusText);
       }
 
       const data: LastFMUserGetTopArtistsResponse = await response.json();
@@ -133,7 +133,7 @@ const LastFm = {
 
       for await (const response of responses) {
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error(response.statusText);
         }
 
         const data: LastFMUserGetTopTagsResponse = await response.json();
@@ -167,7 +167,7 @@ const LastFm = {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error(response.statusText);
       }
 
       const data: LastFMArtistGetSimilarResponse = await response.json();
@@ -193,11 +193,11 @@ const LastFm = {
       if (!tag) throw new Error("No tag");
 
       const response = await fetch(
-        `/api/lastfm-api/?method=tag.getTopAlbums&tag=${tag}&page=${pageParam}&limit=15&format=json`,
+        `/api/lastfm-api/?method=tag.getTopAlbums&tag=${tag}&page=${pageParam}&limit=25&format=json`,
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error(response.statusText);
       }
 
       const data: LastFMTagGetTopAlbumsResponse = await response.json();
@@ -234,10 +234,13 @@ const LastFm = {
       console.log("lastfm recommendations to download", topGenres);
 
       const promises = topGenres
-        .slice(startGenreNum, startGenreNum + 5)
+        .slice(
+          Math.floor(Math.random() * 50),
+          Math.floor(Math.random() * 50) + 5,
+        )
         .map((genre) =>
           LastFm.GetTopAlbumsFromTag({
-            pageParam: startGenreNum + pageParam,
+            pageParam: Math.floor(Math.random() * 50) + pageParam,
             tag: genre,
           }),
         );
