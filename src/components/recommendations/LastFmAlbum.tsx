@@ -14,14 +14,10 @@ function LastFmAlbum({
 }) {
   const [inViewRef, inView] = useInView({
     triggerOnce: true,
-    rootMargin: "0px 0px 200px 0px",
+    rootMargin: "0px 200px 0px 0px",
   });
 
-  const {
-    data: release,
-    isError,
-    isFetching,
-  } = useQuery({
+  const { data: release, isError } = useQuery({
     queryKey: ["DiscogsAlbumSearch", lastFmRelease.album, lastFmRelease.artist],
     queryFn: () =>
       Discogs.Search({
@@ -34,48 +30,47 @@ function LastFmAlbum({
     enabled: !!inView,
   });
 
-  if (isFetching || isError || !release || !release?.results[0])
-    return (
-      <li className="min-w-[180px]" ref={inViewRef}>
-        <div className="flex flex-col flex-nowrap items-center justify-center gap-3 text-center">
-          <div className="w-full">
-            <SearchImage url={""} title={lastFmRelease.album} />
-          </div>
-
-          <div className="flex flex-col">
-            <h3 className="relative break-words pb-1 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
-              {lastFmRelease.artist + " - " + lastFmRelease.album}
-            </h3>
-          </div>
-        </div>
-      </li>
-    );
-
-  //todo obsluga bledu zeby wyszukiwal przy kliknieciu
-
   return (
-    <li className="min-w-[180px]">
+    <li className="h-full min-w-[180px]" ref={inViewRef}>
       <Link
-        to="/result/$type/$id"
-        params={{
-          id: release.results[0].id.toString(),
-          type: release.results[0].type,
-        }}
-        title={release.results[0].title}
+        to={isError ? "/search" : "/result/$type/$id"}
+        params={
+          isError
+            ? {}
+            : {
+                id: release?.results[0]?.id
+                  ? release?.results[0].id.toString()
+                  : "-1",
+                type: release?.results[0]?.type ?? "release",
+              }
+        }
+        search={
+          isError
+            ? { query: lastFmRelease.album + " " + lastFmRelease.artist }
+            : {}
+        }
+        title={release?.results[0]?.title ?? lastFmRelease.album}
       >
         <div className="flex flex-col flex-nowrap items-center justify-center gap-3 text-center">
-          <div className="w-full">
+          <div className="flex h-48 w-full justify-center">
             <SearchImage
-              url={release.results[0].cover_image ?? ""}
-              title={release.results[0].title}
+              url={release?.results[0]?.cover_image ?? ""}
+              title={release?.results[0]?.title ?? lastFmRelease.album}
             />
           </div>
 
           <div className="flex flex-col">
-            <h3 className="relative break-words pb-1 text-xl text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
-              {removeAsterisk(release.results[0].title)}
+            <h3 className="relative line-clamp-2 text-ellipsis break-words text-lg text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white">
+              {removeAsterisk(
+                release?.results[0]?.title ??
+                  lastFmRelease.artist + " - " + lastFmRelease.album,
+              )}
             </h3>
-            <span>{(release.results[0] as DiscogsSearchRelease).year}</span>
+            {(release?.results[0] as DiscogsSearchRelease)?.year && (
+              <span className="text-md">
+                {(release?.results[0] as DiscogsSearchRelease)?.year}
+              </span>
+            )}
           </div>
         </div>
       </Link>

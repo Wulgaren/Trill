@@ -40,7 +40,7 @@ function RecommendationsListComponent({ title }: { title: string }) {
   }, [fetchNextPage, isFetchingNextPage, hasNextPage]);
 
   return (
-    <div className="rounded-md bg-white !bg-opacity-40 p-5 md:col-span-2 dark:bg-black dark:text-white">
+    <div className="rounded-md bg-white !bg-opacity-40 p-5 pb-0 md:col-span-2 dark:bg-black dark:text-white">
       <h2 className="text-xl text-black dark:text-white">{title}:</h2>
 
       {isFetching && !recs && <LoadingAnimation />}
@@ -49,7 +49,7 @@ function RecommendationsListComponent({ title }: { title: string }) {
           <div className="overflow-y-hidden overflow-x-scroll overscroll-contain">
             <InfiniteScroll
               element="ul"
-              className="mt-3 flex flex-nowrap gap-10"
+              className="my-3 flex flex-nowrap gap-10"
               pageStart={2}
               loadMore={handleScrollToBottom}
               hasMore={hasNextPage}
