@@ -31,7 +31,7 @@ function StartPage() {
   return (
     <div>
       <Suspense fallback={<LoadingAnimation />}>
-        <RecommendationsList title="Based on your favorite albums' genres" />
+        <RecommendationsList title="Based on your favorite artists' genres" />
       </Suspense>
     </div>
   );
