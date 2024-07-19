@@ -4,6 +4,8 @@ import { FaCompactDisc } from "react-icons/fa";
 import { useInView } from "react-intersection-observer";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 
+const blobCache = new Map();
+
 function SearchImage({
   url,
   title = "",
@@ -23,6 +25,10 @@ function SearchImage({
   const { data, error, isFetching } = useQuery({
     queryKey: ["ResultImage", url],
     queryFn: async () => {
+      if (blobCache.has(url)) {
+        return blobCache.get(url);
+      }
+
       const res = await fetch(url);
       if (!res.ok) throw new Error("Error downloading image.");
 
@@ -30,6 +36,8 @@ function SearchImage({
       if (blob.size <= 0) throw new Error("Error image.");
 
       const objectUrl = URL.createObjectURL(blob);
+      blobCache.set(url, objectUrl);
+
       return objectUrl;
     },
     retryDelay: 5000 + 100 * (index + 1),

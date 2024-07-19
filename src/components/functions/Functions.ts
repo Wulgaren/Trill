@@ -91,7 +91,6 @@ export function removeTags(text: string): string {
   if (!text) return text;
 
   text = text.replaceAll(/\[([a-zA-Z])=([^\]]+)\]/g, "$2");
-  console.log(text);
 
   return text;
 }
@@ -123,7 +122,9 @@ export function convertHTMLTags(text: string): string {
     .replaceAll("[i]", "<i>")
     .replaceAll("[/i]", "</i>")
     .replaceAll("[u]", "<ul>")
-    .replaceAll("[/u]", "</ul>");
+    .replaceAll("[/u]", "</ul>")
+    .replaceAll(/(.*?)(\[url=([^\]]+)\])/g, '$1<a href="$3">')
+    .replaceAll("[/url]", "</a>");
 
   return text;
 }

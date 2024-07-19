@@ -233,21 +233,24 @@ const LastFm = {
 
       console.log("lastfm recommendations to download", topGenres);
 
-      const promises = topGenres
-        .slice(
-          Math.floor(Math.random() * 50),
-          Math.floor(Math.random() * 50) + 5,
-        )
-        .map((genre) =>
-          LastFm.GetTopAlbumsFromTag({
-            pageParam: Math.floor(Math.random() * 50) + pageParam,
-            tag: genre,
-          }),
-        );
+      let responses: LastFMAlbumParams[] = [];
+      while (responses.length == 0) {
+        const promises = topGenres
+          .slice(
+            Math.floor(Math.random() * 30),
+            Math.floor(Math.random() * 30) + 5,
+          )
+          .map((genre) =>
+            LastFm.GetTopAlbumsFromTag({
+              pageParam: Math.floor(Math.random() * 30) + pageParam,
+              tag: genre,
+            }),
+          );
 
-      const responses = (await Promise.all(promises))
-        .flat()
-        .filter((x) => x != null);
+        responses = (await Promise.all(promises))
+          .flat()
+          .filter((x) => x != null);
+      }
 
       console.log("lastfm fav genre albums", responses);
 

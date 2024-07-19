@@ -1,6 +1,15 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { memo, useRef, useState } from "react";
+import { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
+import {
+  LastFMAlbumParams,
+  LastFMPaginatedResponse,
+} from "../../types/LastFm/LastFmTypes";
 import { getNextPage } from "../functions/Functions";
 import LastFm from "../lastfm/LastFM";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
@@ -9,6 +18,7 @@ import LastFmAlbum from "./LastFmAlbum";
 function RecommendationsListComponent({ title }: { title: string }) {
   const [startGenreNum] = useState(Math.floor(Math.random() * 50));
   const parentRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
   const {
     data,
@@ -18,10 +28,16 @@ function RecommendationsListComponent({ title }: { title: string }) {
     isFetchingNextPage,
     isLoading,
     error,
-  } = useInfiniteQuery({
+  } = useInfiniteQuery<
+    LastFMPaginatedResponse<LastFMAlbumParams[]> | undefined,
+    Error
+  >({
     queryKey: ["FavGenresAlbums", startGenreNum],
     queryFn: ({ pageParam = 1 }) =>
-      LastFm.GetFavGenreRecommendations({ startGenreNum, pageParam }),
+      LastFm.GetFavGenreRecommendations({
+        startGenreNum,
+        pageParam: pageParam as number,
+      }),
     getNextPageParam: (lastPage) => {
       return getNextPage(lastPage?.pagination);
     },
@@ -57,6 +73,45 @@ function RecommendationsListComponent({ title }: { title: string }) {
     }
   };
 
+  //sprawdzic czy inview potrzebny jest
+  //reszte infinite scrolling zamieniec
+
+  const handleItemChange = (newValue: DiscogsSearchResult) => {
+    // Use queryClient to update the query data
+    queryClient.setQueryData<
+      InfiniteData<
+        LastFMPaginatedResponse<(LastFMAlbumParams | DiscogsSearchResult)[]>
+      >
+    >(["FavGenresAlbums", startGenreNum], (oldData) => {
+      if (!oldData) return oldData;
+
+      const newPages = {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          results: page.results.map((res) => {
+            if (
+              Object.prototype.hasOwnProperty.call(
+                res as LastFMAlbumParams,
+                "album",
+              ) &&
+              newValue?.title?.includes((res as LastFMAlbumParams).album) &&
+              newValue?.title?.includes((res as LastFMAlbumParams).artist)
+            ) {
+              return newValue;
+            } else return res;
+          }),
+        })),
+      };
+
+      return newPages;
+    });
+  };
+
+  if ((!isLoading && !hasNextPage && !recs.length) || error) {
+    return <></>;
+  }
+
   return (
     <div className="rounded-md bg-white !bg-opacity-40 p-5 pb-0 md:col-span-2 dark:bg-black dark:text-white">
       <h2 className="text-xl text-black dark:text-white">{title}:</h2>
@@ -91,7 +146,10 @@ function RecommendationsListComponent({ title }: { title: string }) {
                       ""
                     )
                   ) : (
-                    <LastFmAlbum release={recs[virtualItem.index]} />
+                    <LastFmAlbum
+                      release={recs[virtualItem.index]}
+                      handleItemChange={handleItemChange}
+                    />
                   )}
                 </div>
               );
