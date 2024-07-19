@@ -232,7 +232,6 @@ const Discogs = {
         const pagination = parsedResponses.pagination as DiscogsPagination;
         if (!pagination) parsedResponses.pagination = parsed.pagination;
         else {
-          pagination.items += (parsed.pagination as DiscogsPagination)?.items;
           if (
             (parsed.pagination as DiscogsPagination)?.pages < pagination.pages
           )

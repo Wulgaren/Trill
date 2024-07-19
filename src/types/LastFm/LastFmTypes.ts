@@ -1,3 +1,5 @@
+import { DiscogsPagination } from "../Discogs/DiscogsTypes";
+
 export type LastFMParam = string | string[];
 export type LastFMParams<T> = Record<string, LastFMParam | T>;
 export type LastFMundefinedOrNumber = undefined | number;
@@ -1477,4 +1479,9 @@ export type LastFMUserGetWeeklyTrackChartResponse = Readonly<{
       to: string;
     };
   };
+}>;
+
+export type LastFMPaginatedResponse<T> = Readonly<{
+  pagination: DiscogsPagination;
+  results: T;
 }>;

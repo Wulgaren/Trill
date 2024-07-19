@@ -226,16 +226,16 @@ export type DiscogsVersion = {
 // Pagination
 
 export type DiscogsPagination = {
-  per_page: number;
+  per_page?: number;
   pages: number;
   page: number;
-  urls: {
+  urls?: {
     last?: string;
     next?: string;
     prev?: string;
     first?: string;
   };
-  items: number;
+  items?: number;
 };
 
 // query

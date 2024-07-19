@@ -2,6 +2,7 @@ import {
   LastFMAlbumParams,
   LastFMArtistGetSimilarResponse,
   LastFMArtistSearchResponse,
+  LastFMPaginatedResponse,
   LastFMTagGetTopAlbumsResponse,
   LastFMUserGetTopArtistsResponse,
   LastFMUserGetTopTagsResponse,
@@ -101,11 +102,17 @@ const LastFm = {
     }
   },
 
-  GetUserTags: async (): Promise<string[] | undefined> => {
+  GetUserTags: async ({
+    startGenreNum = 0,
+    pageParam = 1,
+  }: {
+    startGenreNum: number;
+    pageParam: number;
+  }): Promise<string[] | undefined> => {
     try {
-      let userTags: string[] =
-        JSON.parse(localStorage.lastFmUserTags ?? null) ?? [];
-      if (userTags?.length) return userTags;
+      const userTags: Set<string> =
+        new Set(JSON.parse(localStorage.lastFmUserTags ?? null)) ?? new Set();
+      if (userTags?.size) return [...userTags];
 
       const username: string = localStorage.lastFmUsername ?? "";
       if (!username) return;
@@ -114,11 +121,13 @@ const LastFm = {
       if (!topArtists?.length) return;
       console.log("lastfm top artists", topArtists);
 
+      const startIndex = startGenreNum + (5 * pageParam - 1);
+
       const responses = topArtists
-        .slice(0, 10)
+        .slice(startIndex, startIndex + 5)
         .map((x) =>
           fetch(
-            `/api/lastfm-api/?method=artist.getTopTags&artist=${encodeURIComponent(x)}&autocorrect=1&format=json&limit=100`,
+            `/api/lastfm-api/?method=artist.getTopTags&artist=${encodeURIComponent(x)}&autocorrect=1&format=json&limit=30`,
           ),
         );
 
@@ -132,12 +141,12 @@ const LastFm = {
         if (data.error) continue;
 
         const tags = data?.toptags?.tag?.map((x) => x.name);
-        userTags = [...userTags, ...tags];
+        tags.forEach((item) => userTags.add(item));
       }
 
-      localStorage.setItem("lastFmUserTags", JSON.stringify(userTags));
+      localStorage.setItem("lastFmUserTags", JSON.stringify([...userTags]));
 
-      return userTags;
+      return [...userTags];
     } catch (error) {
       console.error(
         "Error during getting user's top artists:",
@@ -184,7 +193,7 @@ const LastFm = {
       if (!tag) throw new Error("No tag");
 
       const response = await fetch(
-        `/api/lastfm-api/?method=tag.getTopAlbums&tag=${tag}&page=${pageParam}&limit=100&format=json`,
+        `/api/lastfm-api/?method=tag.getTopAlbums&tag=${tag}&page=${pageParam}&limit=15&format=json`,
       );
 
       if (!response.ok) {
@@ -210,35 +219,32 @@ const LastFm = {
 
   GetFavGenreRecommendations: async ({
     startGenreNum = 1,
+    pageParam = 1,
   }: {
     startGenreNum: number;
-  }): Promise<
-    (
-      | Readonly<{
-          album: string;
-          artist: string;
-        }>[]
-      | undefined
-    )[]
-  > => {
+    pageParam: number;
+  }): Promise<LastFMPaginatedResponse<LastFMAlbumParams[]> | undefined> => {
     try {
-      const topGenres: string[] | undefined = await LastFm.GetUserTags();
-      if (!topGenres?.length) return [];
+      const topGenres: string[] | undefined = await LastFm.GetUserTags({
+        startGenreNum,
+        pageParam,
+      });
+      if (!topGenres?.length) return;
 
-      const lastGenreNum = (startGenreNum - 1) * 4;
-      const genresToDownload = topGenres.slice(lastGenreNum, lastGenreNum + 4);
-      console.log("lastfm recommendations to download", genresToDownload);
+      console.log("lastfm recommendations to download", topGenres);
 
-      if (!genresToDownload.length) return [];
+      const promises = topGenres
+        .slice(startGenreNum, startGenreNum + 5)
+        .map((genre) =>
+          LastFm.GetTopAlbumsFromTag({
+            pageParam: startGenreNum + pageParam,
+            tag: genre,
+          }),
+        );
 
-      const promises = genresToDownload.map((genre) =>
-        LastFm.GetTopAlbumsFromTag({
-          pageParam: startGenreNum,
-          tag: genre,
-        }),
-      );
-
-      const responses = await Promise.all(promises);
+      const responses = (await Promise.all(promises))
+        .flat()
+        .filter((x) => x != null);
 
       console.log("lastfm fav genre albums", responses);
 
@@ -248,7 +254,13 @@ const LastFm = {
         JSON.stringify(responses),
       );
 
-      return responses;
+      return {
+        results: responses,
+        pagination: {
+          page: pageParam,
+          pages: responses.length > 0 ? pageParam + 1 : pageParam,
+        },
+      };
     } catch (error) {
       console.error(
         "Error during getting top albums from tag:",

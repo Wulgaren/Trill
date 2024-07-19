@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { Suspense, useMemo } from "react";
 import { FaList } from "react-icons/fa";
+import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import RecommendationsList from "../recommendations/RecommendationsList";
 import { useNavbarContext } from "./NavbarContextUtils";
 
 function StartPage() {
   const { triggerClick, discogsUsername, lastFmUsername } = useNavbarContext();
-  const [exists, setExists] = useState(false);
   const savedInlocalStorage =
     localStorage.lastFmUsername != null && localStorage.discogsUser != null;
 
-  useEffect(() => {
-    const loggedIn = discogsUsername != null && lastFmUsername != null;
-    if (exists != loggedIn) setExists(loggedIn);
-  }, [exists, discogsUsername, lastFmUsername]);
+  // Memoize the existence check to avoid re-renders unless dependencies change
+  const exists = useMemo(() => {
+    return discogsUsername != null && lastFmUsername != null;
+  }, [discogsUsername, lastFmUsername]);
 
   if (!exists && !savedInlocalStorage) {
     return (
@@ -30,7 +30,9 @@ function StartPage() {
 
   return (
     <div>
-      <RecommendationsList title="Based on your favorite genres" />
+      <Suspense fallback={<LoadingAnimation />}>
+        <RecommendationsList title="Based on your favorite genres" />
+      </Suspense>
     </div>
   );
 }
