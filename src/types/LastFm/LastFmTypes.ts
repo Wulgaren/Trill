@@ -1481,7 +1481,8 @@ export type LastFMUserGetWeeklyTrackChartResponse = Readonly<{
   };
 }>;
 
-export type LastFMPaginatedResponse<T> = Readonly<{
+export type LastFMPaginatedResponse<T> = {
   pagination: DiscogsPagination;
   results: T;
-}>;
+  info?: string;
+};

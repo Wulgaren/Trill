@@ -1,6 +1,7 @@
 import { Suspense, useMemo } from "react";
 import { FaList } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
+import RecommendationsDiscogsUser from "../recommendations/Recommendations";
 import RecommendationsList from "../recommendations/RecommendationsList";
 import { useNavbarContext } from "./NavbarContextUtils";
 
@@ -29,9 +30,13 @@ function StartPage() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <Suspense fallback={<LoadingAnimation />}>
         <RecommendationsList title="Based on your favorite artists' genres" />
+      </Suspense>
+
+      <Suspense fallback={<LoadingAnimation />}>
+        <RecommendationsDiscogsUser title="Lucky picks from your friend" />
       </Suspense>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { useInView } from "react-intersection-observer";
 import {
   DiscogsSearchRelease,
   DiscogsSearchResult,
@@ -16,6 +17,11 @@ function LastFmAlbum({
   release: LastFMAlbumParams | DiscogsSearchResult;
   handleItemChange: (newValue: DiscogsSearchResult) => void;
 }) {
+  const [inViewRef, inView] = useInView({
+    triggerOnce: true,
+    rootMargin: "0px 200px 200px 0px",
+  });
+
   const { data: discogsRelease, isError } = useQuery({
     queryKey: [
       "DiscogsAlbumSearch",
@@ -43,7 +49,7 @@ function LastFmAlbum({
       return result;
     },
     refetchOnWindowFocus: false,
-    enabled: !!(release as LastFMAlbumParams).album,
+    enabled: !!((release as LastFMAlbumParams).album && inView),
   });
 
   const album =
@@ -54,7 +60,7 @@ function LastFmAlbum({
     (release as DiscogsSearchResult);
 
   return (
-    <li className="h-full min-w-[180px]">
+    <li className="h-full min-w-[180px]" ref={inViewRef}>
       <Link
         to={isError ? "/search" : "/result/$type/$id"}
         params={

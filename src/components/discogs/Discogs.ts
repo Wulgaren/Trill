@@ -62,7 +62,8 @@ const Discogs = {
       }
 
       discogsUser = await response.json();
-      console.log("discogs Username", discogsUser);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs Username", discogsUser);
 
       localStorage.setItem("discogsUser", JSON.stringify(discogsUser));
 
@@ -84,7 +85,8 @@ const Discogs = {
       }
 
       const parsed = await response.json();
-      console.log("discogs login", parsed);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs login", parsed);
 
       const data = new URLSearchParams(parsed);
 
@@ -106,7 +108,8 @@ const Discogs = {
       const params = new URLSearchParams(window.location.search);
       const verifier = params?.get("oauth_verifier");
 
-      console.log("discogs handleGetAccessToken", verifier, requestToken);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs handleGetAccessToken", verifier, requestToken);
       const response = await fetch("/api/discogs-oauth-access-token", {
         method: "POST",
         headers: {
@@ -119,7 +122,8 @@ const Discogs = {
       }
 
       const parsed = await response.json();
-      console.log("discogs token", parsed);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs token", parsed);
 
       const data = new URLSearchParams(parsed);
 
@@ -159,7 +163,8 @@ const Discogs = {
         username = await Discogs.GetLoggedUserName();
       }
 
-      console.log("discogs logged in username", username);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs logged in username", username);
 
       const response = await fetch(
         `/api/discogs-api/users/${username}/collection/folders/0/releases?per_page=50&page=${pageParam}`,
@@ -178,7 +183,8 @@ const Discogs = {
         pagination: parsed.pagination,
         releases: parsed.releases,
       };
-      console.log("discogs collection", userCollection);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs collection", userCollection);
 
       return userCollection;
     } catch (error) {
@@ -207,7 +213,8 @@ const Discogs = {
         page: pageParam,
       });
 
-      console.log("discogs generated queries", generatedQueries);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs generated queries", generatedQueries);
 
       const requestOptions = {
         method: "GET",
@@ -259,7 +266,8 @@ const Discogs = {
               result?.cover_image?.split("discogs.com")[1],
           })),
       };
-      console.log("discogs search results", searchParams.query, filtered);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs search results", searchParams.query, filtered);
 
       return filtered;
     } catch (error) {
@@ -350,7 +358,9 @@ const Discogs = {
 
       if (!id) throw new Error("No id");
       if (!type) throw new Error("No type");
-      console.log("discogs get releases", id, type);
+
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs get releases", id, type);
 
       const response = await fetch(
         `/api/discogs-api/${type}/${id}/releases?per_page=50&page=${pageParam}`,
@@ -372,7 +382,9 @@ const Discogs = {
         if (x.thumb)
           x.thumb = "/api/discogs-image" + x.thumb?.split("discogs.com")[1];
       });
-      console.log(`discogs ${type} releases`, parsed);
+
+      if (process.env.NODE_ENV === "development")
+        console.log(`discogs ${type} releases`, parsed);
 
       return parsed;
     } catch (error) {
@@ -431,7 +443,8 @@ const Discogs = {
         });
       }
 
-      console.log("discogs bonus tracks", bonusTracks);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs bonus tracks", bonusTracks);
 
       return bonusTracks;
     } catch (error) {
@@ -473,7 +486,8 @@ const Discogs = {
           }
         });
 
-      console.log("discogs recommendations albums", search);
+      if (process.env.NODE_ENV === "development")
+        console.log("discogs recommendations albums", search);
 
       const promises = search.map((rec) =>
         Discogs.Search({
@@ -506,7 +520,9 @@ const Discogs = {
           ];
         }
       });
-      console.log("Discogs recommendations results", parsedResponses);
+
+      if (process.env.NODE_ENV === "development")
+        console.log("Discogs recommendations results", parsedResponses);
 
       return parsedResponses;
     } catch (error) {
