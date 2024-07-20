@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { memo, useCallback, useRef } from "react";
+import { memo, useCallback } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 import {
   DiscogsArtist,
   DiscogsArtistMaster,
@@ -47,82 +47,48 @@ function ReleasesListComponent({
     initialPageParam: 1,
   });
 
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const releasesList =
-    releases?.pages.flatMap(
-      (page) =>
-        page.releases as (
-          | DiscogsArtistRelease
-          | DiscogsArtistMaster
-          | DiscogsLabelRelease
-        )[],
-    ) || [];
-
-  const rowVirtualizer = useVirtualizer({
-    count: hasNextPage ? releasesList.length + 1 : releasesList.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 127, // Estimate the height of each item
-    overscan: 2, // Number of items to render beyond the viewport
-    gap: 25,
-  });
-
   const handleScrollToBottom = useCallback(() => {
-    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
-    if (!lastItem) return;
-
-    // If we've reached the end of the list, fetch the next page
-    if (
-      lastItem.index >= releasesList.length - 1 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
+    if (!isFetchingNextPage && hasNextPage) {
       fetchNextPage();
     }
-  }, [
-    fetchNextPage,
-    releasesList.length,
-    rowVirtualizer,
-    isFetchingNextPage,
-    hasNextPage,
-  ]);
+  }, [fetchNextPage, isFetchingNextPage, hasNextPage]);
 
   return (
     <>
       {isFetching && !releases && <LoadingAnimation />}
-      {!isLoading && !releasesList?.length && <NoSearchResult />}
-      {!isLoading && !!releasesList?.length && (
-        <div
-          ref={parentRef}
-          className="mt-3 max-h-96 overflow-auto overscroll-contain"
-          onScroll={handleScrollToBottom}
-        >
-          <ul
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              position: "relative",
-            }}
+      {!isLoading && !releases?.pages[0]?.releases?.length && (
+        <NoSearchResult />
+      )}
+      {!isLoading && !!releases?.pages[0]?.releases?.length && (
+        <div className="overflow-scroll overscroll-contain">
+          <InfiniteScroll
+            element="ul"
+            className="mt-3 grid max-h-96 gap-5"
+            pageStart={2}
+            loadMore={handleScrollToBottom}
+            hasMore={hasNextPage}
+            useWindow={false}
+            loader={
+              <li
+                className="flex flex-col items-center justify-center p-2"
+                key={0}
+              >
+                <LoadingAnimation />
+              </li>
+            }
           >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const isLoaderRow = virtualRow.index > releasesList.length - 1;
-              const release = releasesList[virtualRow.index];
-
-              return (
-                <li
-                  key={virtualRow.index}
-                  className="absolute left-0 top-0 w-full"
-                  style={{
-                    height: `${virtualRow.size}px`,
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                >
-                  {isLoaderRow ? (
-                    hasNextPage ? (
-                      <LoadingAnimation key={virtualRow.index} />
-                    ) : (
-                      ""
-                    )
-                  ) : (
+            {releases?.pages
+              ?.flatMap(
+                (page) =>
+                  page.releases as (
+                    | DiscogsArtistRelease
+                    | DiscogsArtistMaster
+                    | DiscogsLabelRelease
+                  )[],
+              )
+              .map((release, index) => {
+                return (
+                  <li key={index}>
                     <Link
                       to="/result/$type/$id"
                       params={{
@@ -141,7 +107,7 @@ function ReleasesListComponent({
                           <SearchImage
                             url={release.thumb}
                             title={release.title}
-                            index={virtualRow.index}
+                            index={index}
                           />
                         </div>
 
@@ -178,11 +144,10 @@ function ReleasesListComponent({
                         </div>
                       </div>
                     </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                );
+              })}
+          </InfiniteScroll>
         </div>
       )}
 

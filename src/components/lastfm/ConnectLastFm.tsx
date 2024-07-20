@@ -81,6 +81,7 @@ function ConnectLastFm() {
           </label>
           <input
             type="text"
+            id="LastFmUsername"
             name="LastFmUsername"
             placeholder="Last.FM Username"
             value={username}
