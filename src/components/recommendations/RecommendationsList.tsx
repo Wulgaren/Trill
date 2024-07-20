@@ -48,7 +48,7 @@ function RecommendationsListComponent({ title }: { title: string }) {
     data?.pages?.flatMap((page) => page?.results)?.filter((x) => x != null) ||
     [];
 
-  const virtualizer = useVirtualizer({
+  const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? recs.length + 1 : recs.length,
     horizontal: true,
     getScrollElement: () => parentRef.current,
@@ -58,12 +58,11 @@ function RecommendationsListComponent({ title }: { title: string }) {
   });
 
   const handleScroll = async () => {
-    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
 
-    if (!lastItem) {
-      return;
-    }
+    if (!lastItem) return;
 
+    // If we've reached the end of the list, fetch the next page
     if (
       lastItem.index >= recs.length - 1 &&
       hasNextPage &&
@@ -125,9 +124,9 @@ function RecommendationsListComponent({ title }: { title: string }) {
         >
           <ul
             className="relative my-3 h-full"
-            style={{ width: `${virtualizer.getTotalSize()}px` }}
+            style={{ width: `${rowVirtualizer.getTotalSize()}px` }}
           >
-            {virtualizer.getVirtualItems().map((virtualItem) => {
+            {rowVirtualizer.getVirtualItems().map((virtualItem) => {
               const isLoaderRow = virtualItem.index > recs.length - 1;
 
               return (
