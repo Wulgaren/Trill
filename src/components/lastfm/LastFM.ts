@@ -150,7 +150,7 @@ const LastFm = {
       if (process.env.NODE_ENV === "development")
         console.log("lastfm top artists", topArtists);
 
-      const startIndex = startGenreNum + (5 * pageParam - 1);
+      const startIndex = Math.min(startGenreNum + (5 * pageParam - 1), 95);
 
       const responses = topArtists
         .slice(startIndex, startIndex + 5)
