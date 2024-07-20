@@ -87,10 +87,12 @@ export function createFormObject(formEntries: [string, FormDataEntryValue][]) {
 }
 
 export function removeTags(text: string): string {
-  // Replace [x=name]
+  // Replace [x=name] and ("2323")
   if (!text) return text;
 
-  text = text.replaceAll(/\[([a-zA-Z])=([^\]]+)\]/g, "$2");
+  text = text
+    .replaceAll(/\[([a-zA-Z])=([^\]]+)\]/g, "$2")
+    .replaceAll(/\s*\("\d+"\)/g, "");
 
   return text;
 }
@@ -100,7 +102,6 @@ export function removeNumberFromName(text: string): string {
   if (!text) return text;
 
   text = text.replaceAll(/\s*\(\d+\)/g, "");
-  text = text.replaceAll(/\s*\[\d+\]/g, "");
 
   return text;
 }
