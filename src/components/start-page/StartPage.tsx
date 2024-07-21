@@ -50,10 +50,6 @@ function StartPage() {
       <Suspense fallback={<LoadingAnimation />}>
         <RecommendationsFriend title="Lucky picks from your friend" />
       </Suspense>
-
-      <Suspense fallback={<LoadingAnimation />}>
-        <RecommendationsCurrent title="Trending artists" />
-      </Suspense>
     </div>
   );
 }
