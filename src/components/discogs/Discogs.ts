@@ -17,7 +17,7 @@ import {
   DiscogsUser,
   ReleaseTrack,
 } from "../../types/Discogs/DiscogsTypes";
-import { LastFMAlbumParams } from "../../types/LastFm/LastFmTypes";
+import { LastFMItemParams } from "../../types/LastFm/LastFmTypes";
 
 import GetErrorMessage from "../error-handling/ErrorHandling";
 import {
@@ -475,11 +475,11 @@ const Discogs = {
         .map((x) => {
           if (typeof x === "string") return x;
           if (typeof x === "object") {
-            if (Object.prototype.hasOwnProperty.call(x, "artist")) {
+            if (Object.prototype.hasOwnProperty.call(x, "album")) {
               return (
-                (x as LastFMAlbumParams).artist +
+                (x as LastFMItemParams).artist +
                 " - " +
-                (x as LastFMAlbumParams).album
+                (x as LastFMItemParams).album
               );
             }
             return Object.values(x as Record<string, string>)?.join(" - ");

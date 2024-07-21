@@ -15,7 +15,7 @@ import LastFm from "../lastfm/LastFM";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import LastFmItem from "./LastFmItem";
 
-function RecommendationsListComponent({ title }: { title: string }) {
+function RecommendationsCollectionComponent({ title }: { title: string }) {
   const [startGenreNum] = useState(Math.floor(Math.random() * 50));
   const parentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -162,6 +162,6 @@ function RecommendationsListComponent({ title }: { title: string }) {
   );
 }
 
-const RecommendationsList = memo(RecommendationsListComponent);
+const RecommendationsCollection = memo(RecommendationsCollectionComponent);
 
-export default RecommendationsList;
+export default RecommendationsCollection;

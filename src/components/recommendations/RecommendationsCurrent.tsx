@@ -15,8 +15,8 @@ import LastFm from "../lastfm/LastFM";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import LastFmItem from "./LastFmItem";
 
-function RecommendationsListComponent({ title }: { title: string }) {
-  const [startGenreNum] = useState(Math.floor(Math.random() * 50));
+function RecommendationsCurrentComponent({ title }: { title: string }) {
+  const [startGenreNum] = useState(Math.floor(Math.random() * 15));
   const parentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -28,13 +28,10 @@ function RecommendationsListComponent({ title }: { title: string }) {
     isFetchingNextPage,
     isLoading,
     error,
-  } = useInfiniteQuery<
-    LastFMPaginatedResponse<LastFMItemParams[]> | undefined,
-    Error
-  >({
-    queryKey: ["FavGenresAlbums", startGenreNum],
+  } = useInfiniteQuery({
+    queryKey: ["CurrentArtists", startGenreNum],
     queryFn: ({ pageParam = 1 }) =>
-      LastFm.GetFavGenreRecommendations({
+      LastFm.GetCurrentArtists({
         startGenreNum,
         pageParam: pageParam as number,
       }),
@@ -81,7 +78,7 @@ function RecommendationsListComponent({ title }: { title: string }) {
       InfiniteData<
         LastFMPaginatedResponse<(LastFMItemParams | DiscogsSearchResult)[]>
       >
-    >(["FavGenresAlbums", startGenreNum], (oldData) => {
+    >(["CurrentArtists", startGenreNum], (oldData) => {
       if (!oldData) return oldData;
 
       const newPages = {
@@ -92,7 +89,7 @@ function RecommendationsListComponent({ title }: { title: string }) {
             if (
               Object.prototype.hasOwnProperty.call(
                 res as LastFMItemParams,
-                "album",
+                "artist",
               ) &&
               newValue?.title?.includes(
                 (res as LastFMItemParams).album ?? "",
@@ -115,7 +112,10 @@ function RecommendationsListComponent({ title }: { title: string }) {
 
   return (
     <div className="rounded-md bg-white !bg-opacity-40 p-5 pb-0 md:col-span-2 dark:bg-black dark:text-white">
-      <h2 className="text-xl text-black dark:text-white">{title}:</h2>
+      <h2 className="text-xl text-black dark:text-white">
+        {title}
+        {data?.pages[0]?.info ? `(${data.pages[0].info})` : ""}:
+      </h2>
 
       {isFetching && !recs?.length && <LoadingAnimation />}
       {!isLoading && !error && !!recs.length && (
@@ -162,6 +162,6 @@ function RecommendationsListComponent({ title }: { title: string }) {
   );
 }
 
-const RecommendationsList = memo(RecommendationsListComponent);
+const RecommendationsCurrent = memo(RecommendationsCurrentComponent);
 
-export default RecommendationsList;
+export default RecommendationsCurrent;

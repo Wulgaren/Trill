@@ -1,7 +1,8 @@
 import {
-  LastFMAlbumParams,
   LastFMArtistGetSimilarResponse,
   LastFMArtistSearchResponse,
+  LastFMGeoGetTopArtistsResponse,
+  LastFMItemParams,
   LastFMPaginatedResponse,
   LastFMTagGetTopAlbumsResponse,
   LastFMUserGetFriendsResponse,
@@ -220,7 +221,7 @@ const LastFm = {
   }: {
     pageParam: number;
     tag: string;
-  }): Promise<LastFMAlbumParams[] | undefined> => {
+  }): Promise<LastFMItemParams[] | undefined> => {
     try {
       if (!tag) throw new Error("No tag");
 
@@ -255,7 +256,7 @@ const LastFm = {
   }: {
     startGenreNum: number;
     pageParam: number;
-  }): Promise<LastFMPaginatedResponse<LastFMAlbumParams[]> | undefined> => {
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
     try {
       const topGenres: string[] | undefined = await LastFm.GetUserTags({
         startGenreNum,
@@ -266,8 +267,8 @@ const LastFm = {
       if (process.env.NODE_ENV === "development")
         console.log("lastfm recommendations to download", topGenres);
 
-      let responses: LastFMAlbumParams[] = [];
-      while (responses.length == 0) {
+      let responses: LastFMItemParams[] = [];
+      while (!responses.length) {
         const promises = topGenres
           .slice(
             Math.floor(Math.random() * 30),
@@ -348,7 +349,7 @@ const LastFm = {
   }: {
     username: string;
     pageParam: number;
-  }): Promise<LastFMPaginatedResponse<LastFMAlbumParams[]> | undefined> => {
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
     try {
       if (!username) throw new Error("No username");
 
@@ -364,7 +365,7 @@ const LastFm = {
       if (process.env.NODE_ENV === "development")
         console.log("last fm user albums", data);
 
-      const result: LastFMPaginatedResponse<LastFMAlbumParams[]> = {
+      const result: LastFMPaginatedResponse<LastFMItemParams[]> = {
         pagination: {
           page: Number(data?.topalbums["@attr"].page),
           pages: Number(data?.topalbums["@attr"].totalPages),
@@ -392,7 +393,7 @@ const LastFm = {
   }: {
     startGenreNum: number;
     pageParam: number;
-  }): Promise<LastFMPaginatedResponse<LastFMAlbumParams[]> | undefined> => {
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
     try {
       if (!localStorage.getItem("lastFmUsername"))
         throw new Error("No username");
@@ -415,12 +416,12 @@ const LastFm = {
         break;
       }
 
-      let albums: LastFMPaginatedResponse<LastFMAlbumParams[]> | undefined;
+      let albums: LastFMPaginatedResponse<LastFMItemParams[]> | undefined;
       const albumsPage = pageParam + Math.floor(Math.random() * startGenreNum);
       if (process.env.NODE_ENV === "development")
         console.log("lastfm user albums page", albumsPage);
 
-      while (!albums?.results?.length) {
+      while (!albums?.results?.length && albums?.pagination.pages) {
         albums = await LastFm.GetUserTopAlbums({
           username: friend,
           pageParam: albumsPage,
@@ -440,6 +441,64 @@ const LastFm = {
     } catch (error) {
       console.error(
         "Error during getting user's top albums:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetCurrentArtists: async ({
+    startGenreNum,
+    pageParam = 1,
+  }: {
+    startGenreNum: number;
+    pageParam: number;
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
+    try {
+      let data: LastFMGeoGetTopArtistsResponse | undefined;
+      let artistsPage = pageParam + startGenreNum;
+      while (!data?.topartists?.artist?.length && artistsPage > 0) {
+        const tempResponse = await fetch(
+          `/api/lastfm-api/?method=geo.getTopArtists&country=Canada&limit=50&page=${artistsPage}&format=json`,
+        );
+
+        if (!tempResponse?.ok) {
+          artistsPage = artistsPage - 5;
+          continue;
+        }
+
+        const tempData: LastFMGeoGetTopArtistsResponse =
+          await tempResponse.json();
+
+        if (!tempData?.topartists?.artist?.length) {
+          artistsPage = artistsPage - 1;
+          continue;
+        }
+
+        data = tempData;
+        break;
+      }
+
+      if (!data?.topartists?.artist?.length) {
+        throw new Error("No artists found");
+      }
+
+      const result: LastFMPaginatedResponse<LastFMItemParams[]> = {
+        pagination: {
+          page: 1,
+          pages: 1,
+        },
+        results:
+          data?.topartists?.artist?.map(({ name }) => ({ artist: name })) ?? [],
+      };
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm current artists", result);
+
+      return result;
+    } catch (error) {
+      console.error(
+        "Error during getting current artists:",
         GetErrorMessage(error),
       );
       throw error;

@@ -8,8 +8,8 @@ export type LastFMUnknownFunction = (...args: unknown[]) => unknown;
 export type LastFMRequestParams<T> = Record<string, LastFMParam | T>;
 export type LastFMBooleanNumberOrundefined = LastFMBooleanNumber | undefined;
 
-export type LastFMAlbumParams = Readonly<{
-  album: string;
+export type LastFMItemParams = Readonly<{
+  album?: string;
   artist: string;
 }>;
 
@@ -19,14 +19,14 @@ export type LastFMAlbumOptionalParams = Readonly<{
 }>;
 
 export type LastFMAlbumAddTagsParams = LastFMRequestParams<LastFMParam> &
-  LastFMAlbumParams &
+  LastFMItemParams &
   Readonly<{
     tags: string | string[];
   }>;
 
 export type LastFMAlbumGetInfoParams =
   LastFMRequestParams<LastFMBooleanNumberOrundefined> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     LastFMAlbumOptionalParams &
     Readonly<{
       lang?: string;
@@ -35,7 +35,7 @@ export type LastFMAlbumGetInfoParams =
 
 export type LastFMAlbumGetTagsParams =
   LastFMRequestParams<LastFMBooleanNumberOrundefined> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     LastFMAlbumOptionalParams &
     Readonly<{
       user?: string;
@@ -43,12 +43,12 @@ export type LastFMAlbumGetTagsParams =
 
 export type LastFMAlbumGetTopTagsParams =
   LastFMRequestParams<LastFMBooleanNumberOrundefined> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     LastFMAlbumOptionalParams;
 
 export type LastFMAlbumRemoveLastFMTagParams =
   LastFMRequestParams<LastFMParam> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     Readonly<{
       tag: string;
     }>;

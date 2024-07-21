@@ -7,15 +7,15 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { memo, useRef, useState } from "react";
 import { DiscogsSearchResult } from "../../types/Discogs/DiscogsTypes";
 import {
-  LastFMAlbumParams,
+  LastFMItemParams,
   LastFMPaginatedResponse,
 } from "../../types/LastFm/LastFmTypes";
 import { getNextPage } from "../functions/Functions";
 import LastFm from "../lastfm/LastFM";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
-import LastFmAlbum from "./LastFmAlbum";
+import LastFmItem from "./LastFmItem";
 
-function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
+function RecommendationsFriendComponent({ title }: { title: string }) {
   const [startGenreNum] = useState(Math.floor(Math.random() * 50));
   const parentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
     isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: ["FavGenresAlbums", startGenreNum],
+    queryKey: ["FriendAlbums", startGenreNum],
     queryFn: ({ pageParam = 1 }) =>
       LastFm.GetFriendTopAlbums({
         startGenreNum,
@@ -76,9 +76,9 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
     // Use queryClient to update the query data
     queryClient.setQueryData<
       InfiniteData<
-        LastFMPaginatedResponse<(LastFMAlbumParams | DiscogsSearchResult)[]>
+        LastFMPaginatedResponse<(LastFMItemParams | DiscogsSearchResult)[]>
       >
-    >(["FavGenresAlbums", startGenreNum], (oldData) => {
+    >(["FriendAlbums", startGenreNum], (oldData) => {
       if (!oldData) return oldData;
 
       const newPages = {
@@ -88,11 +88,13 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
           results: page.results.map((res) => {
             if (
               Object.prototype.hasOwnProperty.call(
-                res as LastFMAlbumParams,
+                res as LastFMItemParams,
                 "album",
               ) &&
-              newValue?.title?.includes((res as LastFMAlbumParams).album) &&
-              newValue?.title?.includes((res as LastFMAlbumParams).artist)
+              newValue?.title?.includes(
+                (res as LastFMItemParams).album ?? "",
+              ) &&
+              newValue?.title?.includes((res as LastFMItemParams).artist)
             ) {
               return newValue;
             } else return res;
@@ -111,7 +113,7 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
   return (
     <div className="rounded-md bg-white !bg-opacity-40 p-5 pb-0 md:col-span-2 dark:bg-black dark:text-white">
       <h2 className="text-xl text-black dark:text-white">
-        {title} ({data?.pages[0]?.info}):
+        {title} {data?.pages[0]?.info ? `(${data.pages[0].info})` : ""}:
       </h2>
 
       {isFetching && !recs?.length && <LoadingAnimation />}
@@ -119,7 +121,7 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
         <div
           ref={parentRef}
           onScroll={handleScroll}
-          className="h-80 w-full overflow-y-hidden overflow-x-scroll overscroll-contain"
+          className="h-80 w-full overflow-y-hidden overflow-x-scroll overscroll-x-contain"
         >
           <ul
             className="relative my-3 h-full"
@@ -144,8 +146,8 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
                       ""
                     )
                   ) : (
-                    <LastFmAlbum
-                      release={recs[virtualItem.index]}
+                    <LastFmItem
+                      lastFmItem={recs[virtualItem.index]}
                       handleItemChange={handleItemChange}
                     />
                   )}
@@ -159,6 +161,6 @@ function RecommendationsDiscogsUserComponent({ title }: { title: string }) {
   );
 }
 
-const RecommendationsDiscogsUser = memo(RecommendationsDiscogsUserComponent);
+const RecommendationsFriend = memo(RecommendationsFriendComponent);
 
-export default RecommendationsDiscogsUser;
+export default RecommendationsFriend;
