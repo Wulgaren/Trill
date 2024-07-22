@@ -408,7 +408,7 @@ const LastFm = {
           if (ex.message.includes("Bad Request")) pages = page - 1;
         });
 
-        if (result?.pagination.page == 1 && !result?.results?.length) return;
+        if (result?.pagination?.page == 1 && !result?.results?.length) return;
         if (!result) continue;
 
         friend =
@@ -421,7 +421,7 @@ const LastFm = {
       if (process.env.NODE_ENV === "development")
         console.log("lastfm user albums page", albumsPage);
 
-      while (!albums?.results?.length && albums?.pagination.pages) {
+      while (!albums?.results?.length && albums?.pagination?.pages != 0) {
         albums = await LastFm.GetUserTopAlbums({
           username: friend,
           pageParam: albumsPage,
