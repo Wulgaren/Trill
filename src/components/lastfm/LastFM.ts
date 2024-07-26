@@ -150,6 +150,59 @@ const LastFm = {
     }
   },
 
+  GetArtistTags: async ({
+    artists,
+    startGenreNum = 1,
+    pageParam = 1,
+  }: {
+    artists: string[];
+    startGenreNum: number;
+    pageParam: number;
+  }): Promise<Set<string>> => {
+    try {
+      if (!artists?.length) return new Set();
+
+      const userTags: Set<string> = new Set();
+
+      if (process.env.NODE_ENV === "development")
+        console.log("lastfm top artists", artists);
+
+      const startIndex = Math.min(
+        startGenreNum + (5 * pageParam - 1),
+        artists.length >= 95 ? 95 : artists.length - 1,
+      );
+
+      const responses = artists
+        .slice(startIndex, startIndex + 5)
+        .map((x) =>
+          fetch(
+            `/api/lastfm-api/?method=artist.getTopTags&artist=${encodeURIComponent(x)}&autocorrect=1&format=json&limit=30`,
+          ),
+        );
+
+      for await (const response of responses) {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+
+        const data: LastFMUserGetTopTagsResponse = await response.json();
+
+        if (data.error) continue;
+
+        const tags = data?.toptags?.tag?.map((x) => x.name);
+        tags.forEach((item) => userTags.add(item));
+      }
+
+      return userTags;
+    } catch (error) {
+      console.error(
+        "Error during getting artist tags:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
   GetUserTags: async ({
     startGenreNum = 0,
     pageParam = 1,
@@ -158,9 +211,7 @@ const LastFm = {
     pageParam: number;
   }): Promise<string[] | undefined> => {
     try {
-      const lastFmUserTags = JSON.parse(
-        localStorage.getItem("lastFmUserTags") ?? "",
-      );
+      const lastFmUserTags = JSON.parse(localStorage.lastFmUserTags ?? null);
       let userTags: Set<string> = new Set();
 
       // Check if tags exist and if the date is older than 7 days
@@ -188,36 +239,17 @@ const LastFm = {
       if (userTags?.size) return [...userTags];
 
       const username: string = localStorage.lastFmUsername ?? "";
-      if (!username) return;
 
-      const topArtists: string[] | undefined = await LastFm.GetUserArtist();
+      const topArtists: string[] | undefined = username
+        ? await LastFm.GetUserArtist()
+        : JSON.parse(localStorage.starredArtists ?? null);
       if (!topArtists?.length) return;
 
-      if (process.env.NODE_ENV === "development")
-        console.log("lastfm top artists", topArtists);
-
-      const startIndex = Math.min(startGenreNum + (5 * pageParam - 1), 95);
-
-      const responses = topArtists
-        .slice(startIndex, startIndex + 5)
-        .map((x) =>
-          fetch(
-            `/api/lastfm-api/?method=artist.getTopTags&artist=${encodeURIComponent(x)}&autocorrect=1&format=json&limit=30`,
-          ),
-        );
-
-      for await (const response of responses) {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-
-        const data: LastFMUserGetTopTagsResponse = await response.json();
-
-        if (data.error) continue;
-
-        const tags = data?.toptags?.tag?.map((x) => x.name);
-        tags.forEach((item) => userTags.add(item));
-      }
+      userTags = await LastFm.GetArtistTags({
+        artists: topArtists,
+        startGenreNum,
+        pageParam,
+      });
 
       localStorage.setItem(
         "lastFmUserTags",

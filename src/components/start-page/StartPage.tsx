@@ -1,5 +1,5 @@
 import { lazy, Suspense, useMemo } from "react";
-import { FaList } from "react-icons/fa";
+import { FaList, FaStar } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import { useNavbarContext } from "./NavbarContextUtils";
 const Recommendations = lazy(
@@ -23,13 +23,36 @@ function StartPage() {
           <Recommendations title="Trending artists" type="TrendingArtists" />
         </Suspense>
 
+        {JSON.parse(localStorage.starredArtists ?? null)?.length > 0 ? (
+          <Suspense fallback={<LoadingAnimation />}>
+            <Recommendations
+              title="Based on your favorite artists' genres"
+              type="FavGenresAlbums"
+            />
+          </Suspense>
+        ) : (
+          <>
+            <div className="flex flex-row items-center justify-center text-gray-600 dark:text-white">
+              <FaStar size={48} className="p-3" />
+              <span>
+                Give stars to your favorite artists for new recommendations.
+                <br />
+              </span>
+            </div>
+            <span className="dark:text flex flex-col items-center justify-center text-gray-600 dark:text-white">
+              Or...
+            </span>
+          </>
+        )}
+
         <div
           onClick={triggerClick}
           className="flex flex-row items-center justify-center text-gray-600 dark:text-white"
         >
           <FaList size={48} className="p-3" />
           <span>
-            Connect to Discogs and Last.fm for personalized recommendations.
+            Connect to Discogs and Last.fm for full personalized
+            recommendations.
           </span>
         </div>
       </div>
