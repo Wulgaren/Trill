@@ -79,8 +79,10 @@ const LastFm = {
 
   GetUserArtist: async ({
     period = "overall",
+    pageParam = 1,
   }: {
     period?: LastFMPeriod;
+    pageParam?: number;
   } = {}): Promise<string[] | undefined> => {
     try {
       let topArtists: string[] = JSON.parse(
@@ -92,7 +94,7 @@ const LastFm = {
       if (!username) return;
 
       const response = await fetch(
-        `/api/lastfm-api/?method=user.getTopArtists&user=${username}&period=${period}&format=json&limit=100`,
+        `/api/lastfm-api/?method=user.getTopArtists&user=${username}&period=${period}&page=${pageParam}&format=json&limit=100`,
       );
 
       if (!response.ok) {
@@ -234,14 +236,12 @@ const LastFm = {
 
   GetSimilarArtists: async ({
     artist,
-    pageParam = 1,
   }: {
     artist: string;
-    pageParam: number;
-  }): Promise<LastFMItemParams[]> => {
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
     try {
       const response = await fetch(
-        `/api/lastfm-api/?method=artist.getSimilar&artist=${artist}&autocorrect=1&limit=50&page=${pageParam}&format=json`,
+        `/api/lastfm-api/?method=artist.getSimilar&artist=${artist}&autocorrect=1&limit=50&format=json`,
       );
 
       if (!response.ok) {
@@ -250,10 +250,11 @@ const LastFm = {
 
       const data: LastFMArtistGetSimilarResponse = await response.json();
 
-      return (
-        data?.similarartists?.artist?.map(({ name }) => ({ artist: name })) ??
-        []
-      );
+      return {
+        results:
+          data?.similarartists?.artist?.map(({ name }) => ({ artist: name })) ??
+          [],
+      };
     } catch (error) {
       console.error(
         "Error during getting similar artists:",
@@ -806,7 +807,10 @@ const LastFm = {
     pageParam: number;
   }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
     try {
-      const recentArtists = await LastFm.GetUserArtist({ period: "1month" });
+      const recentArtists = await LastFm.GetUserArtist({
+        period: "1month",
+        pageParam: Math.floor(Math.random() * startGenreNum + pageParam),
+      });
       if (!recentArtists?.length) throw new Error("No recent artists found");
 
       if (process.env.NODE_ENV === "development")
@@ -817,13 +821,14 @@ const LastFm = {
         const promises = recentArtists.map((artist) =>
           LastFm.GetSimilarArtists({
             artist,
-            pageParam: startGenreNum + pageParam,
           }),
         );
 
-        similarArtists = (await Promise.all(promises))
-          .flat()
-          .filter((x) => x != null);
+        const parsed = (await Promise.all(promises))
+          ?.flatMap((x) => x?.results)
+          ?.filter((x) => x != null);
+
+        similarArtists = parsed;
       }
 
       if (process.env.NODE_ENV === "development")
@@ -831,10 +836,6 @@ const LastFm = {
 
       return {
         results: similarArtists,
-        pagination: {
-          page: pageParam,
-          pages: similarArtists.length > 0 ? pageParam + 1 : pageParam,
-        },
       };
     } catch (error) {
       console.error(

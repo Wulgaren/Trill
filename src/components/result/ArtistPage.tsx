@@ -10,6 +10,9 @@ import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
 import DataList from "./lists/DataList";
 const ReleasesList = lazy(() => import("./lists/ReleasesList"));
+const Recommendations = lazy(
+  () => import("../recommendations/Recommendations"),
+);
 
 function ArtistPage({ data }: { data: DiscogsArtist }) {
   return (
@@ -89,6 +92,14 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
           <ReleasesList data={data} type="artists" />
         </Suspense>
       </div>
+
+      <Suspense fallback={<LoadingAnimation />}>
+        <Recommendations
+          title="Similar artists"
+          type="SimilarArtists"
+          artist={data.name}
+        />
+      </Suspense>
     </div>
   );
 }

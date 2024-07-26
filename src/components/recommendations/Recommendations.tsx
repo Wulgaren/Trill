@@ -27,7 +27,8 @@ function RecommendationsComponent({
     | "RecentTracks"
     | "FavGenresAlbums"
     | "TrendingArtists"
-    | "SimilarAlbums";
+    | "SimilarAlbums"
+    | "SimilarArtists";
   artist?: string;
   trackName?: string;
 }) {
@@ -83,6 +84,11 @@ function RecommendationsComponent({
                 { name: trackName ?? "", artist: { name: artist ?? "" } },
               ],
             },
+          });
+
+        case "SimilarArtists":
+          return LastFm.GetSimilarArtists({
+            artist: artist ?? "",
           });
       }
     },
