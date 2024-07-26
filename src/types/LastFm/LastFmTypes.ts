@@ -1,3 +1,5 @@
+import { DiscogsPagination } from "../Discogs/DiscogsTypes";
+
 export type LastFMParam = string | string[];
 export type LastFMParams<T> = Record<string, LastFMParam | T>;
 export type LastFMundefinedOrNumber = undefined | number;
@@ -6,8 +8,8 @@ export type LastFMUnknownFunction = (...args: unknown[]) => unknown;
 export type LastFMRequestParams<T> = Record<string, LastFMParam | T>;
 export type LastFMBooleanNumberOrundefined = LastFMBooleanNumber | undefined;
 
-export type LastFMAlbumParams = Readonly<{
-  album: string;
+export type LastFMItemParams = Readonly<{
+  album?: string;
   artist: string;
 }>;
 
@@ -17,14 +19,14 @@ export type LastFMAlbumOptionalParams = Readonly<{
 }>;
 
 export type LastFMAlbumAddTagsParams = LastFMRequestParams<LastFMParam> &
-  LastFMAlbumParams &
+  LastFMItemParams &
   Readonly<{
     tags: string | string[];
   }>;
 
 export type LastFMAlbumGetInfoParams =
   LastFMRequestParams<LastFMBooleanNumberOrundefined> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     LastFMAlbumOptionalParams &
     Readonly<{
       lang?: string;
@@ -33,7 +35,7 @@ export type LastFMAlbumGetInfoParams =
 
 export type LastFMAlbumGetTagsParams =
   LastFMRequestParams<LastFMBooleanNumberOrundefined> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     LastFMAlbumOptionalParams &
     Readonly<{
       user?: string;
@@ -41,12 +43,12 @@ export type LastFMAlbumGetTagsParams =
 
 export type LastFMAlbumGetTopTagsParams =
   LastFMRequestParams<LastFMBooleanNumberOrundefined> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     LastFMAlbumOptionalParams;
 
 export type LastFMAlbumRemoveLastFMTagParams =
   LastFMRequestParams<LastFMParam> &
-    LastFMAlbumParams &
+    LastFMItemParams &
     Readonly<{
       tag: string;
     }>;
@@ -924,6 +926,7 @@ export type LastFMTrackGetInfoResponse = Readonly<{
       content: string;
     };
   };
+  error?: number;
 }>;
 
 export type LastFMTrackGetSimilarResponse = Readonly<{
@@ -944,6 +947,10 @@ export type LastFMTrackGetSimilarResponse = Readonly<{
         mbid: string;
         url: string;
       };
+      album: {
+        "#text": string;
+        mbid: string;
+      };
       image: Array<{
         size: string;
         "#text": string;
@@ -953,6 +960,7 @@ export type LastFMTrackGetSimilarResponse = Readonly<{
       artist: string;
     };
   };
+  error?: number;
 }>;
 
 export type LastFMTrackGetTagsResponse = Readonly<{
@@ -1107,10 +1115,18 @@ export type LastFMUserGetRecentTracksParams = LastFMUserParams &
     extended?: 0 | 1;
   }>;
 
+export type LastFMPeriod =
+  | "overall"
+  | "7day"
+  | "1month"
+  | "3month"
+  | "6month"
+  | "12month";
+
 export type LastFMUserGetTopParams = LastFMUserParams &
   LastFMUserOptionalParams &
   Readonly<{
-    period?: "overall" | "7day" | "1month" | "3month" | "6month" | "12month";
+    period?: LastFMPeriod;
   }>;
 
 export type LastFMUserGetTopTagsParams = LastFMRequestParams<
@@ -1247,33 +1263,36 @@ export type LastFMUserGetPersonalTagsResponse = Readonly<{
   };
 }>;
 
+export type LastFMRecentTrack = {
+  artist: {
+    mbid?: string;
+    "#text"?: string;
+    name: string;
+  };
+  streamable?: LastFMBooleanNumber;
+  image?: Array<{
+    "#text": string;
+    size: string;
+  }>;
+  mbid?: string;
+  album?: {
+    mbid: string;
+    "#text": string;
+  };
+  name: string;
+  url?: string;
+  date?: {
+    uts: string;
+    "#text": string;
+  };
+  "@attr"?: {
+    nowplaying: "true";
+  };
+};
+
 export type LastFMUserGetRecentTracksResponse = Readonly<{
   recenttracks: {
-    track: Array<{
-      artist: {
-        mbid: string;
-        "#text": string;
-      };
-      streamable: LastFMBooleanNumber;
-      image: Array<{
-        "#text": string;
-        size: string;
-      }>;
-      mbid: string;
-      album: {
-        mbid: string;
-        "#text": string;
-      };
-      name: string;
-      url: string;
-      date: {
-        uts: string;
-        "#text": string;
-      };
-      "@attr"?: {
-        nowplaying: "true";
-      };
-    }>;
+    track: Array<LastFMRecentTrack>;
     "@attr": {
       user: string;
       totalPages: string;
@@ -1359,6 +1378,7 @@ export type LastFMUserGetTopTagsResponse = Readonly<{
       user: string;
     };
   };
+  error?: number;
 }>;
 
 export type LastFMUserGetTopTracksResponse = Readonly<{
@@ -1477,3 +1497,9 @@ export type LastFMUserGetWeeklyTrackChartResponse = Readonly<{
     };
   };
 }>;
+
+export type LastFMPaginatedResponse<T> = {
+  pagination?: DiscogsPagination;
+  results: T;
+  info?: string;
+};

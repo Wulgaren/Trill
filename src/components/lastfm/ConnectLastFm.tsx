@@ -15,7 +15,7 @@ function ConnectLastFm() {
 
   const { isFetching: isTopArtistsFetching } = useQuery({
     queryKey: ["last_fm_top_artists"],
-    queryFn: LastFm.GetUserArtist,
+    queryFn: () => LastFm.GetUserArtist,
     enabled: !!(
       username &&
       !isOpenLastFmDialog &&
@@ -24,22 +24,11 @@ function ConnectLastFm() {
     ),
   });
 
-  const { isFetching: isTopTagsFetching } = useQuery({
-    queryKey: ["last_fm_top_tags"],
-    queryFn: LastFm.GetUserTags,
-    enabled: !!(
-      username &&
-      !isOpenLastFmDialog &&
-      (localStorage.lastFmUsername != username || !localStorage.lastFmUserTags)
-    ),
-  });
-
   useEffect(() => {
     if (isOpenLastFmDialog) return;
 
     if (!username) {
       localStorage.removeItem("lastFmTopArtists");
-      localStorage.removeItem("lastFmUserTags");
     }
 
     setLastFmUsername(username);
@@ -60,7 +49,7 @@ function ConnectLastFm() {
         className="flex items-center justify-center gap-2 bg-red-500 text-white hover:bg-red-700"
         onClick={() => setIsOpenLastFmDialog(true)}
       >
-        {isTopArtistsFetching || isTopTagsFetching ? (
+        {isTopArtistsFetching ? (
           <LoadingAnimation />
         ) : (
           <>
@@ -92,6 +81,7 @@ function ConnectLastFm() {
           </label>
           <input
             type="text"
+            id="LastFmUsername"
             name="LastFmUsername"
             placeholder="Last.FM Username"
             value={username}

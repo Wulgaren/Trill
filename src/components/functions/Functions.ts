@@ -87,11 +87,12 @@ export function createFormObject(formEntries: [string, FormDataEntryValue][]) {
 }
 
 export function removeTags(text: string): string {
-  // Replace [x=name]
+  // Replace [x=name] and ("2323")
   if (!text) return text;
 
-  text = text.replaceAll(/\[([a-zA-Z])=([^\]]+)\]/g, "$2");
-  console.log(text);
+  text = text
+    .replaceAll(/\[([a-zA-Z])=([^\]]+)\]/g, "$2")
+    .replaceAll(/\s*\("\d+"\)/g, "");
 
   return text;
 }
@@ -101,7 +102,6 @@ export function removeNumberFromName(text: string): string {
   if (!text) return text;
 
   text = text.replaceAll(/\s*\(\d+\)/g, "");
-  text = text.replaceAll(/\s*\[\d+\]/g, "");
 
   return text;
 }
@@ -123,7 +123,9 @@ export function convertHTMLTags(text: string): string {
     .replaceAll("[i]", "<i>")
     .replaceAll("[/i]", "</i>")
     .replaceAll("[u]", "<ul>")
-    .replaceAll("[/u]", "</ul>");
+    .replaceAll("[/u]", "</ul>")
+    .replaceAll(/(.*?)(\[url=([^\]]+)\])/g, '$1<a href="$3">')
+    .replaceAll("[/url]", "</a>");
 
   return text;
 }
@@ -170,4 +172,9 @@ export function removeDuplicates<T extends Identifiable>(data: T[]): T[] {
       return true;
     }
   });
+}
+
+export function capitalizeFirstLetter(string: string = ""): string {
+  if (!string) return string;
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }

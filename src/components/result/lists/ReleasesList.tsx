@@ -102,8 +102,8 @@ function ReleasesListComponent({
                       }}
                       title={release.title}
                     >
-                      <div className="flex flex-col flex-wrap items-center justify-center gap-3 text-center md:flex-row md:flex-nowrap md:justify-start md:text-start">
-                        <div className="flex aspect-square items-center justify-center md:w-2/12">
+                      <div className="flex flex-col flex-wrap items-center justify-center gap-3 text-center sm:flex-row sm:flex-nowrap sm:justify-start sm:text-start">
+                        <div className="flex aspect-square max-w-40 items-center justify-center sm:w-2/12">
                           <SearchImage
                             url={release.thumb}
                             title={release.title}

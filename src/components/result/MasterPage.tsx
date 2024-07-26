@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import {
   DiscogsMaster,
   DiscogsRelease,
@@ -16,6 +17,9 @@ import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import SearchImage from "../search-image/SearchImage";
 import DataList from "./lists/DataList";
 import TrackList from "./lists/TrackList";
+const Recommendations = lazy(
+  () => import("../recommendations/Recommendations"),
+);
 
 function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
   const { data: bonusTracks, isFetching: bonusTracksFetching } = useQuery({
@@ -178,6 +182,17 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
             })}
           </ul>
         </div>
+      )}
+
+      {data.artists?.length > 0 && data.tracklist.length > 0 && (
+        <Suspense fallback={<LoadingAnimation />}>
+          <Recommendations
+            title="Similar albums"
+            type="SimilarAlbums"
+            artist={data.artists[0].name}
+            trackName={data.tracklist[0].title}
+          />
+        </Suspense>
       )}
     </div>
   );

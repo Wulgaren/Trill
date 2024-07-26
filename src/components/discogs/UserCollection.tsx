@@ -28,7 +28,6 @@ function UserCollection({
   });
 
   useEffect(() => {
-    console.log(data, username, hasNextPage);
     if (hasNextPage) {
       fetchNextPage();
     } else if (data && !username) {

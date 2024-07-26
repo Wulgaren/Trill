@@ -5,7 +5,6 @@ import { RiLogoutBoxRFill } from "react-icons/ri";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import { useNavbarContext } from "../start-page/NavbarContextUtils";
 import Discogs from "./Discogs";
-import UserCollection from "./UserCollection";
 
 const handleRequestToken = (
   requestTokenRes: URLSearchParams | undefined,
@@ -133,7 +132,6 @@ function ConnectDiscogs() {
               <PiVinylRecordFill />
               <span>Discogs</span>
               <RiLogoutBoxRFill />
-              <UserCollection accessToken={accessToken} />
             </>
           ) : (
             <>

@@ -4,6 +4,7 @@ import LoadingAnimation from "../../../components/loading-animation/LoadingAnima
 import ArtistPage from "../../../components/result/ArtistPage.tsx";
 import LabelPage from "../../../components/result/LabelPage.tsx";
 import MasterPage from "../../../components/result/MasterPage.tsx";
+import NoSearchResult from "../../../components/search/NoSearchResult.tsx";
 import {
   DiscogsArtist,
   DiscogsLabel,
@@ -20,9 +21,13 @@ export const Route = createFileRoute("/result/$type/$id")({
 });
 
 function ResultPageParams() {
-  const { type } = Route.useParams();
+  const { type, id } = Route.useParams();
   const data = Route.useLoaderData();
-  console.log(data);
+  console.log("result page data", data);
+
+  if (!data && id == "-1") {
+    return <NoSearchResult />;
+  }
 
   switch (type) {
     case "artist":
