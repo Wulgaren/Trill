@@ -23,7 +23,8 @@ export const Route = createFileRoute("/result/$type/$id")({
 function ResultPageParams() {
   const { type, id } = Route.useParams();
   const data = Route.useLoaderData();
-  console.log("result page data", data);
+  if (process.env.NODE_ENV === "development")
+    console.log("result page data", data);
 
   if (!data && id == "-1") {
     return <NoSearchResult />;

@@ -95,7 +95,7 @@ export const Route = createFileRoute("/search")({
 function SearchParams() {
   const params: DiscogsSearchQuery = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  console.log(params);
+  if (process.env.NODE_ENV === "development") console.log(params);
 
   return <Search params={params} navigate={navigate} />;
 }

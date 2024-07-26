@@ -46,7 +46,7 @@ function StartPage() {
 
         <div
           onClick={triggerClick}
-          className="flex flex-row items-center justify-center text-gray-600 dark:text-white"
+          className="flex cursor-pointer flex-row items-center justify-center text-gray-600 dark:text-white"
         >
           <FaList size={48} className="p-3" />
           <span>Connect to Last.fm for full personalized recommendations.</span>
