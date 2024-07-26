@@ -1,8 +1,10 @@
-import { Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import { FaList } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
-import Recommendations from "../recommendations/Recommendations";
 import { useNavbarContext } from "./NavbarContextUtils";
+const Recommendations = lazy(
+  () => import("../recommendations/Recommendations"),
+);
 
 function StartPage() {
   const { triggerClick, discogsUsername, lastFmUsername } = useNavbarContext();
