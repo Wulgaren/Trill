@@ -946,6 +946,10 @@ export type LastFMTrackGetSimilarResponse = Readonly<{
         mbid: string;
         url: string;
       };
+      album: {
+        "#text": string;
+        mbid: string;
+      };
       image: Array<{
         size: string;
         "#text": string;
@@ -955,6 +959,7 @@ export type LastFMTrackGetSimilarResponse = Readonly<{
       artist: string;
     };
   };
+  error?: number;
 }>;
 
 export type LastFMTrackGetTagsResponse = Readonly<{
@@ -1109,10 +1114,18 @@ export type LastFMUserGetRecentTracksParams = LastFMUserParams &
     extended?: 0 | 1;
   }>;
 
+export type LastFMPeriod =
+  | "overall"
+  | "7day"
+  | "1month"
+  | "3month"
+  | "6month"
+  | "12month";
+
 export type LastFMUserGetTopParams = LastFMUserParams &
   LastFMUserOptionalParams &
   Readonly<{
-    period?: "overall" | "7day" | "1month" | "3month" | "6month" | "12month";
+    period?: LastFMPeriod;
   }>;
 
 export type LastFMUserGetTopTagsParams = LastFMRequestParams<
@@ -1249,33 +1262,36 @@ export type LastFMUserGetPersonalTagsResponse = Readonly<{
   };
 }>;
 
+export type LastFMRecentTrack = {
+  artist: {
+    mbid: string;
+    "#text": string;
+    name: string;
+  };
+  streamable: LastFMBooleanNumber;
+  image: Array<{
+    "#text": string;
+    size: string;
+  }>;
+  mbid: string;
+  album: {
+    mbid: string;
+    "#text": string;
+  };
+  name: string;
+  url: string;
+  date: {
+    uts: string;
+    "#text": string;
+  };
+  "@attr"?: {
+    nowplaying: "true";
+  };
+};
+
 export type LastFMUserGetRecentTracksResponse = Readonly<{
   recenttracks: {
-    track: Array<{
-      artist: {
-        mbid: string;
-        "#text": string;
-      };
-      streamable: LastFMBooleanNumber;
-      image: Array<{
-        "#text": string;
-        size: string;
-      }>;
-      mbid: string;
-      album: {
-        mbid: string;
-        "#text": string;
-      };
-      name: string;
-      url: string;
-      date: {
-        uts: string;
-        "#text": string;
-      };
-      "@attr"?: {
-        nowplaying: "true";
-      };
-    }>;
+    track: Array<LastFMRecentTrack>;
     "@attr": {
       user: string;
       totalPages: string;

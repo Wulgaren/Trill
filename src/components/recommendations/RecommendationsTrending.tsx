@@ -15,7 +15,7 @@ import LastFm from "../lastfm/LastFM";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import LastFmItem from "./LastFmItem";
 
-function RecommendationsCurrentComponent({ title }: { title: string }) {
+function RecommendationsTrendingComponent({ title }: { title: string }) {
   const [startGenreNum] = useState(Math.floor(Math.random() * 15));
   const parentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -29,9 +29,9 @@ function RecommendationsCurrentComponent({ title }: { title: string }) {
     isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: ["CurrentArtists", startGenreNum],
+    queryKey: ["TrendingArtists", startGenreNum],
     queryFn: ({ pageParam = 1 }) =>
-      LastFm.GetCurrentArtists({
+      LastFm.GetTrendingArtists({
         startGenreNum,
         pageParam: pageParam as number,
       }),
@@ -78,7 +78,7 @@ function RecommendationsCurrentComponent({ title }: { title: string }) {
       InfiniteData<
         LastFMPaginatedResponse<(LastFMItemParams | DiscogsSearchResult)[]>
       >
-    >(["CurrentArtists", startGenreNum], (oldData) => {
+    >(["TrendingArtists", startGenreNum], (oldData) => {
       if (!oldData) return oldData;
 
       const newPages = {
@@ -162,6 +162,6 @@ function RecommendationsCurrentComponent({ title }: { title: string }) {
   );
 }
 
-const RecommendationsCurrent = memo(RecommendationsCurrentComponent);
+const RecommendationsTrending = memo(RecommendationsTrendingComponent);
 
-export default RecommendationsCurrent;
+export default RecommendationsTrending;

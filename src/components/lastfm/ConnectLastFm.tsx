@@ -15,7 +15,7 @@ function ConnectLastFm() {
 
   const { isFetching: isTopArtistsFetching } = useQuery({
     queryKey: ["last_fm_top_artists"],
-    queryFn: LastFm.GetUserArtist,
+    queryFn: () => LastFm.GetUserArtist,
     enabled: !!(
       username &&
       !isOpenLastFmDialog &&

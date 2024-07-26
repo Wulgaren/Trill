@@ -32,9 +32,9 @@ function RecommendationsCollectionComponent({ title }: { title: string }) {
     LastFMPaginatedResponse<LastFMItemParams[]> | undefined,
     Error
   >({
-    queryKey: ["FavGenresAlbums", startGenreNum],
+    queryKey: ["RecentTracks", startGenreNum],
     queryFn: ({ pageParam = 1 }) =>
-      LastFm.GetFavGenreRecommendations({
+      LastFm.GetRecentTracksRecommendations({
         startGenreNum,
         pageParam: pageParam as number,
       }),
@@ -81,7 +81,7 @@ function RecommendationsCollectionComponent({ title }: { title: string }) {
       InfiniteData<
         LastFMPaginatedResponse<(LastFMItemParams | DiscogsSearchResult)[]>
       >
-    >(["FavGenresAlbums", startGenreNum], (oldData) => {
+    >(["RecentTracks", startGenreNum], (oldData) => {
       if (!oldData) return oldData;
 
       const newPages = {

@@ -4,8 +4,13 @@ import {
   LastFMGeoGetTopArtistsResponse,
   LastFMItemParams,
   LastFMPaginatedResponse,
+  LastFMPeriod,
+  LastFMRecentTrack,
   LastFMTagGetTopAlbumsResponse,
+  LastFMTrackGetInfoResponse,
+  LastFMTrackGetSimilarResponse,
   LastFMUserGetFriendsResponse,
+  LastFMUserGetRecentTracksResponse,
   LastFMUserGetTopAlbumsResponse,
   LastFMUserGetTopArtistsResponse,
   LastFMUserGetTopTagsResponse,
@@ -72,18 +77,22 @@ const LastFm = {
     }
   },
 
-  GetUserArtist: async (): Promise<string[] | undefined> => {
+  GetUserArtist: async ({
+    period = "overall",
+  }: {
+    period?: LastFMPeriod;
+  } = {}): Promise<string[] | undefined> => {
     try {
       let topArtists: string[] = JSON.parse(
         localStorage.lastFmTopArtists ?? null,
       );
-      if (topArtists) return topArtists;
+      if (topArtists && period == "overall") return topArtists;
 
       const username: string = localStorage.lastFmUsername ?? "";
       if (!username) return;
 
       const response = await fetch(
-        `/api/lastfm-api/?method=user.getTopArtists&user=${username}&period=overall&format=json&limit=100`,
+        `/api/lastfm-api/?method=user.getTopArtists&user=${username}&period=${period}&format=json&limit=100`,
       );
 
       if (!response.ok) {
@@ -93,7 +102,8 @@ const LastFm = {
       const data: LastFMUserGetTopArtistsResponse = await response.json();
 
       topArtists = data?.topartists?.artist?.map(({ name }) => name) ?? [];
-      localStorage.setItem("lastFmTopArtists", JSON.stringify(topArtists));
+      if (period == "overall")
+        localStorage.setItem("lastFmTopArtists", JSON.stringify(topArtists));
 
       return topArtists;
     } catch (error) {
@@ -101,6 +111,38 @@ const LastFm = {
         "Error during getting user's top artists:",
         GetErrorMessage(error),
       );
+      throw error;
+    }
+  },
+
+  GetTrackInfo: async ({
+    trackName,
+    trackArtist,
+  }: {
+    trackName: string;
+    trackArtist: string;
+  }): Promise<LastFMItemParams | undefined> => {
+    try {
+      const response = await fetch(
+        `/api/lastfm-api/?method=track.getInfo&track=${trackName}&artist=${trackArtist}&autocorrect=1&format=json`,
+      );
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const data: LastFMTrackGetInfoResponse = await response.json();
+
+      if (!data.track.artist.name) return;
+
+      const albumInfo: LastFMItemParams = {
+        artist: data.track.artist.name,
+        album: data.track.album.title,
+      };
+
+      return albumInfo;
+    } catch (error) {
+      console.error("Error during getting track info:", GetErrorMessage(error));
       throw error;
     }
   },
@@ -191,12 +233,14 @@ const LastFm = {
 
   GetSimilarArtists: async ({
     artist,
+    pageParam = 1,
   }: {
     artist: string;
-  }): Promise<string[]> => {
+    pageParam: number;
+  }): Promise<LastFMItemParams[]> => {
     try {
       const response = await fetch(
-        `/api/lastfm-api/?method=artist.getSimilar&artist=${artist}&autocorrect=1&limit=50&format=json`,
+        `/api/lastfm-api/?method=artist.getSimilar&artist=${artist}&autocorrect=1&limit=50&page=${pageParam}&format=json`,
       );
 
       if (!response.ok) {
@@ -205,7 +249,56 @@ const LastFm = {
 
       const data: LastFMArtistGetSimilarResponse = await response.json();
 
-      return data?.similarartists?.artist?.map(({ name }) => name) ?? [];
+      return (
+        data?.similarartists?.artist?.map(({ name }) => ({ artist: name })) ??
+        []
+      );
+    } catch (error) {
+      console.error(
+        "Error during getting similar artists:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetSimilarTracks: async ({
+    trackName,
+    trackArtist,
+    pageParam = 1,
+  }: {
+    trackName: string;
+    trackArtist: string;
+    pageParam: number;
+  }): Promise<(LastFMItemParams | undefined)[]> => {
+    try {
+      const trackResponse = await fetch(
+        `/api/lastfm-api/?method=track.getSimilar&track=${encodeURIComponent(trackName)}&artist=${encodeURIComponent(trackArtist)}&limit=5&page=${pageParam}&format=json`,
+      );
+
+      if (!trackResponse.ok) {
+        throw new Error(trackResponse.statusText);
+      }
+
+      const data: LastFMTrackGetSimilarResponse = await trackResponse.json();
+      if (data?.error) return [];
+
+      if (data?.similartracks?.track?.length === 0) return [];
+
+      if (process.env.NODE_ENV === "development")
+        console.log("lastfm similar tracks", data);
+
+      const reqs = data.similartracks.track.map((x) =>
+        LastFm.GetTrackInfo({ trackName: x.name, trackArtist: x.artist.name }),
+      );
+      const recs = await Promise.all(reqs);
+
+      if (!recs.length) return [];
+
+      if (process.env.NODE_ENV === "development")
+        console.log("lastfm similar tracks parsed", recs);
+
+      return recs;
     } catch (error) {
       console.error(
         "Error during getting similar artists:",
@@ -447,7 +540,7 @@ const LastFm = {
     }
   },
 
-  GetCurrentArtists: async ({
+  GetTrendingArtists: async ({
     startGenreNum,
     pageParam = 1,
   }: {
@@ -499,6 +592,177 @@ const LastFm = {
     } catch (error) {
       console.error(
         "Error during getting current artists:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetRecentTracks: async ({
+    username = localStorage.getItem("lastFmUsername") ?? "",
+    pageParam = 1,
+  }: {
+    username: string;
+    pageParam: number;
+  }): Promise<LastFMPaginatedResponse<LastFMRecentTrack[]> | undefined> => {
+    try {
+      if (!username) throw new Error("No username");
+
+      const response = await fetch(
+        `/api/lastfm-api/?method=user.getRecentTracks&user=${username}&extended=1&page=${pageParam}&limit=50&format=json`,
+      );
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const data: LastFMUserGetRecentTracksResponse = await response.json();
+
+      if (!data?.recenttracks?.track?.length) return;
+
+      const uniqueByArtist = data.recenttracks.track.reduce(
+        (acc: LastFMRecentTrack[], current) => {
+          if (!acc.find((item) => item.artist.name === current.artist.name)) {
+            acc.push(current);
+          }
+          return acc;
+        },
+        [],
+      );
+
+      const result: LastFMPaginatedResponse<LastFMRecentTrack[]> = {
+        pagination: {
+          page: Number(data?.recenttracks["@attr"].page),
+          pages: Number(data?.recenttracks["@attr"].totalPages),
+        },
+        results: uniqueByArtist,
+      };
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm user recent tracks", result);
+
+      return result;
+    } catch (error) {
+      console.error(
+        "Error during getting user's recent tracks:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetRecentTracksRecommendations: async ({
+    startGenreNum = 1,
+    pageParam = 1,
+  }: {
+    startGenreNum: number;
+    pageParam: number;
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
+    try {
+      const username = localStorage.getItem("lastFmUsername") ?? "";
+      if (!username) throw new Error("No username");
+
+      let recentTracks = await LastFm.GetRecentTracks({
+        username,
+        pageParam,
+      });
+      if (!recentTracks?.results?.length)
+        throw new Error("No recent tracks found");
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm user recent tracks", recentTracks);
+
+      let similarTracks: LastFMItemParams[] = [];
+      let index = pageParam;
+      while (!similarTracks.length) {
+        const promises = recentTracks.results
+          .filter((track) => track.artist.name && track.name) // Filter out tracks without mbid
+          .map((track) =>
+            LastFm.GetSimilarTracks({
+              trackName: track.name,
+              trackArtist: track.artist.name,
+              pageParam: startGenreNum + pageParam,
+            }),
+          );
+
+        similarTracks = (await Promise.all(promises))
+          .flat()
+          .filter((x) => x != null);
+
+        if (similarTracks?.length > 0) break;
+
+        index++;
+        recentTracks = await LastFm.GetRecentTracks({
+          username,
+          pageParam: index,
+        });
+
+        if (!recentTracks?.results?.length)
+          throw new Error("No recent tracks found");
+
+        console.log(similarTracks);
+      }
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm user recommendations", similarTracks);
+
+      return {
+        results: similarTracks,
+        pagination: {
+          page: pageParam,
+          pages: similarTracks.length > 0 ? pageParam + 1 : pageParam,
+        },
+      };
+    } catch (error) {
+      console.error(
+        "Error during getting user's recent tracks recommendations:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
+  GetRecentArtistsRecommendations: async ({
+    startGenreNum = 1,
+    pageParam = 1,
+  }: {
+    startGenreNum: number;
+    pageParam: number;
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
+    try {
+      const recentArtists = await LastFm.GetUserArtist({ period: "1month" });
+      if (!recentArtists?.length) throw new Error("No recent artists found");
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm user recent artists", recentArtists);
+
+      let similarArtists: LastFMItemParams[] = [];
+      while (!similarArtists.length) {
+        const promises = recentArtists.map((artist) =>
+          LastFm.GetSimilarArtists({
+            artist,
+            pageParam: startGenreNum + pageParam,
+          }),
+        );
+
+        similarArtists = (await Promise.all(promises))
+          .flat()
+          .filter((x) => x != null);
+      }
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm user recommendations", similarArtists);
+
+      return {
+        results: similarArtists,
+        pagination: {
+          page: pageParam,
+          pages: similarArtists.length > 0 ? pageParam + 1 : pageParam,
+        },
+      };
+    } catch (error) {
+      console.error(
+        "Error during getting user's recent artists recommendations:",
         GetErrorMessage(error),
       );
       throw error;

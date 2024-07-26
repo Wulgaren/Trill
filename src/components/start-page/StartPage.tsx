@@ -3,8 +3,8 @@ import { FaList } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import RecommendationsFriend from "../recommendations/Recommendations";
 import RecommendationsCollection from "../recommendations/RecommendationsCollection";
-import RecommendationsCurrent from "../recommendations/RecommendationsCurrent";
 import RecommendationsList from "../recommendations/RecommendationsList";
+import RecommendationsTrending from "../recommendations/RecommendationsTrending";
 import { useNavbarContext } from "./NavbarContextUtils";
 
 function StartPage() {
@@ -21,7 +21,7 @@ function StartPage() {
     return (
       <div className="flex flex-col gap-5">
         <Suspense fallback={<LoadingAnimation />}>
-          <RecommendationsCurrent title="Trending artists" />
+          <RecommendationsTrending title="Trending artists" />
         </Suspense>
 
         <div
@@ -44,7 +44,7 @@ function StartPage() {
       </Suspense>
 
       <Suspense fallback={<LoadingAnimation />}>
-        <RecommendationsCollection title="Based on your music collection" />
+        <RecommendationsCollection title="Based on your recent tracks" />
       </Suspense>
 
       <Suspense fallback={<LoadingAnimation />}>
