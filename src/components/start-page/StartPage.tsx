@@ -25,7 +25,7 @@ function StartPage() {
 
         <div
           onClick={triggerClick}
-          className="flex flex-row items-center justify-center text-gray-600"
+          className="flex flex-row items-center justify-center text-gray-600 dark:text-white"
         >
           <FaList size={48} className="p-3" />
           <span>
