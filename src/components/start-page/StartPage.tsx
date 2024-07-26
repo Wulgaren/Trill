@@ -1,10 +1,7 @@
 import { Suspense, useMemo } from "react";
 import { FaList } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
-import RecommendationsFriend from "../recommendations/Recommendations";
-import RecommendationsCollection from "../recommendations/RecommendationsCollection";
-import RecommendationsList from "../recommendations/RecommendationsList";
-import RecommendationsTrending from "../recommendations/RecommendationsTrending";
+import Recommendations from "../recommendations/Recommendations";
 import { useNavbarContext } from "./NavbarContextUtils";
 
 function StartPage() {
@@ -21,7 +18,7 @@ function StartPage() {
     return (
       <div className="flex flex-col gap-5">
         <Suspense fallback={<LoadingAnimation />}>
-          <RecommendationsTrending title="Trending artists" />
+          <Recommendations title="Trending artists" type="TrendingArtists" />
         </Suspense>
 
         <div
@@ -40,15 +37,24 @@ function StartPage() {
   return (
     <div className="flex flex-col gap-5">
       <Suspense fallback={<LoadingAnimation />}>
-        <RecommendationsList title="Based on your favorite artists' genres" />
+        <Recommendations
+          title="Based on your favorite artists' genres"
+          type="FavGenresAlbums"
+        />
       </Suspense>
 
       <Suspense fallback={<LoadingAnimation />}>
-        <RecommendationsCollection title="Based on your recent tracks" />
+        <Recommendations
+          title="Based on your recent tracks"
+          type="RecentTracks"
+        />
       </Suspense>
 
       <Suspense fallback={<LoadingAnimation />}>
-        <RecommendationsFriend title="Lucky picks from your friend" />
+        <Recommendations
+          title="Lucky picks from your friend"
+          type="FriendAlbums"
+        />
       </Suspense>
     </div>
   );

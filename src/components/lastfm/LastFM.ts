@@ -132,12 +132,13 @@ const LastFm = {
       }
 
       const data: LastFMTrackGetInfoResponse = await response.json();
+      if (data.error) return;
 
-      if (!data.track.artist.name) return;
+      if (!data.track.artist?.name) return;
 
       const albumInfo: LastFMItemParams = {
-        artist: data.track.artist.name,
-        album: data.track.album.title,
+        artist: data.track.artist?.name,
+        album: data.track.album?.title,
       };
 
       return albumInfo;
@@ -293,12 +294,26 @@ const LastFm = {
       );
       const recs = await Promise.all(reqs);
 
-      if (!recs.length) return [];
+      if (!recs?.length) return [];
+
+      const uniqueByArtist = recs
+        .filter((x) => x != null)
+        ?.reduce((acc: LastFMItemParams[], current) => {
+          if (
+            !acc.find(
+              (item) =>
+                item.artist === current.artist && item.album === current.album,
+            )
+          ) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
 
       if (process.env.NODE_ENV === "development")
-        console.log("lastfm similar tracks parsed", recs);
+        console.log("lastfm similar tracks parsed", uniqueByArtist);
 
-      return recs;
+      return uniqueByArtist;
     } catch (error) {
       console.error(
         "Error during getting similar artists:",

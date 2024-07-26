@@ -926,6 +926,7 @@ export type LastFMTrackGetInfoResponse = Readonly<{
       content: string;
     };
   };
+  error?: number;
 }>;
 
 export type LastFMTrackGetSimilarResponse = Readonly<{
