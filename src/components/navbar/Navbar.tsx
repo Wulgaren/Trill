@@ -3,7 +3,6 @@ import { Suspense, lazy } from "react";
 import { FaSearch } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import { useNavbarContext } from "../start-page/NavbarContextUtils";
-const ConnectDiscogs = lazy(() => import("../discogs/ConnectDiscogs"));
 const ConnectLastFm = lazy(() => import("../lastfm/ConnectLastFm"));
 
 function Navbar() {
@@ -56,7 +55,7 @@ function Navbar() {
 
           <ul
             id="hamburger-menu"
-            className="menu group absolute left-0 top-[110px] flex h-0 w-full list-none flex-col gap-6 overflow-hidden bg-primary px-5 py-0 text-xl text-white antialiased transition-all duration-500 peer-checked/checkbox:h-[210px] peer-checked/checkbox:py-3"
+            className="menu group absolute left-0 top-[110px] flex h-0 w-full list-none flex-col gap-6 overflow-hidden bg-primary px-5 py-0 text-xl text-white antialiased transition-all duration-500 peer-checked/checkbox:h-[150px] peer-checked/checkbox:py-3"
             aria-labelledby="hamburger-toggle"
           >
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
@@ -64,11 +63,11 @@ function Navbar() {
                 <ConnectLastFm />
               </Suspense>
             </li>
-            <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
+            {/* <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
               <Suspense fallback={<LoadingAnimation />}>
                 <ConnectDiscogs />
               </Suspense>
-            </li>
+            </li> */}
             <li className="invisible transition-all duration-500 peer-checked/checkbox:group-[.menu]:visible">
               <a
                 className="relative mx-2 py-2 text-white after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full"
