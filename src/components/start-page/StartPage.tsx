@@ -47,15 +47,15 @@ function StartPage() {
 
       <Suspense fallback={<LoadingAnimation />}>
         <Recommendations
-          title="Based on your recent tracks"
-          type="RecentTracks"
+          title="Lucky picks from your friend"
+          type="FriendAlbums"
         />
       </Suspense>
 
       <Suspense fallback={<LoadingAnimation />}>
         <Recommendations
-          title="Lucky picks from your friend"
-          type="FriendAlbums"
+          title="Based on your recent tracks"
+          type="RecentTracks"
         />
       </Suspense>
     </div>

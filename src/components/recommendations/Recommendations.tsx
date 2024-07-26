@@ -18,9 +18,18 @@ import LastFmItem from "./LastFmItem";
 function RecommendationsComponent({
   title,
   type,
+  artist,
+  trackName,
 }: {
   title: string;
-  type: "FriendAlbums" | "RecentTracks" | "FavGenresAlbums" | "TrendingArtists";
+  type:
+    | "FriendAlbums"
+    | "RecentTracks"
+    | "FavGenresAlbums"
+    | "TrendingArtists"
+    | "SimilarAlbums";
+  artist?: string;
+  trackName?: string;
 }) {
   const [startGenreNum] = useState(Math.floor(Math.random() * 50));
   const parentRef = useRef<HTMLDivElement>(null);
@@ -63,6 +72,17 @@ function RecommendationsComponent({
           return LastFm.GetTrendingArtists({
             startGenreNum,
             pageParam: pageParam as number,
+          });
+
+        case "SimilarAlbums":
+          return LastFm.GetTracksRecommendations({
+            startGenreNum,
+            pageParam: pageParam as number,
+            tracks: {
+              results: [
+                { name: trackName ?? "", artist: { name: artist ?? "" } },
+              ],
+            },
           });
       }
     },

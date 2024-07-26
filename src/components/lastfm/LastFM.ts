@@ -267,14 +267,16 @@ const LastFm = {
     trackName,
     trackArtist,
     pageParam = 1,
+    limit = 5,
   }: {
     trackName: string;
     trackArtist: string;
     pageParam: number;
+    limit?: number;
   }): Promise<(LastFMItemParams | undefined)[]> => {
     try {
       const trackResponse = await fetch(
-        `/api/lastfm-api/?method=track.getSimilar&track=${encodeURIComponent(trackName)}&artist=${encodeURIComponent(trackArtist)}&limit=5&page=${pageParam}&format=json`,
+        `/api/lastfm-api/?method=track.getSimilar&track=${encodeURIComponent(trackName)}&artist=${encodeURIComponent(trackArtist)}&limit=${limit}&page=${pageParam}&format=json`,
       );
 
       if (!trackResponse.ok) {
@@ -666,6 +668,65 @@ const LastFm = {
     }
   },
 
+  GetTracksRecommendations: async ({
+    startGenreNum = 1,
+    pageParam = 1,
+    tracks,
+  }: {
+    startGenreNum: number;
+    pageParam: number;
+    tracks: LastFMPaginatedResponse<LastFMRecentTrack[]>;
+  }): Promise<LastFMPaginatedResponse<LastFMItemParams[]> | undefined> => {
+    try {
+      if (!tracks?.results?.length) throw new Error("No tracks found");
+
+      let similarTracks: LastFMItemParams[] = [];
+      let index = pageParam;
+      while (!similarTracks.length && index <= 10) {
+        const promises = tracks.results
+          .filter((track) => track.artist.name && track.name)
+          .map((track) =>
+            LastFm.GetSimilarTracks({
+              trackName: track.name,
+              trackArtist: track.artist.name,
+              pageParam: Math.floor(Math.random() * startGenreNum + index),
+              limit: 15,
+            }),
+          );
+
+        similarTracks = (await Promise.all(promises))
+          .flat()
+          .filter((x) => x != null);
+
+        if (similarTracks?.length > 0) break;
+
+        index++;
+      }
+
+      if (process.env.NODE_ENV === "development")
+        console.log("last fm album recommendations", similarTracks);
+
+      return {
+        results: similarTracks.filter(
+          (x) =>
+            x.album &&
+            x.artist != tracks.results[0].artist.name &&
+            x.album != tracks.results[0].name,
+        ),
+        pagination: {
+          page: pageParam,
+          pages: similarTracks.length > 0 ? pageParam + 1 : pageParam,
+        },
+      };
+    } catch (error) {
+      console.error(
+        "Error during getting album recommendations:",
+        GetErrorMessage(error),
+      );
+      throw error;
+    }
+  },
+
   GetRecentTracksRecommendations: async ({
     startGenreNum = 1,
     pageParam = 1,
@@ -689,14 +750,14 @@ const LastFm = {
 
       let similarTracks: LastFMItemParams[] = [];
       let index = pageParam;
-      while (!similarTracks.length) {
+      while (!similarTracks.length && index <= 10) {
         const promises = recentTracks.results
-          .filter((track) => track.artist.name && track.name) // Filter out tracks without mbid
+          .filter((track) => track.artist.name && track.name)
           .map((track) =>
             LastFm.GetSimilarTracks({
               trackName: track.name,
               trackArtist: track.artist.name,
-              pageParam: startGenreNum + pageParam,
+              pageParam: Math.floor(Math.random() * startGenreNum + index),
             }),
           );
 

@@ -1265,23 +1265,23 @@ export type LastFMUserGetPersonalTagsResponse = Readonly<{
 
 export type LastFMRecentTrack = {
   artist: {
-    mbid: string;
-    "#text": string;
+    mbid?: string;
+    "#text"?: string;
     name: string;
   };
-  streamable: LastFMBooleanNumber;
-  image: Array<{
+  streamable?: LastFMBooleanNumber;
+  image?: Array<{
     "#text": string;
     size: string;
   }>;
-  mbid: string;
-  album: {
+  mbid?: string;
+  album?: {
     mbid: string;
     "#text": string;
   };
   name: string;
-  url: string;
-  date: {
+  url?: string;
+  date?: {
     uts: string;
     "#text": string;
   };
@@ -1499,7 +1499,7 @@ export type LastFMUserGetWeeklyTrackChartResponse = Readonly<{
 }>;
 
 export type LastFMPaginatedResponse<T> = {
-  pagination: DiscogsPagination;
+  pagination?: DiscogsPagination;
   results: T;
   info?: string;
 };
