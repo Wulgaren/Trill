@@ -9,7 +9,7 @@ const Recommendations = lazy(
 function StartPage() {
   const { triggerClick, discogsUsername, lastFmUsername } = useNavbarContext();
   const savedInlocalStorage =
-    localStorage.lastFmUsername != null && localStorage.discogsUser != null;
+    localStorage.lastFmUsername && localStorage.discogsUser;
 
   // Memoize the existence check to avoid re-renders unless dependencies change
   const exists = useMemo(() => {
