@@ -113,6 +113,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
           )}
         </>
       </Modal>
+
       <div className="flex h-full flex-col gap-3">
         <div className="flex flex-row flex-wrap gap-3 md:flex-nowrap">
           {data?.images?.[0]?.resource_url && (
@@ -145,6 +146,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                 })}
               </ul>
             </h2>
+
             <div className="mb-3 flex flex-row gap-3">
               <h1 className="break-words text-4xl">{data.title}</h1>
               <button
@@ -159,6 +161,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                 <FaPlay size={24} />
               </button>
             </div>
+
             <span>Released: {data.year}</span>
 
             {data.genres?.length > 0 && (
