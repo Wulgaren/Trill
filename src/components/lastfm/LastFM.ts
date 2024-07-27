@@ -21,7 +21,7 @@ import GetErrorMessage from "../error-handling/ErrorHandling";
 const LastFm = {
   FindArtistImage: async (mbid: string) => {
     try {
-      if (!mbid) return;
+      if (!mbid) throw new Error("No mbid provided");
 
       const response = await fetch(
         `/api/musicbrainz-api/?mbid=${mbid}&inc=url-rels&fmt=json`,
@@ -91,7 +91,7 @@ const LastFm = {
       if (topArtists && period == "overall") return topArtists;
 
       const username: string = localStorage.lastFmUsername ?? "";
-      if (!username) return;
+      if (!username) throw new Error("No username");
 
       const response = await fetch(
         `/api/lastfm-api/?method=user.getTopArtists&user=${username}&period=${period}&page=${pageParam}&format=json&limit=100`,
@@ -134,9 +134,8 @@ const LastFm = {
       }
 
       const data: LastFMTrackGetInfoResponse = await response.json();
-      if (data.error) return;
-
-      if (!data.track.artist?.name) return;
+      if (data.error || !data.track.artist?.name)
+        throw new Error("Error during getting track info");
 
       const albumInfo: LastFMItemParams = {
         artist: data.track.artist?.name,
@@ -243,7 +242,7 @@ const LastFm = {
       const topArtists: string[] | undefined = username
         ? await LastFm.GetUserArtist()
         : JSON.parse(localStorage.starredArtists ?? null);
-      if (!topArtists?.length) return;
+      if (!topArtists?.length) throw new Error("No top artists found");
 
       userTags = await LastFm.GetArtistTags({
         artists: topArtists,
@@ -405,7 +404,7 @@ const LastFm = {
         startGenreNum,
         pageParam,
       });
-      if (!topGenres?.length) return;
+      if (!topGenres?.length) throw new Error("No top genres found");
 
       if (process.env.NODE_ENV === "development")
         console.log("lastfm recommendations to download", topGenres);
@@ -466,7 +465,7 @@ const LastFm = {
       }
 
       const data: LastFMUserGetFriendsResponse = await response.json();
-      if (!data?.friends?.user.length) return;
+      if (!data?.friends?.user.length) throw new Error("No friends found");
 
       if (process.env.NODE_ENV === "development")
         console.log("last fm friends", data);
@@ -553,7 +552,8 @@ const LastFm = {
           index++;
         });
 
-        if (result?.pagination?.page == 1 && !result?.results?.length) return;
+        if (result?.pagination?.page == 1 && !result?.results?.length)
+          throw new Error("No friends found");
         if (!result) continue;
 
         friend =
@@ -561,7 +561,7 @@ const LastFm = {
         break;
       }
 
-      if (!friend) return;
+      if (!friend) throw new Error("No friends found");
 
       let albums: LastFMPaginatedResponse<LastFMItemParams[]> | undefined;
       const albumsPage = pageParam + Math.floor(Math.random() * startGenreNum);
@@ -672,7 +672,8 @@ const LastFm = {
 
       const data: LastFMUserGetRecentTracksResponse = await response.json();
 
-      if (!data?.recenttracks?.track?.length) return;
+      if (!data?.recenttracks?.track?.length)
+        throw new Error("No tracks found");
 
       const uniqueByArtist = data.recenttracks.track.reduce(
         (acc: LastFMRecentTrack[], current) => {

@@ -178,3 +178,9 @@ export function capitalizeFirstLetter(string: string = ""): string {
   if (!string) return string;
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function addSpacesBeforeCapitalLetters(string: string = ""): string {
+  if (!string) return string;
+  const result = string.replace(/([a-z])([A-Z])/g, "$1 $2");
+  return result;
+}

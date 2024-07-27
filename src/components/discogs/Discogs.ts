@@ -464,7 +464,7 @@ const Discogs = {
     pageParam: number;
   }): Promise<DiscogsSearchResponse | undefined> => {
     try {
-      if (!query?.length) return;
+      if (!query?.length) throw new Error("No query");
 
       const recsToSearch = Array.isArray(query)
         ? query.map((x) => x?.slice(pageParam - 1, pageParam)[0])

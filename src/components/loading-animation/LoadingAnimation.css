@@ -22,6 +22,13 @@ button .loader-container {
   background-repeat: no-repeat;
   animation: l2 1s infinite alternate;
 }
+
+.loader.loader-white {
+  --c: linear-gradient(white 0 0);
+  --r1: radial-gradient(farthest-side at bottom, white 93%, #0000);
+  --r2: radial-gradient(farthest-side at top, white 93%, #0000);
+}
+
 @keyframes l2 {
   0%,
   25% {

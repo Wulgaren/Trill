@@ -1,12 +1,16 @@
 import {
+  FaAmazon,
   FaBandcamp,
   FaBuildingColumns,
   FaDailymotion,
+  FaDeezer,
   FaFacebook,
   FaInstagram,
   FaLastfm,
   FaLinkedin,
+  FaNapster,
   FaSoundcloud,
+  FaSpotify,
   FaTumblr,
   FaTwitch,
   FaTwitter,
@@ -14,7 +18,15 @@ import {
   FaWikipediaW,
   FaYoutube,
 } from "react-icons/fa6";
-import { SiImdb, SiMyspace, SiSongkick } from "react-icons/si";
+import {
+  SiApplemusic,
+  SiImdb,
+  SiItunes,
+  SiMyspace,
+  SiPandora,
+  SiSongkick,
+  SiTidal,
+} from "react-icons/si";
 
 const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
   if (!url) return;
@@ -57,6 +69,22 @@ const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
       return <SiSongkick size={size} />;
     case url.includes("imdb"):
       return <SiImdb size={size} />;
+    case url.includes("spotify"):
+      return <FaSpotify size={size} />;
+    case url.includes("music.apple"):
+      return <SiApplemusic size={size} />;
+    case url.includes("tidal"):
+      return <SiTidal size={size} />;
+    case url.includes("itunes"):
+      return <SiItunes size={size} />;
+    case url.includes("amazon"):
+      return <FaAmazon size={size} />;
+    case url.includes("deezer"):
+      return <FaDeezer size={size} />;
+    case url.includes("pandora"):
+      return <SiPandora size={size} />;
+    case url.includes("napster"):
+      return <FaNapster size={size} />;
   }
 
   return;
