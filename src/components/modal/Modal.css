@@ -9,6 +9,10 @@
     }
   }
 
+  button[title="Close modal"]:focus {
+    outline-offset: 0px;
+  }
+
   &::backdrop {
     position: fixed;
     top: 0;

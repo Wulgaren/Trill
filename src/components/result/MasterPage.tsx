@@ -90,7 +90,8 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                     x[0] != "anghami" &&
                     x[0] != "boomplay" &&
                     x[0] != "itunes" &&
-                    x[0] != "yandex",
+                    x[0] != "yandex" &&
+                    x[0] != "audiomack",
                 )
                 .map(([key, value]) => {
                   return (

@@ -35,7 +35,7 @@ const LinkIcon = ({ url, size = 24 }: { url: string; size?: number }) => {
 
   switch (true) {
     case url.includes("twitter"):
-    case url.includes("x."):
+    case url.includes("//x."):
       return <FaTwitter size={size} />;
     case url.includes("facebook"):
       return <FaFacebook size={size} />;
