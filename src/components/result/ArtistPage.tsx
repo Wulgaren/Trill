@@ -51,22 +51,19 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
         <div className="w-full rounded-md bg-white !bg-opacity-40 p-5 dark:bg-black dark:text-white">
           <div className="mb-3 flex items-center gap-3">
             <h1 className="break-words text-4xl">{data.name}</h1>
-            {!lastFmUsername &&
-              (isStarred ? (
-                <FaStar
-                  className="cursor-pointer"
-                  size={24}
-                  onClick={starArtist}
-                  title="Unstar artist to remove recommendations based on them"
-                />
-              ) : (
-                <FaRegStar
-                  className="cursor-pointer"
-                  size={24}
-                  onClick={starArtist}
-                  title="Star artist to get recommendations based on them"
-                />
-              ))}
+            {!lastFmUsername && (
+              <button
+                onClick={starArtist}
+                className="cursor-pointer"
+                title={
+                  isStarred
+                    ? "Unstar artist to remove recommendations based on them"
+                    : "Star artist to get recommendations based on them"
+                }
+              >
+                {isStarred ? <FaStar size={24} /> : <FaRegStar size={24} />}
+              </button>
+            )}
           </div>
           <CollapsibleText
             text={convertHTMLTags(

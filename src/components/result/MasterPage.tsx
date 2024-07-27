@@ -145,19 +145,20 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                 })}
               </ul>
             </h2>
-            <div className="mb-3 flex flex-row justify-between">
+            <div className="mb-3 flex flex-row gap-3">
               <h1 className="break-words text-4xl">{data.title}</h1>
-              <FaPlay
+              <button
                 title="Get a link to the release on all platforms"
                 className="cursor-pointer"
-                size={36}
                 onClick={() =>
                   setSongLinkParams((prev) => ({
                     ...prev,
                     album: data.title,
                   }))
                 }
-              />
+              >
+                <FaPlay size={24} />
+              </button>
             </div>
             <span>Released: {data.year}</span>
 

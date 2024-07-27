@@ -30,6 +30,7 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react-compiler/react-compiler": 2,
+    "no-constant-binary-expression": "error",
   },
   settings: {
     react: {
