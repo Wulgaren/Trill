@@ -543,12 +543,14 @@ const LastFm = {
 
       let friend: string = "";
       let pages = 15;
-      while (!friend) {
+      let index = 0;
+      while (!friend && index <= 15) {
         const page = Math.floor(Math.random() * pages) + 1;
         const result = await LastFm.GetFriends({
           pageParam: page,
         }).catch((ex: Error) => {
           if (ex.message.includes("Bad Request")) pages = page - 1;
+          index++;
         });
 
         if (result?.pagination?.page == 1 && !result?.results?.length) return;
@@ -558,6 +560,8 @@ const LastFm = {
           result.results[Math.floor(Math.random() * result.results.length)];
         break;
       }
+
+      if (!friend) return;
 
       let albums: LastFMPaginatedResponse<LastFMItemParams[]> | undefined;
       const albumsPage = pageParam + Math.floor(Math.random() * startGenreNum);

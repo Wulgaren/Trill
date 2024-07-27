@@ -57,7 +57,8 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
                       params={{ id: artist.id.toString(), type: "artist" }}
                       className="relative mx-1 ml-0 py-1 text-black after:absolute after:bottom-0 after:right-0 after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 after:ease-in-out after:content-[''] hover:after:left-0 hover:after:w-full dark:text-white dark:after:bg-white"
                     >
-                      {artist.name + calculateComma(data.artists.length, index)}
+                      {removeNumberFromName(artist.name) +
+                        calculateComma(data.artists.length, index)}
                     </Link>
                   </li>
                 );

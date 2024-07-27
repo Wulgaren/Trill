@@ -4,7 +4,9 @@ import { NavbarContext } from "./NavbarContextUtils";
 export const ClickProvider = ({ children }: { children: ReactElement[] }) => {
   const navbarButtonRef = useRef<HTMLInputElement>(null);
   const [discogsUsername, setDiscogsUsername] = useState("");
-  const [lastFmUsername, setLastFmUsername] = useState("");
+  const [lastFmUsername, setLastFmUsername] = useState(
+    localStorage.lastFmUsername ?? "",
+  );
 
   const triggerClick = () => {
     if (navbarButtonRef.current) {

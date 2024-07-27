@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { FormEvent, useEffect, useState } from "react";
+import { FocusEvent, FormEvent, useState } from "react";
 import { FaCog, FaLastfm } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
@@ -8,36 +8,33 @@ import LastFm from "./LastFM";
 
 function ConnectLastFm() {
   const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>(
-    localStorage.lastFmUsername ?? "",
-  );
-  const { setLastFmUsername } = useNavbarContext();
+  const { lastFmUsername, setLastFmUsername, triggerClick } =
+    useNavbarContext();
 
   const { isFetching: isTopArtistsFetching } = useQuery({
     queryKey: ["last_fm_top_artists"],
     queryFn: () => LastFm.GetUserArtist,
     enabled: !!(
-      username &&
+      lastFmUsername &&
       !isOpenLastFmDialog &&
-      (localStorage.lastFmUsername != username ||
-        !localStorage.lastFmTopArtists)
+      !localStorage.lastFmTopArtists
     ),
   });
 
-  useEffect(() => {
-    if (isOpenLastFmDialog) return;
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setIsOpenLastFmDialog(false);
+  };
 
-    if (!username) {
+  const SetLastFmUser = (e: FocusEvent<HTMLInputElement>) => {
+    const username = e.target.value;
+
+    if (username != localStorage.lastFmUsername) {
       localStorage.removeItem("lastFmTopArtists");
     }
-
-    setLastFmUsername(username);
-  }, [isOpenLastFmDialog, username, setLastFmUsername]);
-
-  const SetLastFmUser = (e: FormEvent) => {
-    e.preventDefault();
     localStorage.setItem("lastFmUsername", username);
-    setIsOpenLastFmDialog(false);
+    setLastFmUsername(username);
+    triggerClick();
   };
 
   return (
@@ -53,7 +50,7 @@ function ConnectLastFm() {
           <LoadingAnimation />
         ) : (
           <>
-            {username ? (
+            {lastFmUsername ? (
               <>
                 <FaLastfm />
                 <span>Last.fm</span>
@@ -74,7 +71,7 @@ function ConnectLastFm() {
       >
         <form
           className="flex flex-col items-center justify-center gap-5"
-          onSubmit={SetLastFmUser}
+          onSubmit={handleSubmit}
         >
           <label htmlFor="LastFmUsername">
             Input your username to get personalized Last.FM recommendations.
@@ -84,9 +81,8 @@ function ConnectLastFm() {
             id="LastFmUsername"
             name="LastFmUsername"
             placeholder="Last.FM Username"
-            value={username}
+            defaultValue={lastFmUsername}
             tabIndex={0}
-            onChange={(e) => setUsername(e.target.value)}
             onBlur={SetLastFmUser}
           />
         </form>
