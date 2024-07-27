@@ -149,7 +149,6 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
               <h1 className="break-words text-4xl">{data.title}</h1>
               <button
                 title="Get a link to the release on all platforms"
-                className="cursor-pointer"
                 onClick={() =>
                   setSongLinkParams((prev) => ({
                     ...prev,

@@ -54,7 +54,6 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
             {!lastFmUsername && (
               <button
                 onClick={starArtist}
-                className="cursor-pointer"
                 title={
                   isStarred
                     ? "Unstar artist to remove recommendations based on them"
