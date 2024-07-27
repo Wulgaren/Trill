@@ -148,6 +148,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
             <div className="mb-3 flex flex-row justify-between">
               <h1 className="break-words text-4xl">{data.title}</h1>
               <FaPlay
+                title="Get a link to the release on all platforms"
                 className="cursor-pointer"
                 size={36}
                 onClick={() =>

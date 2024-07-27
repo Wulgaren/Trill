@@ -57,12 +57,14 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
                   className="cursor-pointer"
                   size={24}
                   onClick={starArtist}
+                  title="Unstar artist to remove recommendations based on them"
                 />
               ) : (
                 <FaRegStar
                   className="cursor-pointer"
                   size={24}
                   onClick={starArtist}
+                  title="Star artist to get recommendations based on them"
                 />
               ))}
           </div>
