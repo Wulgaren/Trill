@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { DiscogsArtist } from "../../types/Discogs/DiscogsTypes";
 import CollapsibleText from "../collapsible-text/CollapsibleText";
@@ -18,20 +18,27 @@ const Recommendations = lazy(
 
 function ArtistPage({ data }: { data: DiscogsArtist }) {
   const { lastFmUsername } = useNavbarContext();
-  const [isStarred, setIsArtistStarred] = useState<boolean>(
-    !lastFmUsername &&
-      JSON.parse(localStorage.starredArtists ?? null)?.find(
-        (artist: string) => artist == data.name,
-      ),
-  );
+  const [isStarred, setIsArtistStarred] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedArtists = JSON.parse(
+      localStorage.getItem("starredArtists") ?? "[]",
+    );
+    const isStored = storedArtists.includes(data.name);
+    setIsArtistStarred(!lastFmUsername && isStored);
+  }, [lastFmUsername, data.name]);
 
   const starArtist = () => {
-    let starred = JSON.parse(localStorage.starredArtists ?? null) ?? [];
-    starred.find((artist: string) => artist == data.name)
-      ? (starred = starred.filter((artist: string) => artist != data.name))
-      : starred.push(data.name);
-    localStorage.setItem("starredArtists", JSON.stringify(starred));
+    const starred = JSON.parse(localStorage.getItem("starredArtists") ?? "[]");
+    const index = starred.indexOf(data.name);
 
+    if (index === -1) {
+      starred.push(data.name);
+    } else {
+      starred.splice(index, 1);
+    }
+
+    localStorage.setItem("starredArtists", JSON.stringify(starred));
     setIsArtistStarred((prev) => !prev);
   };
 
