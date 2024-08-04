@@ -1,7 +1,9 @@
 import {
   DiscogsPagination,
   DiscogsSearchQuery,
+  DiscogsSearchResult,
 } from "../../types/Discogs/DiscogsTypes";
+import { LastFMItemParams } from "../../types/LastFm/LastFmTypes";
 
 export function GetSelectedValues(
   selectInput:
@@ -182,5 +184,31 @@ export function capitalizeFirstLetter(string: string = ""): string {
 export function addSpacesBeforeCapitalLetters(string: string = ""): string {
   if (!string) return string;
   const result = string.replace(/([a-z])([A-Z])/g, "$1 $2");
+  return result;
+}
+
+export function matchesLastFmTitle(
+  isArtist: boolean,
+  results: DiscogsSearchResult[] | undefined,
+  lastFmItem: LastFMItemParams,
+) {
+  if (!results) return;
+
+  const result = isArtist
+    ? results.find(
+        (x) =>
+          x.type == "artist" &&
+          x.title.toLowerCase().includes(lastFmItem.artist.toLowerCase()),
+      )
+    : results.find(
+        (x) =>
+          x.type != "artist" &&
+          x.type != "label" &&
+          x.title
+            .toLowerCase()
+            .includes(lastFmItem.album?.toLowerCase()?.split(" ep")[0] ?? "") &&
+          x.title.toLowerCase().includes(lastFmItem.artist.toLowerCase()),
+      );
+
   return result;
 }

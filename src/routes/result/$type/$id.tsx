@@ -26,7 +26,7 @@ function ResultPageParams() {
   if (process.env.NODE_ENV === "development")
     console.log("result page data", data);
 
-  if (!data && id == "-1") {
+  if (!data || id == "-1") {
     return <NoSearchResult />;
   }
 

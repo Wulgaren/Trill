@@ -7,7 +7,11 @@ import {
 } from "../../types/Discogs/DiscogsTypes";
 import { LastFMItemParams } from "../../types/LastFm/LastFmTypes";
 import Discogs from "../discogs/Discogs";
-import { removeAsterisk, removeNumberFromName } from "../functions/Functions";
+import {
+  matchesLastFmTitle,
+  removeAsterisk,
+  removeNumberFromName,
+} from "../functions/Functions";
 import SearchImage from "../search-image/SearchImage";
 
 function LastFmItem({
@@ -27,50 +31,28 @@ function LastFmItem({
       !(lastFmItem as LastFMItemParams).album) ||
     (lastFmItem as DiscogsSearchResult).type == "artist";
 
+  let title =
+    (lastFmItem as LastFMItemParams).artist +
+    ((lastFmItem as LastFMItemParams).album
+      ? " - " + (lastFmItem as LastFMItemParams).album
+      : "");
+
   const { data: discogsRelease, isError } = useQuery({
-    queryKey: [
-      "DiscogsLastFmSearch",
-      lastFmItem,
-      (lastFmItem as LastFMItemParams).album,
-      (lastFmItem as LastFMItemParams).artist,
-      isArtist,
-    ],
+    queryKey: ["DiscogsLastFmSearch", lastFmItem, isArtist, title],
     queryFn: async () => {
       const result = await Discogs.Search({
         searchParams: {
-          query:
-            (lastFmItem as LastFMItemParams).album ||
-            "" + " " + (lastFmItem as LastFMItemParams).artist ||
-            "",
+          query: title,
+          type: isArtist ? "artist" : "master",
         },
         pageParam: 1,
       });
 
-      const item = isArtist
-        ? result?.results.find(
-            (x) =>
-              x.type == "artist" &&
-              x.title
-                .toLowerCase()
-                .includes(
-                  (lastFmItem as LastFMItemParams).artist.toLowerCase(),
-                ),
-          )
-        : result?.results.find(
-            (x) =>
-              x.type != "artist" &&
-              x.type != "label" &&
-              x.title
-                .toLowerCase()
-                .includes(
-                  (lastFmItem as LastFMItemParams).album?.toLowerCase() ?? "",
-                ) &&
-              x.title
-                .toLowerCase()
-                .includes(
-                  (lastFmItem as LastFMItemParams).artist.toLowerCase(),
-                ),
-          );
+      const item = matchesLastFmTitle(
+        isArtist,
+        result?.results,
+        lastFmItem as LastFMItemParams,
+      );
 
       if (item) handleItemChange(item);
 
@@ -81,41 +63,20 @@ function LastFmItem({
   });
 
   const item =
-    (isArtist
-      ? discogsRelease?.results.find(
-          (x) =>
-            x.type == "artist" &&
-            x.title
-              .toLowerCase()
-              .includes((lastFmItem as LastFMItemParams).artist.toLowerCase()),
-        )
-      : discogsRelease?.results.find(
-          (x) =>
-            x.type != "artist" &&
-            x.type != "label" &&
-            x.title
-              .toLowerCase()
-              .includes(
-                (lastFmItem as LastFMItemParams).album?.toLowerCase() ?? "",
-              ) &&
-            x.title
-              .toLowerCase()
-              .includes((lastFmItem as LastFMItemParams).artist.toLowerCase()),
-        )) ?? (lastFmItem as DiscogsSearchResult);
+    matchesLastFmTitle(
+      isArtist,
+      discogsRelease?.results,
+      lastFmItem as LastFMItemParams,
+    ) ?? (lastFmItem as DiscogsSearchResult);
 
-  const title =
-    item?.title ??
-    (lastFmItem as LastFMItemParams).artist +
-      ((lastFmItem as LastFMItemParams).album
-        ? " - " + (lastFmItem as LastFMItemParams).album
-        : "");
+  if (item?.title) title = item.title;
 
   return (
     <li className="h-full min-w-[180px]" ref={inViewRef}>
       <Link
-        to={isError ? "/search" : "/result/$type/$id"}
+        to={isError || !item?.id ? "/search" : "/result/$type/$id"}
         params={
-          isError
+          isError || !item?.id
             ? {}
             : {
                 id: item?.id ? item.id.toString() : "-1",
@@ -123,12 +84,10 @@ function LastFmItem({
               }
         }
         search={
-          isError
+          isError || !item?.id
             ? {
-                query:
-                  (lastFmItem as LastFMItemParams).album ||
-                  "" + " " + (lastFmItem as LastFMItemParams).artist ||
-                  "",
+                query: title,
+                type: isArtist ? "artist" : "master",
               }
             : {}
         }
