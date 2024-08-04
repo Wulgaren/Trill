@@ -326,7 +326,9 @@ const LastFm = {
       const reqs = data.similartracks.track.map((x) =>
         LastFm.GetTrackInfo({ trackName: x.name, trackArtist: x.artist.name }),
       );
-      const recs = await Promise.all(reqs);
+      const recs = await (await Promise.allSettled(reqs))
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
 
       if (!recs?.length) return [];
 
@@ -423,7 +425,9 @@ const LastFm = {
             }),
           );
 
-        responses = (await Promise.all(promises))
+        responses = (await Promise.allSettled(promises))
+          .filter((result) => result.status === "fulfilled")
+          .map((result) => result.value)
           .flat()
           .filter((x) => x != null);
       }
@@ -568,15 +572,21 @@ const LastFm = {
       if (process.env.NODE_ENV === "development")
         console.log("lastfm user albums page", albumsPage);
 
-      while (!albums?.results?.length && albums?.pagination?.pages != 0) {
+      while (
+        !albums?.results?.length &&
+        albums?.pagination?.pages != 0 &&
+        startGenreNum > 0
+      ) {
         albums = await LastFm.GetUserTopAlbums({
           username: friend,
-          pageParam: albumsPage,
+          pageParam: startGenreNum,
         }).catch((ex: Error) => {
           if (ex.message.includes("Bad Request"))
             startGenreNum = albumsPage - 5;
           return undefined;
         });
+
+        if (!albums?.results?.length) startGenreNum--;
       }
 
       if (albums) albums.info = friend;
@@ -732,7 +742,9 @@ const LastFm = {
             }),
           );
 
-        similarTracks = (await Promise.all(promises))
+        similarTracks = (await Promise.allSettled(promises))
+          .filter((result) => result.status === "fulfilled")
+          .map((result) => result.value)
           .flat()
           .filter((x) => x != null);
 
@@ -799,7 +811,9 @@ const LastFm = {
             }),
           );
 
-        similarTracks = (await Promise.all(promises))
+        similarTracks = (await Promise.allSettled(promises))
+          .filter((result) => result.status === "fulfilled") // Keep only fulfilled results
+          .map((result) => result.value) // Extract the value from fulfilled results
           .flat()
           .filter((x) => x != null);
 
@@ -813,8 +827,6 @@ const LastFm = {
 
         if (!recentTracks?.results?.length)
           throw new Error("No recent tracks found");
-
-        console.log(similarTracks);
       }
 
       if (process.env.NODE_ENV === "development")
@@ -861,7 +873,9 @@ const LastFm = {
           }),
         );
 
-        const parsed = (await Promise.all(promises))
+        const parsed = (await Promise.allSettled(promises))
+          ?.filter((result) => result.status === "fulfilled")
+          ?.map((result) => result.value)
           ?.flatMap((x) => x?.results)
           ?.filter((x) => x != null);
 

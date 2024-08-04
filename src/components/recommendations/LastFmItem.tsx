@@ -46,12 +46,31 @@ function LastFmItem({
         pageParam: 1,
       });
 
-      const item =
-        (isArtist
-          ? result?.results.find((x) => x.type == "artist")
-          : result?.results.find(
-              (x) => x.type != "artist" && x.type != "label",
-            )) ?? result?.results[0];
+      const item = isArtist
+        ? result?.results.find(
+            (x) =>
+              x.type == "artist" &&
+              x.title
+                .toLowerCase()
+                .includes(
+                  (lastFmItem as LastFMItemParams).artist.toLowerCase(),
+                ),
+          )
+        : result?.results.find(
+            (x) =>
+              x.type != "artist" &&
+              x.type != "label" &&
+              x.title
+                .toLowerCase()
+                .includes(
+                  (lastFmItem as LastFMItemParams).album?.toLowerCase() ?? "",
+                ) &&
+              x.title
+                .toLowerCase()
+                .includes(
+                  (lastFmItem as LastFMItemParams).artist.toLowerCase(),
+                ),
+          );
 
       if (item) handleItemChange(item);
 
@@ -63,12 +82,26 @@ function LastFmItem({
 
   const item =
     (isArtist
-      ? discogsRelease?.results.find((x) => x.type == "artist")
+      ? discogsRelease?.results.find(
+          (x) =>
+            x.type == "artist" &&
+            x.title
+              .toLowerCase()
+              .includes((lastFmItem as LastFMItemParams).artist.toLowerCase()),
+        )
       : discogsRelease?.results.find(
-          (x) => x.type != "artist" && x.type != "label",
-        )) ??
-    discogsRelease?.results[0] ??
-    (lastFmItem as DiscogsSearchResult);
+          (x) =>
+            x.type != "artist" &&
+            x.type != "label" &&
+            x.title
+              .toLowerCase()
+              .includes(
+                (lastFmItem as LastFMItemParams).album?.toLowerCase() ?? "",
+              ) &&
+            x.title
+              .toLowerCase()
+              .includes((lastFmItem as LastFMItemParams).artist.toLowerCase()),
+        )) ?? (lastFmItem as DiscogsSearchResult);
 
   const title =
     item?.title ??

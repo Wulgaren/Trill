@@ -224,7 +224,9 @@ const Discogs = {
       const promises = generatedQueries.map((query) =>
         fetch(url + query, requestOptions),
       );
-      const responses = await Promise.all(promises);
+      const responses = (await Promise.allSettled(promises))
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
 
       const parsedResponses: DiscogsSearchResponse = {
         results: [],
@@ -429,7 +431,9 @@ const Discogs = {
           type: "release",
         }),
       );
-      const responses = await Promise.all(requests);
+      const responses = await (await Promise.allSettled(requests))
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
 
       const bonusTracks: ReleaseTrack[] = [];
       for (const response of responses) {
@@ -498,7 +502,10 @@ const Discogs = {
         }),
       );
 
-      const results = await Promise.all(promises);
+      const results = await (await Promise.allSettled(promises))
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
+
       const parsedResponses: DiscogsSearchResponse = {
         results: [],
       };
