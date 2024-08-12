@@ -399,10 +399,12 @@ const Discogs = {
     id,
     originalTracklist,
   }: {
-    id: number;
+    id: number | undefined;
     originalTracklist: DiscogsMasterTrack[] & ReleaseTrack[];
   }): Promise<ReleaseTrack[]> => {
     try {
+      if (!id) throw new Error("No id");
+
       const response = await fetch(`/api/discogs-api/masters/${id}/versions?`, {
         method: "GET",
         headers: Discogs.GetAuthHeader(),

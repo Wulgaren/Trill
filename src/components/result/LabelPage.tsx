@@ -31,7 +31,7 @@ function LabelPage({ data }: { data: DiscogsLabel }) {
           {data.profile && (
             <CollapsibleText
               text={convertHTMLTags(
-                removeNumberFromName(removeTags(data.profile)),
+                removeNumberFromName(removeTags(data.profile.trim())),
               )}
               maxLength={350}
             />

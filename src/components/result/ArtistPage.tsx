@@ -73,7 +73,7 @@ function ArtistPage({ data }: { data: DiscogsArtist }) {
           </div>
           <CollapsibleText
             text={convertHTMLTags(
-              removeNumberFromName(removeTags(data.profile)),
+              removeNumberFromName(removeTags(data.profile.trim())),
             )}
             maxLength={250}
           />

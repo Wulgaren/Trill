@@ -14,6 +14,7 @@ import {
   calculateComma,
   capitalizeFirstLetter,
   convertHTMLTags,
+  removeDuplicates,
   removeNumberFromName,
   removeTags,
 } from "../functions/Functions";
@@ -53,13 +54,13 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
   });
 
   const { data: bonusTracks, isFetching: bonusTracksFetching } = useQuery({
-    queryKey: ["bonus tracks", data.id, data.tracklist],
+    queryKey: ["bonus tracks", data.master_id, data.tracklist],
     queryFn: () =>
       Discogs.GetBonusTracks({
-        id: data.id,
+        id: data.master_id,
         originalTracklist: data.tracklist,
       }),
-    enabled: !!(data.id && data.tracklist),
+    enabled: !!(data.master_id && data.tracklist),
   });
 
   return (
@@ -162,7 +163,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
               </button>
             </div>
 
-            <span>Released: {data.year}</span>
+            {!!data.year && <span>Released: {data.year}</span>}
 
             {data.genres?.length > 0 && (
               <DataList
@@ -189,7 +190,7 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
             {data.labels?.length > 0 && (
               <DataList
                 title="Label"
-                items={data.labels}
+                items={removeDuplicates(data.labels)}
                 type="label"
                 isLink={true}
                 isInline={true}

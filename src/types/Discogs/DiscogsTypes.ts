@@ -342,14 +342,14 @@ export interface DiscogsRating {
   average: number;
 }
 
-export interface DiscogsCompany {
+export type DiscogsCompany = {
   name: string;
   entity_type: string;
   catno: string;
   resource_url: string;
   id: number;
   entity_type_name: string;
-}
+};
 
 export interface DiscogsIdentifier {
   type: string;
