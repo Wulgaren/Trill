@@ -112,12 +112,13 @@ function ReleasesListComponent({
                         </div>
 
                         <div className="flex flex-col">
-                          {(release as DiscogsArtistRelease).role != "Main" ? (
+                          {!!(
+                            (release as DiscogsArtistRelease).role &&
+                            (release as DiscogsArtistRelease).role != "Main"
+                          ) && (
                             <span className="text-xs">
                               ({(release as DiscogsArtistRelease).role})
                             </span>
-                          ) : (
-                            ""
                           )}
                           {(type == "labels" ||
                             (release as DiscogsArtistRelease).role !=
