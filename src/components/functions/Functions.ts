@@ -1,4 +1,8 @@
 import {
+  DiscogsArtist,
+  DiscogsGetPageResponse,
+  DiscogsLabel,
+  DiscogsMaster,
   DiscogsPagination,
   DiscogsSearchQuery,
   DiscogsSearchResult,
@@ -211,4 +215,36 @@ export function matchesLastFmTitle(
       );
 
   return result;
+}
+
+export function setSiteTitle(data?: string | DiscogsGetPageResponse) {
+  let title = "";
+
+  if (data != null) {
+    switch (typeof data) {
+      case "string":
+        title = "Search";
+        if (data) title += " for " + data;
+        break;
+      case "object":
+        if ((data as DiscogsMaster).artists?.[0]?.name) {
+          title = (data as DiscogsMaster).artists?.[0]?.name + " - ";
+        }
+
+        if ((data as DiscogsMaster).title) {
+          title += (data as DiscogsMaster).title;
+        }
+
+        if ((data as DiscogsArtist | DiscogsLabel).name) {
+          title = (data as DiscogsArtist | DiscogsLabel).name;
+        }
+
+        break;
+    }
+
+    title = title + " [Trill - Music Finder]";
+  } else title = "Trill - Music Finder";
+
+  document.title = title;
+  return title;
 }

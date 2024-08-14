@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { setSiteTitle } from "../components/functions/Functions";
 import Search from "../components/search/Search";
 import { DiscogsSearchQuery } from "../types/Discogs/DiscogsTypes";
 
@@ -96,6 +97,8 @@ function SearchParams() {
   const params: DiscogsSearchQuery = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   if (process.env.NODE_ENV === "development") console.log(params);
+
+  setSiteTitle(params.query ?? "");
 
   return <Search params={params} navigate={navigate} />;
 }

@@ -23,6 +23,7 @@ import GetErrorMessage from "../error-handling/ErrorHandling";
 import {
   generateQueries,
   removeDuplicates,
+  removeNumberFromName,
   removeTags,
 } from "../functions/Functions";
 
@@ -327,6 +328,8 @@ const Discogs = {
             artistResponse.profile,
           );
         }
+
+        artistResponse.name = removeNumberFromName(artistResponse.name);
       }
 
       parsed.images?.forEach((x) => {

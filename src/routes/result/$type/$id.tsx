@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Discogs from "../../../components/discogs/Discogs.ts";
+import { setSiteTitle } from "../../../components/functions/Functions.ts";
 import LoadingAnimation from "../../../components/loading-animation/LoadingAnimation.tsx";
 import ArtistPage from "../../../components/result/ArtistPage.tsx";
 import LabelPage from "../../../components/result/LabelPage.tsx";
@@ -29,6 +30,8 @@ function ResultPageParams() {
   if (!data || id == "-1") {
     return <NoSearchResult />;
   }
+
+  setSiteTitle(data);
 
   switch (type) {
     case "artist":
