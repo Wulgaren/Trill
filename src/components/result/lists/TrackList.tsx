@@ -24,11 +24,22 @@ function TrackList({
     <div>
       <h2 className="text-xl">{title}: </h2>
 
-      <ListType className={`${ordered ? "list-decimal" : "list-disc"} pl-6`}>
+      <ListType className={`${ordered ? "list-decimal" : "list-disc"}`}>
         {tracklist?.map((track, trackIndex) => {
-          return (
-            track.type_ === "track" && (
-              <li className="py-1" key={trackIndex}>
+          if (track.type_ === "heading") {
+            return (
+              <span
+                key={trackIndex}
+                className="my-1 ml-[-1.25rem] flex w-fit rounded-br-xl bg-primary p-2 pe-8 text-sm font-bold text-white shadow-md"
+              >
+                {track.title}
+              </span>
+            );
+          }
+
+          if (track.type_ === "track")
+            return (
+              <li className="ml-6 py-1" key={trackIndex}>
                 <div className="flex flex-row justify-between">
                   <div className="flex flex-col">
                     <span
@@ -87,8 +98,7 @@ function TrackList({
                   <span className="text-sm">{track.duration}</span>
                 </div>
               </li>
-            )
-          );
+            );
         })}
       </ListType>
     </div>

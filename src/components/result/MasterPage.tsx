@@ -243,14 +243,16 @@ function MasterPage({ data }: { data: DiscogsMaster & DiscogsRelease }) {
             />
 
             {bonusTracksFetching && <LoadingAnimation />}
-            {!bonusTracksFetching && bonusTracks && bonusTracks?.length > 0 && (
-              <TrackList
-                tracklist={bonusTracks}
-                title="Bonus tracks"
-                ordered={false}
-                setSongLinkParams={setSongLinkParams}
-              />
-            )}
+            {!bonusTracksFetching &&
+              bonusTracks &&
+              bonusTracks?.filter((x) => x.type_ == "track")?.length > 0 && (
+                <TrackList
+                  tracklist={bonusTracks.filter((x) => x.type_ == "track")}
+                  title="Bonus tracks"
+                  ordered={false}
+                  setSongLinkParams={setSongLinkParams}
+                />
+              )}
           </div>
         )}
 
