@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { FocusEvent, FormEvent, useState } from "react";
+import { FocusEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { FaCog, FaLastfm } from "react-icons/fa";
 import LoadingAnimation from "../loading-animation/LoadingAnimation";
 import Modal from "../modal/Modal";
@@ -10,6 +10,13 @@ function ConnectLastFm() {
   const [isOpenLastFmDialog, setIsOpenLastFmDialog] = useState<boolean>(false);
   const { lastFmUsername, setLastFmUsername, triggerClick } =
     useNavbarContext();
+  const lastFmInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (lastFmInput.current && isOpenLastFmDialog) {
+      lastFmInput.current.focus();
+    }
+  }, [isOpenLastFmDialog]);
 
   const { isFetching: isTopArtistsFetching } = useQuery({
     queryKey: ["last_fm_top_artists"],
@@ -77,6 +84,7 @@ function ConnectLastFm() {
             Input your username to get personalized Last.FM recommendations.
           </label>
           <input
+            ref={lastFmInput}
             type="text"
             id="LastFmUsername"
             name="LastFmUsername"

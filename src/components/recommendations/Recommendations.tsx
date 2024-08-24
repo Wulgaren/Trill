@@ -48,7 +48,7 @@ function RecommendationsComponent({
     LastFMPaginatedResponse<LastFMItemParams[]> | undefined,
     Error
   >({
-    queryKey: [type, startGenreNum],
+    queryKey: [type, startGenreNum, artist, trackName],
     queryFn: ({ pageParam = 1 }) => {
       switch (type) {
         case "RecentTracks":
