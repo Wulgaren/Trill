@@ -442,11 +442,19 @@ const Discogs = {
 
       const bonusTracks: ReleaseTrack[] = [];
       for (const response of responses) {
-        (response as DiscogsGetReleaseResponse).tracklist.forEach((track) => {
-          if (
-            !originalTracklist.find((y) => y.title === track.title) &&
-            !bonusTracks.find((z) => z.title === track.title)
-          ) {
+        const tracklist = (response as DiscogsGetReleaseResponse).tracklist;
+
+        tracklist.forEach((track) => {
+          const trackTitle = track.title.replace("\t", "");
+
+          const inOriginalTracklist = originalTracklist.some(
+            (y) => y.title.replace("\t", "") === trackTitle,
+          );
+          const inCurrentTracklist = bonusTracks.some(
+            (z) => z.title.replace("\t", "") === trackTitle,
+          );
+
+          if (!inOriginalTracklist && !inCurrentTracklist) {
             bonusTracks.push(track);
           }
         });
