@@ -15,6 +15,8 @@ function ConnectLastFm() {
   useEffect(() => {
     if (lastFmInput.current && isOpenLastFmDialog) {
       lastFmInput.current.focus();
+    } else if (lastFmInput.current) {
+      lastFmInput.current.blur();
     }
   }, [isOpenLastFmDialog]);
 
