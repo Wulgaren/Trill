@@ -445,13 +445,13 @@ const Discogs = {
         const tracklist = (response as DiscogsGetReleaseResponse).tracklist;
 
         tracklist.forEach((track) => {
-          const trackTitle = track.title.replace("\t", "");
+          const trackTitle = track.title.replace("\t", "").trim();
 
           const inOriginalTracklist = originalTracklist.some(
-            (y) => y.title.replace("\t", "") === trackTitle,
+            (y) => y.title.replace("\t", "").trim() === trackTitle,
           );
           const inCurrentTracklist = bonusTracks.some(
-            (z) => z.title.replace("\t", "") === trackTitle,
+            (z) => z.title.replace("\t", "").trim() === trackTitle,
           );
 
           if (!inOriginalTracklist && !inCurrentTracklist) {
