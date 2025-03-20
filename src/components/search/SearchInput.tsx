@@ -48,8 +48,7 @@ function SearchInput({
       setShowFilters(false);
 
       navigate({
-        search: (prev) => ({
-          ...prev,
+        search: () => ({
           ...formEntries,
         }),
       });
